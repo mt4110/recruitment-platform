@@ -41,7 +41,8 @@ services:
       ATTEMPT_KEY: ${ATTEMPT_KEY:?Run setup}
       CSRF_KEY: ${CSRF_KEY:?Run setup}
       PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
-    networks: [default,pdf]
+      SCAN_SHARED_KEY: ${SCAN_SHARED_KEY:?Run setup}
+    networks: [default,pdf,scan]
     volumes: ['resumes:/data/resumes']
     read_only: true
     tmpfs: ['/tmp:size=16m,mode=1777']
@@ -126,9 +127,48 @@ services:
       retries: 10
     mem_limit: 384m
     pids_limit: 32
+  scan:
+    build: ./services/av
+    environment:
+      SCAN_SHARED_KEY: ${SCAN_SHARED_KEY:?Run setup}
+    networks: [scan]
+    volumes: ['signatures:/signatures:ro']
+    read_only: true
+    tmpfs: ['/tmp:size=384m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 2g
+    cpus: 1
+    pids_limit: 32
+    healthcheck:
+      test: [CMD, python3, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/live',timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  updater:
+    build: ./services/av
+    command: [updater.py]
+    healthcheck:
+      test: [CMD, python3, -c, 'from common import read_manifest,fresh; assert fresh(read_manifest())']
+      interval: 10s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    networks: [av-egress]
+    volumes: ['signatures:/signatures']
+    read_only: true
+    tmpfs: ['/tmp:size=384m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 4g
+    cpus: 1
+    pids_limit: 32
 networks:
+  av-egress: {}
+  scan: {internal: true}
   pdf: {internal: true}
 volumes:
   app-db:
   idp-db:
   resumes:
+  signatures:

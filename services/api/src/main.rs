@@ -2,6 +2,7 @@ mod applications;
 mod auth;
 mod business;
 mod documents;
+mod scanner;
 
 use auth::{ApiError, App, Config};
 use axum::{
@@ -53,6 +54,7 @@ async fn start() -> anyhow::Result<()> {
                 .disable_statement_logging(),
         )
         .await?;
+    documents::reconcile_storage(&runtime).await?;
     let http = openidconnect::reqwest::Client::builder()
         .redirect(openidconnect::reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(5))
@@ -65,6 +67,7 @@ async fn start() -> anyhow::Result<()> {
         http,
         oidc,
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
+        scan_key: std::env::var("SCAN_SHARED_KEY")?,
         uploads: Arc::new(tokio::sync::Semaphore::new(2)),
     });
     let router = Router::new()

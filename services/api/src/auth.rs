@@ -96,6 +96,7 @@ pub struct App {
     pub http: reqwest::Client,
     pub oidc: Oidc,
     pub pdf_key: String,
+    pub scan_key: String,
     pub uploads: std::sync::Arc<tokio::sync::Semaphore>,
 }
 pub async fn discover(config: &Config, http: &reqwest::Client) -> anyhow::Result<Oidc> {
@@ -161,6 +162,10 @@ impl IntoResponse for ApiError {
                 serde_json::json!({"_form":"必須項目・許可項目・文字数を確認してください。"});
         }
         let mut r = (self.status, Json(body)).into_response();
+        if self.code == "DOCUMENT_RATE_LIMITED" {
+            r.headers_mut()
+                .insert("retry-after", HeaderValue::from_static("60"));
+        }
         r.headers_mut()
             .insert("x-request-id", HeaderValue::from_str(&id).unwrap());
         r

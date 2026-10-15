@@ -99,3 +99,9 @@ v0.1は架空データ専用。readyの文書・提出済みsnapshot・業務履
 - selection_eventsはapplication_versionを保存し、UNIQUE(application_id,application_version)で同じ業務版への二重イベントを拒否する。snapshotの内容とeventのactor/状態・版もINSERT triggerで検査する。業務runtimeへこれらのUPDATE/DELETEを与えない。
 - applicationsの非draftにはjob_version_snapshotの非NULLを、ready documentには検査policyの非NULLを明示的に要求する。SQL CHECKがNULLを成功として扱う抜けを防ぐ。適用済みmigrationは変更せず0004/0005を追加する。
 - M4は状態変更と同時に相手組織宛ての未送信通知を1件保存する。本文は固定のデモ文で候補者本文を含めない。通知のAPI/画面と請求PDFはM5に残す。
+
+## R2の追記migration
+
+`0007_document_av.sql`は、元登録者・組織・hashを照合するdocument_checksのINSERT policy、document単位の再検査job（元操作key/lease token/120秒/CAS）を追加する。原本と提出snapshotは更新しない。runtimeのchecks UPDATE/DELETE、企業の原本SELECTは許可しない。
+
+容量・頻度のprivate台帳は直接のruntime/auth SELECT/INSERT/UPDATEを許可せず、固定search_pathの限定関数だけを公開する。予約は短いadvisory lockで直列化し、文書を受信する間はtxを保持しない。失敗・クラッシュ時の不明サイズは上限のまま残す。起動時のinode inventoryで台帳にない旧ファイルを照合し、所有者不明分は各org/globalに保守的に加算する。自動の期限解放・削除・残容量回復は行わない。推測した所有者で個人ファイルを別組織へ関連付けない。

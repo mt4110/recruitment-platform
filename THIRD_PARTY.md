@@ -34,3 +34,5 @@ PDFのPython依存はservices/pdf-renderer/requirements.txtで固定し、PyPI�
 multipart仕様は[Axum 0.8.9の実装](https://github.com/tokio-rs/axum/blob/axum-v0.8.9/axum/src/extract/multipart.rs)、PDF APIは[pikepdf 10.17.0の一次資料](https://pikepdf.readthedocs.io/en/stable/api/main.html)を確認した。
 
 M4は既存SQLx 0.9.0のjson featureを有効化し、既存serde_jsonでPostgreSQL JSONをdecodeする。Cargo.lockのpackage/versionは変更していない。RustSecの既知1件を引き続き記録し、新しい本体依存を追加していない。
+
+R2では公式ClamAV 1.5.4 Debian 13 slimをmultiarch index digest `sha256:9a96980b265cb2b51a20bdcca921dc80aa55ed0e56cdfb076198ee27a9171927`で固定し、clamd/FreshClam/sigtoolのライセンス・著作権表示を保持する。ClamAVはGPL-2.0、署名DBは別の利用条件に従う。Python wrapperは標準ライブラリのみで、Debianのpython3 security packageをaptで導入する。OS packageの版は実行証拠へ記録するが、apt repositoryのsnapshot固定や配布image全体の脆弱性監査を完了した意味ではない。独自imageを配布する際の対応ソース提供・再配布条件の確認はM7に残る。[ClamAV配布ソース](https://github.com/Cisco-Talos/clamav/tree/clamav-1.5.4)、[ClamAV署名管理](https://docs.clamav.net/manual/Usage/SignatureManagement.html)。

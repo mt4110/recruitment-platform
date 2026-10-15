@@ -13,12 +13,12 @@ async function sessionWhere(context) {
   if (!cookie) throw Error('SESSION_REQUIRED');
   return `token_hash=decode('${crypto.createHash('sha256').update(cookie.value).digest('hex')}','hex')`;
 }
-test('seven services are healthy; DB roles and immutable identity are enforced',async({request})=>{
+test('nine services are healthy; DB roles and immutable identity are enforced',async({request})=>{
   expect((await request.get(origin+'/ready')).status()).toBe(200);
   const p=cp.spawnSync('python3',['scripts/local.py','compose','ps','--format','json'],{encoding:'utf8',cwd:path.resolve(__dirname,'..')});
   expect(p.status).toBe(0);
   const rows=p.stdout.trim().split('\n').map(s=>JSON.parse(s));
-  expect(rows.length).toBe(7);expect(rows.every(r=>r.Health==='healthy')).toBe(true);
+  expect(rows.length).toBe(9);expect(rows.every(r=>r.Health==='healthy')).toBe(true);
   expect(sql('SELECT count(*) FROM organizations; SELECT count(*) FROM users;')).toBe('4\n4');
   expect(sql("SELECT NOT rolsuper AND NOT rolbypassrls AND NOT rolcreatedb AND NOT rolcreaterole FROM pg_roles WHERE rolname='app_auth';")).toBe('t');
   expect(sql("SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tableowner='app_auth';")).toBe('0');

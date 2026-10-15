@@ -99,6 +99,7 @@ fn rejection(code: &str, status: StatusCode) -> ApiError {
         "STRUCTURE_LIMIT" => "STRUCTURE_LIMIT",
         "PAGES" => "PAGES",
         "SIZE" => "SIZE",
+        "MALWARE_DETECTED" => "MALWARE_DETECTED",
         "UNSUPPORTED_A" | "ATTRIBUTE_TYPE" | "STRUCTURE_PARENT" | "STRUCTURE_CYCLE" => {
             "PDF_STRUCTURE_UNSUPPORTED"
         }
@@ -109,6 +110,7 @@ fn rejection(code: &str, status: StatusCode) -> ApiError {
         code,
         match code {
             "CANDIDATE_ARCHIVED" => "候補者はアーカイブ済みです。",
+            "MALWARE_DETECTED" => "安全性検査で利用できない書類と判定されました。",
             "UPLOAD_INTERRUPTED" => "保存が中断されています。新しい操作で登録し直してください。",
             "PDF_STRUCTURE_UNSUPPORTED" => {
                 "このPDFの構造には対応していません。添付のサンプルPDFでお試しください。"
@@ -149,6 +151,13 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
     } else {
         None
     };
+    let blocked: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM document_checks WHERE document_id=$1 AND verdict='blocked')",
+    )
+    .bind(d.id)
+    .fetch_one(&mut *tx)
+    .await
+    .map_err(db_error)?;
     let available: bool = sqlx::query_scalar("SELECT $3 AND document_usable($1,$2,$4)")
         .bind(d.id)
         .bind(&d.sha256)
@@ -158,7 +167,7 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
         .await
         .map_err(db_error)?;
     Ok(
-        json!({"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
+        json!({"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
     )
 }
 pub(crate) async fn list(tx: &mut PgConnection, candidate: Uuid) -> Result<Value, ApiError> {
@@ -212,6 +221,7 @@ async fn status(
 async fn receive(
     app: Arc<App>,
     request: Request,
+    receipt: Uuid,
 ) -> Result<(String, String, i64, String, String, String, String), ApiError> {
     let mut multipart = Multipart::from_request(request, &app)
         .await
@@ -265,7 +275,7 @@ async fn receive(
                 {
                     return Err(invalid());
                 }
-                let key = format!("{}.part", Uuid::new_v4());
+                let key = format!("{receipt}.part");
                 let target = path(&key)?;
                 // Manifests and staging are retained; no automated cleanup in M3.
                 let manifest = path(&format!("{}.json", Uuid::new_v4()))?;
@@ -373,16 +383,70 @@ async fn upload(
         .clone()
         .try_acquire_owned()
         .map_err(|_| unavailable("RETRYABLE_BUSY"))?;
-    let (staging, name, size, sha, format, media, kind) =
-        tokio::time::timeout(Duration::from_secs(30), receive(app.clone(), request))
-            .await
-            .map_err(|_| {
-                error(
-                    StatusCode::REQUEST_TIMEOUT,
-                    "UPLOAD_TIMEOUT",
-                    "30秒以内に登録できませんでした。",
-                )
-            })??;
+    let receipt = Uuid::new_v4();
+    let mut tx = begin(&app, &u).await?;
+    let admission: String = sqlx::query_scalar("SELECT document_admit($1)")
+        .bind(receipt)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    tx.commit().await.map_err(db_error)?;
+    if admission == "rate" {
+        return Err(error(
+            StatusCode::TOO_MANY_REQUESTS,
+            "DOCUMENT_RATE_LIMITED",
+            "登録回数の上限です。1分後に再試行してください。",
+        ));
+    }
+    if admission == "unreconciled" {
+        return Err(unavailable("STORAGE_UNAVAILABLE"));
+    }
+    if admission != "ok" {
+        return Err(error(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            "STORAGE_QUOTA_EXCEEDED",
+            "保存容量の上限です。管理者にお問い合わせください。",
+        ));
+    }
+    let received = tokio::time::timeout(
+        Duration::from_secs(30),
+        receive(app.clone(), request, receipt),
+    )
+    .await
+    .map_err(|_| {
+        error(
+            StatusCode::REQUEST_TIMEOUT,
+            "UPLOAD_TIMEOUT",
+            "30秒以内に登録できませんでした。",
+        )
+    })
+    .and_then(|r| r);
+    if received.is_err() {
+        let actual = match fs::metadata(path(&format!("{receipt}.part"))?).await {
+            Ok(m) => Some(m.len() as i64 + 65536),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Some(65536),
+            _ => None,
+        };
+        if let Some(actual) = actual {
+            let mut tx = begin(&app, &u).await?;
+            sqlx::query("SELECT document_settle($1,$2)")
+                .bind(receipt)
+                .bind(actual)
+                .execute(&mut *tx)
+                .await
+                .map_err(db_error)?;
+            tx.commit().await.map_err(db_error)?;
+        }
+    }
+    let (staging, name, size, sha, format, media, kind) = received?;
+    let mut settled = begin(&app, &u).await?;
+    sqlx::query("SELECT document_settle($1,$2)")
+        .bind(receipt)
+        .bind(size + 65536)
+        .execute(&mut *settled)
+        .await
+        .map_err(db_error)?;
+    settled.commit().await.map_err(db_error)?;
     let hash=Sha256::digest(serde_json::to_vec(&json!({"candidate_id":candidate,"original_name":name,"sha256":sha,"file_format":format,"document_kind":kind,"fictional_confirmed":true})).map_err(|_|invalid())?).to_vec();
     let normalized = format!("/api/v1/candidates/{candidate}/documents");
     let mut tx = begin(&app, &u).await?;
@@ -458,7 +522,7 @@ async fn upload(
         sqlx::query("INSERT INTO idempotency_records(org_id,user_id,http_method,normalized_path,key,request_hash,resource_id,state,lease_token,lease_expires_at) VALUES($1,$2,'POST',$3,$4,$5,$6,'processing',$7,now()+interval '120 seconds')").bind(u.organization_id).bind(u.user_id).bind(normalized).bind(key).bind(hash).bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?;
     }
     tx.commit().await.map_err(db_error)?;
-    process(&app, &u, id, token, StatusCode::CREATED).await
+    run_process(&app, &u, id, token, StatusCode::CREATED).await
 }
 async fn pending(mut tx: Tx, id: Uuid, u: &Identity) -> Result<Response, ApiError> {
     let d = doc(&mut tx, id).await?;
@@ -506,6 +570,17 @@ async fn retry(
     if lease.lease_expires_at.is_some_and(|v| v > Utc::now()) {
         return pending(tx, id, &u).await;
     }
+    let allowed: bool = sqlx::query_scalar("SELECT document_retry_admit()")
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if !allowed {
+        return Err(error(
+            StatusCode::TOO_MANY_REQUESTS,
+            "DOCUMENT_RATE_LIMITED",
+            "登録回数の上限です。1分後に再試行してください。",
+        ));
+    }
     let token = Uuid::new_v4();
     claim(&mut tx, id, lease.lease_token, token).await?;
     tx.commit().await.map_err(db_error)?;
@@ -514,7 +589,7 @@ async fn retry(
         .clone()
         .try_acquire_owned()
         .map_err(|_| unavailable("RETRYABLE_BUSY"))?;
-    process(&app, &u, id, token, StatusCode::OK).await
+    run_process(&app, &u, id, token, StatusCode::OK).await
 }
 #[derive(Deserialize)]
 struct Check {
@@ -549,6 +624,57 @@ pub(crate) async fn verified_bytes(
         }
     }
 }
+async fn run_process(
+    app: &App,
+    u: &Identity,
+    id: Uuid,
+    token: Uuid,
+    success: StatusCode,
+) -> Result<Response, ApiError> {
+    let result = process(app, u, id, token, success).await;
+    if result.is_err() {
+        let mut tx = begin(app, u).await?;
+        sqlx::query("UPDATE idempotency_records SET lease_expires_at=now() WHERE resource_id=$1 AND lease_token=$2 AND state='processing'").bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?;
+        tx.commit().await.map_err(db_error)?;
+    }
+    result.map_err(|e| e.document(id))
+}
+async fn record_check(
+    tx: &mut PgConnection,
+    u: &Identity,
+    d: &Document,
+    scan: &crate::scanner::Scan,
+) -> Result<(), ApiError> {
+    sqlx::query("INSERT INTO document_checks(id,document_id,org_id,sha256,policy,verdict,engine_version,signature_version,signature_manifest,generation_id,actor_user_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)")
+        .bind(Uuid::new_v4()).bind(d.id).bind(u.organization_id).bind(&d.sha256).bind(full_policy(d)).bind(&scan.verdict).bind(&scan.engine_version).bind(scan.databases["daily"]["version"].to_string()).bind(json!({"databases":scan.databases,"last_successful_check":scan.last_successful_check})).bind(scan.generation_id).bind(u.user_id).execute(tx).await.map_err(db_error)?;
+    Ok(())
+}
+async fn inspect(app: &App, d: &Document, data: Vec<u8>) -> Result<Check, ApiError> {
+    let response = app
+        .http
+        .post("http://pdf-renderer:8080/internal/document/check")
+        .timeout(Duration::from_secs(7))
+        .header("X-PDF-Key", &app.pdf_key)
+        .header("Content-Type", &d.media_type)
+        .body(data)
+        .send()
+        .await
+        .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
+    if !response.status().is_success() {
+        return Err(unavailable("PDF_UNAVAILABLE"));
+    }
+    let checked: Check = serde_json::from_slice(
+        &response
+            .bytes()
+            .await
+            .map_err(|_| unavailable("PDF_UNAVAILABLE"))?,
+    )
+    .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
+    if checked.sha256 != d.sha256 || checked.policy != format_policy(d) {
+        return Err(unavailable("PDF_UNAVAILABLE"));
+    }
+    Ok(checked)
+}
 async fn process(
     app: &App,
     u: &Identity,
@@ -560,64 +686,60 @@ async fn process(
     let d = doc(&mut tx, id).await?;
     tx.commit().await.map_err(db_error)?;
     let final_bytes = bytes(&d.storage_key, &d).await?;
-    if final_bytes.is_some() {
-        if d.validation_policy.as_deref() != Some(format_policy(&d)) || d.validated_at.is_none() {
-            return Err(unavailable("STORAGE_CONFLICT"));
-        }
-    } else {
-        let data = if let Some(key) = &d.staging_key {
-            bytes(key, &d).await?
-        } else {
-            None
-        };
-        let Some(data) = data else {
-            return finish(
-                app,
-                u,
-                &d,
-                token,
-                Some(("UPLOAD_INTERRUPTED", StatusCode::UNPROCESSABLE_ENTITY)),
-                success,
-            )
-            .await;
-        };
-        let response = app
-            .http
-            .post("http://pdf-renderer:8080/internal/document/check")
-            .timeout(Duration::from_secs(7))
-            .header("X-PDF-Key", &app.pdf_key)
-            .header("Content-Type", &d.media_type)
-            .body(data)
-            .send()
-            .await
-            .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
-        if !response.status().is_success() {
-            return Err(unavailable("PDF_UNAVAILABLE"));
-        }
-        let checked: Check = serde_json::from_slice(
-            &response
-                .bytes()
-                .await
-                .map_err(|_| unavailable("PDF_UNAVAILABLE"))?,
+    let data = match final_bytes.clone() {
+        Some(data) => Some(data),
+        None => match &d.staging_key {
+            Some(key) => bytes(key, &d).await?,
+            None => None,
+        },
+    };
+    let Some(data) = data else {
+        return finish(
+            app,
+            u,
+            &d,
+            token,
+            Some(("UPLOAD_INTERRUPTED", StatusCode::UNPROCESSABLE_ENTITY)),
+            success,
         )
-        .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
-        if checked.sha256 != d.sha256 || checked.policy != format_policy(&d) {
-            return Err(unavailable("PDF_UNAVAILABLE"));
+        .await;
+    };
+    let scan = crate::scanner::scan(app, data.clone(), &d.sha256).await?;
+    if scan.verdict == "blocked" {
+        crate::scanner::current(app, &scan).await?;
+        let mut tx = begin(app, u).await?;
+        let active:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM idempotency_records WHERE resource_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now() FOR UPDATE)").bind(id).bind(token).fetch_one(&mut *tx).await.map_err(db_error)?;
+        if !active {
+            return Err(unavailable("RETRYABLE_BUSY"));
         }
-        if !checked.ok {
-            return finish(
-                app,
-                u,
-                &d,
-                token,
-                Some((
-                    checked.rejection_code.as_deref().unwrap_or("PDF_REJECTED"),
-                    StatusCode::UNPROCESSABLE_ENTITY,
-                )),
-                success,
-            )
-            .await;
-        }
+        record_check(&mut tx, u, &d, &scan).await?;
+        tx.commit().await.map_err(db_error)?;
+        return finish(
+            app,
+            u,
+            &d,
+            token,
+            Some(("MALWARE_DETECTED", StatusCode::UNPROCESSABLE_ENTITY)),
+            success,
+        )
+        .await;
+    }
+    let checked = inspect(app, &d, data).await?;
+    if !checked.ok {
+        return finish(
+            app,
+            u,
+            &d,
+            token,
+            Some((
+                checked.rejection_code.as_deref().unwrap_or("PDF_REJECTED"),
+                StatusCode::UNPROCESSABLE_ENTITY,
+            )),
+            success,
+        )
+        .await;
+    }
+    if final_bytes.is_none() {
         let mut tx = begin(app, u).await?;
         let n=sqlx::query("UPDATE documents SET validation_policy=$3,validated_at=now(),updated_at=now() WHERE id=$1 AND status='pending' AND EXISTS(SELECT 1 FROM idempotency_records WHERE resource_id=$1 AND state='processing' AND lease_token=$2 AND lease_expires_at>now())").bind(id).bind(token).bind(format_policy(&d)).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
         if n != 1 {
@@ -645,6 +767,14 @@ async fn process(
         }
         sync_directory().await?;
     }
+    crate::scanner::current(app, &scan).await?;
+    let mut tx = begin(app, u).await?;
+    let active:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM idempotency_records WHERE resource_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now() FOR UPDATE)").bind(id).bind(token).fetch_one(&mut *tx).await.map_err(db_error)?;
+    if !active {
+        return Err(unavailable("RETRYABLE_BUSY"));
+    }
+    record_check(&mut tx, u, &d, &scan).await?;
+    tx.commit().await.map_err(db_error)?;
     finish(app, u, &d, token, None, success).await
 }
 async fn finish(
@@ -842,7 +972,7 @@ async fn recheck(
 ) -> Result<Response, ApiError> {
     let u = checked(&app, &headers, true).await?;
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
-    Uuid::parse_str(
+    let operation_key = Uuid::parse_str(
         headers
             .get("idempotency-key")
             .and_then(|v| v.to_str().ok())
@@ -880,5 +1010,124 @@ async fn recheck(
         tx.commit().await.map_err(db_error)?;
         return Ok(Json(value).into_response());
     }
-    Err(unavailable("SCANNER_UNAVAILABLE"))
+    if d.status != "ready" {
+        return Err(error(
+            StatusCode::CONFLICT,
+            "DOCUMENT_NOT_READY",
+            "登録処理中の書類は再試行してください。",
+        ));
+    }
+    let allowed: bool = sqlx::query_scalar("SELECT document_retry_admit()")
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if !allowed {
+        return Err(error(
+            StatusCode::TOO_MANY_REQUESTS,
+            "DOCUMENT_RATE_LIMITED",
+            "登録回数の上限です。1分後に再試行してください。",
+        ));
+    }
+    let token = Uuid::new_v4();
+    let n=sqlx::query("INSERT INTO document_rechecks(document_id,org_id,user_id,operation_key,lease_token,lease_expires_at,state) VALUES($1,$2,$3,$4,$5,now()+interval '120 seconds','processing') ON CONFLICT(document_id) DO UPDATE SET lease_token=EXCLUDED.lease_token,lease_expires_at=EXCLUDED.lease_expires_at,state='processing' WHERE document_rechecks.state='processing' AND document_rechecks.operation_key=EXCLUDED.operation_key AND document_rechecks.lease_expires_at<=now()")
+        .bind(id).bind(u.organization_id).bind(u.user_id).bind(operation_key).bind(token).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+    if n != 1 {
+        return Err(unavailable("RETRYABLE_BUSY"));
+    }
+    tx.commit().await.map_err(db_error)?;
+    let result = recheck_work(&app, &u, &d, token).await;
+    if result.is_err() {
+        let mut tx = begin(&app, &u).await?;
+        sqlx::query("UPDATE document_rechecks SET lease_expires_at=now() WHERE document_id=$1 AND lease_token=$2 AND state='processing'").bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?;
+        tx.commit().await.map_err(db_error)?;
+    }
+    result
+}
+async fn recheck_work(
+    app: &App,
+    u: &Identity,
+    d: &Document,
+    token: Uuid,
+) -> Result<Response, ApiError> {
+    let _slot = app
+        .uploads
+        .clone()
+        .try_acquire_owned()
+        .map_err(|_| unavailable("RETRYABLE_BUSY"))?;
+    let data = bytes(&d.storage_key, d)
+        .await?
+        .ok_or_else(|| unavailable("STORAGE_CONFLICT"))?;
+    let mut scan = crate::scanner::scan(app, data.clone(), &d.sha256).await?;
+    if scan.verdict == "clean" {
+        let checked = inspect(app, d, data).await?;
+        if !checked.ok {
+            scan.verdict = "blocked".to_string()
+        }
+    }
+    crate::scanner::current(app, &scan).await?;
+    let mut tx = begin(app, u).await?;
+    let n=sqlx::query("UPDATE document_rechecks SET state=$3 WHERE document_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now()")
+        .bind(d.id).bind(token).bind(if scan.verdict=="clean"{"completed"}else{"blocked"}).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+    if n != 1 {
+        return Err(unavailable("RETRYABLE_BUSY"));
+    }
+    record_check(&mut tx, u, d, &scan).await?;
+    sqlx::query("INSERT INTO audit_events(id,actor_user_id,actor_org_id,action,resource_type,resource_id,result,request_id) VALUES($1,$2,$3,'document.recheck','document',$4,$5,$6)").bind(Uuid::new_v4()).bind(u.user_id).bind(u.organization_id).bind(d.id).bind(if scan.verdict=="clean"{"completed"}else{"blocked"}).bind(Uuid::new_v4()).execute(&mut *tx).await.map_err(db_error)?;
+    let value = dto(&mut tx, d, Some(u.user_id)).await?;
+    tx.commit().await.map_err(db_error)?;
+    if scan.verdict == "blocked" {
+        return Err(rejection(
+            "MALWARE_DETECTED",
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ));
+    }
+    Ok(Json(value).into_response())
+}
+
+/// Startup inventory uses inode groups so original/staging hard links count once.
+/// Unknown legacy files are charged conservatively, without exposing names.
+pub(crate) async fn reconcile_storage(pool: &sqlx::PgPool) -> anyhow::Result<()> {
+    use std::os::unix::fs::MetadataExt;
+    let installed: bool = sqlx::query_scalar(
+        "SELECT to_regprocedure('document_storage_reconcile(jsonb)') IS NOT NULL",
+    )
+    .fetch_one(pool)
+    .await?;
+    if !installed {
+        return Ok(());
+    } // isolated old-schema migration test starts at 0005
+    let files = tokio::task::spawn_blocking(|| -> anyhow::Result<Value> {
+        let mut groups = std::collections::BTreeMap::<(u64, u64), (u64, Vec<Uuid>)>::new();
+        let mut count = 0;
+        for entry in std::fs::read_dir("/data/resumes")? {
+            count += 1;
+            anyhow::ensure!(count <= 100000, "storage inventory limit");
+            let entry = entry?;
+            let meta = std::fs::symlink_metadata(entry.path())?;
+            anyhow::ensure!(meta.is_file(), "unexpected storage entry");
+            let group = groups
+                .entry((meta.dev(), meta.ino()))
+                .or_insert((meta.len(), Vec::new()));
+            if let Some(id) = entry
+                .path()
+                .file_stem()
+                .and_then(|v| v.to_str())
+                .and_then(|v| Uuid::parse_str(v).ok())
+            {
+                group.1.push(id);
+            }
+        }
+        Ok(Value::Array(
+            groups
+                .values()
+                .map(|(size, ids)| json!({"size":size,"ids":ids}))
+                .collect(),
+        ))
+    })
+    .await??;
+    sqlx::query("SELECT document_storage_reconcile($1)")
+        .bind(files)
+        .execute(pool)
+        .await?;
+    Ok(())
 }

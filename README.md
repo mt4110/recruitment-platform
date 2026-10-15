@@ -6,7 +6,7 @@
 
 設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録しています。[M4の実装・検証・残工数](docs/validation/2026-10-15-m4-report.md)を保存し、M4で停止しています。
 
-**v0.4のR1まで実装・検証済みです。** [R1結果](docs/validation/2026-10-15-r1-report.md)と[残工数70〜124時間の暫定積算](docs/design/07-delivery.md)を参照してください。PDF/XLSXの形式検査・DB/API・旧PDF移行・原本/共有の未検査配信拒否を追加しました。新規文書はAV待ちで配信/推薦できません。実AVと全フォーム自動保存は後続で、R2には進まず停止しています。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。
+**v0.4のR2を実装し、最終検証中です。** [R2記録](docs/validation/2026-10-16-r2-report.md)を参照してください。実AV→形式検査、定義更新・鮮度/ロード世代照合、旧PDFの再検査を追加しました。合格した書類だけ配信/推薦できます。全フォーム自動保存は後続です。R3・M5へは進みません。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。
 
 ## ローカルで試す
 

@@ -161,3 +161,11 @@ POSTの完了キーは現在の読取り認可で現在DTOを返す。企業の�
 原本・共有のcontentと推薦提出は、statusだけでなくdocument_checksの対応policy cleanとblockedなしを要求する。共有snapshotの形式を使ってresume.pdf/resume.xlsxのattachmentを返し、企業には原本SELECTを与えない。旧ready PDFもAV記録なしなら404で配信拒否。
 
 `GET /candidates/:id/document-upload-outcome?key=`の本人7日照合と期限後409を実装。`POST /documents/:id/recheck`はR1では認可/blocked確認までで、実AV未提供なら503。その他draft系と実再検査jobは後続段階。詳細は[最新契約](10-resumes-and-autosave.md)を参照する。
+
+## R2 実装契約（2026-10-16）
+
+実AV→形式検査が両方合格した新規uploadは201/ready、retryは200。技術障害は503 SCANNER_UNAVAILABLE/PDF_UNAVAILABLEでpendingと元操作keyを維持する。エラーのdocument_id/status_urlから状態を取得し、期限切れleaseを同一書類で再試行できる。検出は422 MALWARE_DETECTED。blockedは取消不可で配信/推薦を拒否する。
+
+旧readyの元登録者はPOST /documents/:id/recheckにIdempotency-Keyを付ける。document単位job・120秒leaseで重複実行を制御し、失敗したjobは同じ操作keyで再試行する。既に利用可能なら現在結果を返す。原本/policy/提出snapshotを更新しない。agency以外・別組織・元登録者以外は404、blockedは409 DOCUMENT_BLOCKED。新規合格の鮮度/世代条件と、既存cleanが障害だけでは日次失効しない境界は[追加契約](10-resumes-and-autosave.md#4-ウイルス検査と隔離)に従う。
+
+登録/実検査再試行の頻度上限は429 DOCUMENT_RATE_LIMITED/Retry-After:60、受信予約を含む容量上限は413 STORAGE_QUOTA_EXCEEDED。旧R1の202/AV待ちという正常応答はR2前の履歴である。

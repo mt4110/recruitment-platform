@@ -24,7 +24,7 @@ flowchart TB
 
 ## ローカル起動の契約
 
-M4のComposeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーの7サービスを起動する。v0.4は内部AV scannerと定義更新serviceを加えた9サービスを設計する（未実装）。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
+M4のComposeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーの7サービスを起動する。R2は内部AV scannerと定義更新serviceを加えた9サービスを実装する。scannerはAPI専用の内部network、updaterは別の外向きnetworkでDB/原本から分離する。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
 
 M1の通常デモは入口3000/IdP18080、E2Eは毎回新しいCompose projectと設定/DB、既定で3001/18082を使う。portは1024〜65535の異なる値に限定し、APP_ORIGINのlocalhostとissuerのidp.recruitment.localhost以外は受け付けない。realm/redirect/コンテナ側HTTP portも同じ設定から生成する。テストは専用の新しいブラウザcontextを使い、既存デモのcookieを共有しない。
 
@@ -59,6 +59,7 @@ APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ�
 apps/web/                  Next.js UI
 services/api/              Rust API、domain、認可、DBアクセス
 services/pdf-renderer/     内部PDF/XLSX構造検査、Chromium、請求テンプレート
+services/av/               実clamdの認証付きwrapper、FreshClam、世代manifest
 services/document-scanner/  AV wrapper/clamd、定義更新（v0.4の予定、未作成）
 migrations/                SQL、RLS、制約
 fixtures/                  架空データ、サンプルPDF
