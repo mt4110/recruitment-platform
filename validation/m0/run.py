@@ -34,10 +34,11 @@ try:
     cmd(['node','auth_browser.cjs'])
     auth=json.loads((ROOT/'auth-result.json').read_text())
     assert auth['harness_sha256']==hashlib.sha256((ROOT/'auth_browser.cjs').read_bytes()).hexdigest()
+    for name in ('auth-result.json','rls-result.json'):(out/name).write_text((ROOT/name).read_text())
     build('Dockerfile.pdf-deps','recruitment-m0-pdf-deps:20261015');build('Dockerfile.pdf-final','recruitment-m0-pdf-run:20261015')
     docker('run','-d','--name',PREFIX+'-pdf','--read-only','--cap-drop=ALL','--cap-add=SYS_CHROOT','--security-opt=no-new-privileges',
            '--security-opt','seccomp='+str(ROOT/'seccomp_profile.json'),'--network','none','--memory','1536m','--cpus','2',
-           '--tmpfs','/tmp:rw,size=256m,mode=1777','--shm-size=256m','recruitment-m0-pdf-run:20261015')
+           '--tmpfs','/tmp:rw,size=256m,mode=1777','--tmpfs','/out:rw,size=32m,uid=1001,gid=1001,mode=0700','--shm-size=256m','recruitment-m0-pdf-run:20261015')
     for _ in range(90):
         probe=subprocess.run([*D,'exec',PREFIX+'-pdf','test','-f','/out/pdf-generation-result.json'],capture_output=True)
         if probe.returncode==0:break
