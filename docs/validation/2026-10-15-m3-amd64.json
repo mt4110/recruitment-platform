@@ -1,0 +1,357 @@
+{
+  "run": {
+    "scope": "M1 + M2 + M3; stop before M4",
+    "instance": "e2e-20261015-072536-47a08c",
+    "app_port": 3001,
+    "idp_port": 18082,
+    "phase": "complete",
+    "status": "passed",
+    "source_sha256": {
+      "apps/web/.dockerignore": "8ff7534b0a3db87f8c20796d98c3b580924a987b1c458d5e6a6ab38d967ebf14",
+      "apps/web/Dockerfile": "2356c8a9cfa9b92bd6e36806932e55f79c3ecb25588ffd3b6fdd676435d2f1d5",
+      "apps/web/app/api/health/route.ts": "a63940a9457ad3f8797904b056ed2ff6615ac74413e529b455c4d5034595a414",
+      "apps/web/app/business.tsx": "84d19da852d3732a5ea1652d3fc6910c0c356a338c5aa220b889ca11ea1d93ee",
+      "apps/web/app/candidates/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+      "apps/web/app/documents.tsx": "4ba65f1a7ea1b47d2ed5cb749063b16c22a7d2aab3a403d16aae6f32741ee5c6",
+      "apps/web/app/icon.svg": "5493d33c01164d524b52107ca1c5e93a11d36a08682778fafa43e24520b69162",
+      "apps/web/app/jobs/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+      "apps/web/app/layout.tsx": "76629e59ff2a05f6beb370722c6281d7edf41c86e7c7e0433f01479de41a9261",
+      "apps/web/app/login/page.tsx": "779fb1568e832468a4dcb06136fa3dfc9adea3e78c91ca1d88a9da50127a1e68",
+      "apps/web/app/page.tsx": "ef7661f2a25102df9a898375751bde26114a9cd71b78068bbc8723269cd4192f",
+      "apps/web/app/style.css": "b224808948fe46e71acc77c73148f912451f4a67f6640675252854414d69d833",
+      "apps/web/next-env.d.ts": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b",
+      "apps/web/package-lock.json": "3a5f015decd9b2a3d236e855c3c3ff394e4b4f9220c7a80bc3254b2710ba395e",
+      "apps/web/package.json": "7759bb99af82bc58fef4b3c35825f37731b4ef89bd8f2d950547e8bd18377076",
+      "apps/web/public/sample-resume.pdf": "1e003121a36e62dcd79f5a96e6fb023dadb527695297ba2cb0ef250a6e412d78",
+      "apps/web/tsconfig.json": "5f13aa76dff2e63afa46e3ecdb80369b94d5007a15ff9edc91b4eecf6c609435",
+      "e2e/README.md": "1c663c735559f7d9ad2df3f1f93f69916af0b659ce0910ae1a0136a9bb67b618",
+      "e2e/auth.spec.cjs": "b42d62a93e9134977f157965b7a56b830cfbe25d37ffc3036aa1927789a5ef98",
+      "e2e/business.spec.cjs": "34891bc5425a0655f8eeae325e25d5169305f21956884fd322d45d18c680770d",
+      "e2e/documents.spec.cjs": "599c7d31bb9383c33d1610da6ffdb468021b5023ffb6c53e8a06f2d205d19fc9",
+      "e2e/helpers.cjs": "c87f05eff849936eb5f963ed6f7184acb1e62eec59c056072a45fa806b476119",
+      "e2e/make_pdf_fixtures.py": "f256271016c5c4f36cd8cab571c7d1ab93d162b74eb48102089c39fdb92d5e48",
+      "e2e/package-lock.json": "3bd6ead6c5bd2ebc808f8c643218afc30b6782b0a3ce6f7ad7f65882c2d1c626",
+      "e2e/package.json": "fb2f035421df1c0248735aa4d0191e0871725b517dffab5bcc245cd7e683a802",
+      "e2e/playwright.config.cjs": "85a79059ec5040784427bf9d850a231893e030c9ff64833894ae703cc1fd9270",
+      "e2e/reporter.cjs": "d03c5a669399c18b479e6c9bf85ed249dc4c3fc73936c914f47a8f282fff25c6",
+      "fixtures/0001_auth.sql": "f47ee02c67efa5897e092f4f8663894750c199a50e181d41255784bad430bdd0",
+      "fixtures/0002_jobs_candidates.sql": "ed5c18eecd8eb86f5d46a970ce2c233ea68524fca507c56e460485ed952c3568",
+      "infra/local/compose.yaml": "ea3d4934fb98cf43f9df320880e5a2193742f631dc7a7857cafb5557d459e873",
+      "infra/local/db-init.sh": "0995f83755372b02b213ccea8fac9265264dbedafb7a1791208257a63e5221c2",
+      "infra/local/nginx.conf": "42d1268aeb1d6b0d94f3e0a68924a0053391dc0e1660319f6ec48a69cfe37fb5",
+      "migrations/0001_auth.sql": "e266b163eb1980214210808efef61590444539edbd6018363a70cd8876fbafb5",
+      "migrations/0002_jobs_candidates.sql": "6856bff59f8e25045b834629dcde2b895a12c265dccf632d5aa130020734200c",
+      "migrations/0003_documents.sql": "090f37b6dbe6c2813c718312df8007967e066fd81492d90cb921755b3d3dc5e4",
+      "scripts/e2e.py": "7db374c056923b235457dfbc5a91eb97ad723aa5f06706e1773d069214d80449",
+      "scripts/local.py": "3ec028c06fd647132175c8c773d80c3b485380e56c51660246c730716cdf808e",
+      "services/api/.dockerignore": "5999c1b55c0e789196772bc812ca50b9d59a97edba5811f313463a9be5d76b5f",
+      "services/api/Cargo.lock": "7e2acdbc3ccc0603a1aeeb5827066b47d53368eadb8af8923ce14ee4ce071aa9",
+      "services/api/Cargo.toml": "509c4344c0b05464f38f24c665e15fdef31e41aa89bf83b7c40ba5da6f66b343",
+      "services/api/Dockerfile": "004a8962b7afa73dde8aab2449651d312603cace19cdfdbf6eb06653ae72f723",
+      "services/api/src/auth.rs": "53691669edd46395064dd630c3cd1351e47e333bd3c145528709a2bc1871adb3",
+      "services/api/src/business.rs": "6550b38927311a14a5ec285ee085218f4b9f8d98ea1e1097ed79a374bdca055d",
+      "services/api/src/documents.rs": "8fb34215749059bad929dfdd49308a17241bc079e2f0e9b3ac6c78b00e3b2fd9",
+      "services/api/src/main.rs": "18cb927caab9d86951ede854e6f9d21ca8ca6b86c80a38abfcb7e1a90aa9f2b6",
+      "services/pdf-renderer/.dockerignore": "5758c4d55799a337f5e7682775271098f1005a319df623a1e332afbd90fee304",
+      "services/pdf-renderer/Dockerfile": "f25aa0ec4b0b900e3cf3cee1168cfc4bc22f9afd31f81a80f1a7815daebcd9b7",
+      "services/pdf-renderer/requirements.txt": "d2189265adfe5898436bb5ec2d7668e439bf8a6cad0599cd5d5722516d1681b1",
+      "services/pdf-renderer/server.py": "587094f83bb7d38dd66200e48601fff797c91aa3ebf46435e83ef3d86a1317ad",
+      "services/pdf-renderer/validator.py": "886a1560d32f65fdcd8f1ff1dbf21e4dd4a09aecf26421883db956923a6fc335"
+    },
+    "source_commit": "4e96d846fd74f38d34fd403d876b7a7043016716",
+    "source_dirty": false,
+    "source_unchanged_during_run": true,
+    "docker": "28.0.4 / x86_64",
+    "log_scan": {
+      "gateway": {
+        "secret_pattern_found": false
+      },
+      "web": {
+        "secret_pattern_found": false
+      },
+      "api": {
+        "secret_pattern_found": false
+      },
+      "db": {
+        "secret_pattern_found": false
+      },
+      "idp": {
+        "secret_pattern_found": false
+      },
+      "idp-db": {
+        "secret_pattern_found": false
+      },
+      "pdf-renderer": {
+        "secret_pattern_found": false
+      }
+    },
+    "services_stopped": true,
+    "elapsed_seconds": 460.953
+  },
+  "suite": {
+    "scope": "M1/M2/M3 browser E2E",
+    "status": "passed",
+    "tests": [
+      {
+        "name": "seven services are healthy; DB roles and immutable identity are enforced",
+        "status": "passed",
+        "duration_ms": 1991,
+        "errors": []
+      },
+      {
+        "name": "agency-a: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 2294,
+        "errors": []
+      },
+      {
+        "name": "agency-b: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 1330,
+        "errors": []
+      },
+      {
+        "name": "employer-x: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 1368,
+        "errors": []
+      },
+      {
+        "name": "employer-y: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 1263,
+        "errors": []
+      },
+      {
+        "name": "same browser changes agency A to B after logout",
+        "status": "passed",
+        "duration_ms": 1328,
+        "errors": []
+      },
+      {
+        "name": "unregistered user sees a recoverable HTML error and no new session",
+        "status": "passed",
+        "duration_ms": 685,
+        "errors": []
+      },
+      {
+        "name": "disabled user invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 1482,
+        "errors": []
+      },
+      {
+        "name": "disabled organization invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 1499,
+        "errors": []
+      },
+      {
+        "name": "nonce mismatch refuses authentication",
+        "status": "passed",
+        "duration_ms": 590,
+        "errors": []
+      },
+      {
+        "name": "expired attempt refuses authentication",
+        "status": "passed",
+        "duration_ms": 6587,
+        "errors": []
+      },
+      {
+        "name": "tampered encrypted verifier refuses authentication",
+        "status": "passed",
+        "duration_ms": 562,
+        "errors": []
+      },
+      {
+        "name": "missing or foreign browser binding refuses authentication",
+        "status": "passed",
+        "duration_ms": 6379,
+        "errors": []
+      },
+      {
+        "name": "wrong state and malformed query are rejected without consuming a valid attempt",
+        "status": "passed",
+        "duration_ms": 6494,
+        "errors": []
+      },
+      {
+        "name": "callback reuse is rejected and cannot switch the existing identity",
+        "status": "passed",
+        "duration_ms": 6407,
+        "errors": []
+      },
+      {
+        "name": "expired session clears stale UI on focus and offers login",
+        "status": "passed",
+        "duration_ms": 6755,
+        "errors": []
+      },
+      {
+        "name": "logout clears the other tab and discards a delayed identity response",
+        "status": "passed",
+        "duration_ms": 6758,
+        "errors": []
+      },
+      {
+        "name": "API restart preserves the database session",
+        "status": "passed",
+        "duration_ms": 16913,
+        "errors": []
+      },
+      {
+        "name": "identity and logout network errors are visible and recoverable",
+        "status": "passed",
+        "duration_ms": 821,
+        "errors": []
+      },
+      {
+        "name": "mobile layout, keyboard login and logout work",
+        "status": "passed",
+        "duration_ms": 6924,
+        "errors": []
+      },
+      {
+        "name": "M2 RLS fails closed without context and filters actual runtime queries",
+        "status": "passed",
+        "duration_ms": 3429,
+        "errors": []
+      },
+      {
+        "name": "M2 direct IDs, role changes and missing sessions cannot disclose other organizations",
+        "status": "passed",
+        "duration_ms": 74,
+        "errors": []
+      },
+      {
+        "name": "M2 input bounds, CSRF, UUID, unknown fields and mutation key are enforced",
+        "status": "passed",
+        "duration_ms": 67,
+        "errors": []
+      },
+      {
+        "name": "M2 job lifecycle, canonical idempotency, concurrent versions and cursor filtering",
+        "status": "passed",
+        "duration_ms": 910,
+        "errors": []
+      },
+      {
+        "name": "M2 candidate update/archive is immutable, scoped and replay-safe",
+        "status": "passed",
+        "duration_ms": 327,
+        "errors": []
+      },
+      {
+        "name": "M2 browser job registration, publication, search/save and forbidden detail",
+        "status": "passed",
+        "duration_ms": 1173,
+        "errors": []
+      },
+      {
+        "name": "M2 browser candidate form, conflict preserves input, archive and mobile keyboard",
+        "status": "passed",
+        "duration_ms": 1042,
+        "errors": []
+      },
+      {
+        "name": "M2 job advisory lock times out safely and leaves the version unchanged",
+        "status": "passed",
+        "duration_ms": 5234,
+        "errors": []
+      },
+      {
+        "name": "M2 browser retries a lost creation response with the same key and no duplicate",
+        "status": "passed",
+        "duration_ms": 531,
+        "errors": []
+      },
+      {
+        "name": "M2 expired browser session retains only the unsaved form and refuses writes",
+        "status": "passed",
+        "duration_ms": 314,
+        "errors": []
+      },
+      {
+        "name": "M3 static and tagged PDFs pass; all forbidden policy fixtures fail closed",
+        "status": "passed",
+        "duration_ms": 10846,
+        "errors": []
+      },
+      {
+        "name": "M3 authentication CSRF input limits and original document RLS deny foreign access",
+        "status": "passed",
+        "duration_ms": 1573,
+        "errors": []
+      },
+      {
+        "name": "M3 duplicate uploads share one reservation and replay after candidate archive",
+        "status": "passed",
+        "duration_ms": 587,
+        "errors": []
+      },
+      {
+        "name": "M3 live lease is 202 and expired pending survives actual API restart",
+        "status": "passed",
+        "duration_ms": 18707,
+        "errors": []
+      },
+      {
+        "name": "M3 recovery checks existing final bytes and refuses wrong hash without replacement",
+        "status": "passed",
+        "duration_ms": 9180,
+        "errors": []
+      },
+      {
+        "name": "M3 obsolete lease cannot finalize and archive wins candidate document lock order",
+        "status": "passed",
+        "duration_ms": 2532,
+        "errors": []
+      },
+      {
+        "name": "M3 browser upload download rejection and expired pending recovery work on desktop and mobile",
+        "status": "passed",
+        "duration_ms": 9064,
+        "errors": []
+      },
+      {
+        "name": "M3 kill during inspection preserves the same document and missing storage rejects safely",
+        "status": "passed",
+        "duration_ms": 2251,
+        "errors": []
+      },
+      {
+        "name": "M3 actual PDF service isolation internal authentication and concurrency bounds",
+        "status": "passed",
+        "duration_ms": 750,
+        "errors": []
+      }
+    ],
+    "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+  },
+  "pdf_isolation": {
+    "checks": {
+      "worker_memory_limit": true,
+      "worker_cpu_limit": true,
+      "worker_sanitized_environment": true,
+      "worker_accepted": true,
+      "non_root": true,
+      "no_capabilities": true,
+      "seccomp": true,
+      "read_only_root": true,
+      "no_storage_mount": true,
+      "no_db_environment": true,
+      "no_egress": true,
+      "internal_auth_required": true,
+      "concurrency_one": true,
+      "valid_worker_response": true
+    },
+    "versions": {
+      "pikepdf": "10.17.0",
+      "pillow": "12.3.0",
+      "lxml": "6.1.3",
+      "packaging": "26.3"
+    },
+    "libqpdf": "12.4.2"
+  }
+}
