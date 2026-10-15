@@ -1,32 +1,48 @@
 #!/usr/bin/env python3
 """Loopback-only development lifecycle. No reset/delete command."""
-import hashlib,json,os,secrets,shutil,subprocess,sys
+import hashlib,json,os,re,secrets,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-LOCAL=ROOT/'.local';ENV=LOCAL/'local.env'
+INSTANCE=os.environ.get('RP_INSTANCE','default')
+if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,63}',INSTANCE):raise SystemExit('Invalid local instance name.')
+LOCAL=ROOT/'.local' if INSTANCE=='default' else ROOT/'.local'/INSTANCE
+ENV=LOCAL/'local.env'
+def settings():
+    values={}
+    if ENV.exists():
+        values=dict(line.split('=',1) for line in ENV.read_text().splitlines() if '=' in line)
+    return values
+def ports():
+    values=settings()
+    pair=[int(values.get(k,os.environ.get('RP_'+k,v))) for k,v in [('APP_PORT','3000'),('IDP_PORT','18080')]]
+    if any(p<1024 or p>65535 for p in pair) or pair[0]==pair[1]:raise SystemExit('Use two distinct loopback ports, 1024..65535.')
+    return pair
 os.umask(0o077)
 def run(args,**kw):return subprocess.run(args,check=True,**kw)
 def compose(*args,**kw):
     executable=['docker','compose'] if subprocess.run(['docker','compose','version'],capture_output=True).returncode==0 else ['docker-compose']
     return run([*executable,'--project-directory',str(ROOT),'--env-file',str(ENV),'-f',str(ROOT/'infra/local/compose.yaml'),*args],**kw)
 def setup():
-    LOCAL.mkdir(mode=0o700,exist_ok=True)
+    LOCAL.mkdir(mode=0o700,parents=True,exist_ok=True)
     if ENV.exists():
         if not (LOCAL/'realm.json').is_file() or not (LOCAL/'demo-accounts.json').is_file():raise SystemExit('Incomplete local config; retain files and inspect before continuing.')
         print('Existing local configuration retained.');return
+    app_port,idp_port=ports()
     names=[('agency-a','001'),('agency-b','002'),('employer-x','011'),('employer-y','012'),('unregistered','099')]
     accounts={name:secrets.token_urlsafe(24) for name,_ in names}
     realm={'realm':'recruitment','enabled':True,'sslRequired':'none','registrationAllowed':False,'resetPasswordAllowed':False,
-      'clients':[{'clientId':'recruitment-local','publicClient':True,'standardFlowEnabled':True,'directAccessGrantsEnabled':False,'redirectUris':['http://localhost:3000/auth/callback'],'webOrigins':['http://localhost:3000'],'attributes':{'pkce.code.challenge.method':'S256'}}],
+      'clients':[{'clientId':'recruitment-local','publicClient':True,'standardFlowEnabled':True,'directAccessGrantsEnabled':False,'redirectUris':[f'http://localhost:{app_port}/auth/callback'],'webOrigins':[f'http://localhost:{app_port}'],'attributes':{'pkce.code.challenge.method':'S256'}}],
       'users':[{'id':'20000000-0000-0000-0000-000000000'+suffix,'username':name,'enabled':True,'emailVerified':True,'firstName':'架空','lastName':name,'email':name+'@example.invalid','credentials':[{'type':'password','value':accounts[name],'temporary':False}]} for name,suffix in names]}
     # Directory is private (0700); only this individual file is mounted read-only.
     (LOCAL/'realm.json').write_text(json.dumps(realm,ensure_ascii=False));(LOCAL/'realm.json').chmod(0o644)
     (LOCAL/'demo-accounts.json').write_text(json.dumps(accounts,indent=2)+'\n')
     values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY')}
+    values.update(APP_PORT=str(app_port),IDP_PORT=str(idp_port),COMPOSE_PROJECT_NAME='recruitment-local' if INSTANCE=='default' else 'recruitment-'+INSTANCE,LOCAL_CONFIG_DIR=str(LOCAL))
     ENV.write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
     print('Created private .local/local.env and .local/demo-accounts.json. No credential values are printed.')
 def migrate():
-    prefix="\\set ON_ERROR_STOP on\nSET ROLE app_migrator;\n"
+    _,idp_port=ports()
+    prefix=f"\\set ON_ERROR_STOP on\n\\set oidc_issuer 'http://idp.recruitment.localhost:{idp_port}/realms/recruitment'\nSET ROLE app_migrator;\n"
     # Serialize migration runners, record hashes, and fail on changed applied SQL.
     body=prefix+"BEGIN;\nSELECT pg_advisory_xact_lock(72176301);\nCREATE TABLE IF NOT EXISTS schema_migrations(version text PRIMARY KEY, sha256 text NOT NULL);\n"
     for p in sorted((ROOT/'migrations').glob('*.sql')):

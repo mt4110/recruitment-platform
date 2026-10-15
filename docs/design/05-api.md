@@ -24,6 +24,8 @@ JSON要求は次の順序を守る。
 
 PDFアップロードだけはDBとファイルをまたぐ。multipartの実bytesをstagingへ保存して算出したSHA-256と、候補者ID・正規化表示名・架空データ確認をrequest_hashに使う。現在の認証・所有確認→staging/hash→冪等lock/既存結果の確認→新規だけ非アーカイブ確認と予約→検査→確定の順序とし、復旧も同じdocument IDを使う。完了済み要求は候補者のアーカイブ後も、現在の閲覧認可で同じ結果/resourceを参照できる。新キーのアーカイブ済み候補者への登録は409 CANDIDATE_ARCHIVED。詳細と中断時の扱いは[安全性設計](06-security.md)を正本にする。
 
+認証callbackの失敗はHTTP statusを維持する。Acceptがtext/htmlのブラウザ遷移には静的な再ログイン案内を返し、application/jsonのAPI要求には共通のerror/code/request_id形式を返す。入力queryの解釈失敗もAUTH_ATTEMPT_INVALIDに正規化し、生の入力を応答やlogへ含めない。
+
 ## 認証・所属
 
 | Method / Path | 入力 | 応答・条件 |

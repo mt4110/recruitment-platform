@@ -1,0 +1,182 @@
+{
+  "run": {
+    "scope": "M1 only",
+    "instance": "e2e-20261015-043605-f5319e",
+    "app_port": 3001,
+    "idp_port": 18082,
+    "phase": "complete",
+    "status": "passed",
+    "source_commit": "36d7b76c4455e93cf7e5b59ac1db82e18688de51",
+    "source_dirty": true,
+    "source_sha256": {
+      "apps/web/app/page.tsx": "24ff6434f209396b3b5413972b5b158d3ca7eaacf4c574466b42a5fe61c0cd89",
+      "e2e/README.md": "cae06921f7439e31837ad11dbd2e3f781241d0fcd383968e2ed673cb1e55ed1b",
+      "e2e/auth.spec.cjs": "759192015be4a230d4a29e6a59832412cbb2e8421036231f24982b059dab5a61",
+      "e2e/helpers.cjs": "d3b319980856797c894a7257a04401c39511d19b4dbef6d1eceac1e63e21c785",
+      "e2e/package-lock.json": "3bd6ead6c5bd2ebc808f8c643218afc30b6782b0a3ce6f7ad7f65882c2d1c626",
+      "e2e/package.json": "fb2f035421df1c0248735aa4d0191e0871725b517dffab5bcc245cd7e683a802",
+      "e2e/playwright.config.cjs": "85a79059ec5040784427bf9d850a231893e030c9ff64833894ae703cc1fd9270",
+      "e2e/reporter.cjs": "97a28743721c3d60bd8c4c3241e887f812929863918df2d9ea51eaf1349f19c1",
+      "fixtures/0001_auth.sql": "f47ee02c67efa5897e092f4f8663894750c199a50e181d41255784bad430bdd0",
+      "infra/local/compose.yaml": "9b4d19d19cc5672042a7240e746b0c57c04610426b2b9151c73ac29dc3deef82",
+      "infra/local/nginx.conf": "8fbc8be16d107141e8123ad4bf95d0ed647026ae8cd28018b1f6a3aed0cf679e",
+      "scripts/e2e.py": "34188e23468a2b0ce24e73f5437f67d8150d9477da106101ea04078f887423dd",
+      "scripts/local.py": "6e1e3fae6a8ca5e8e7b431ce2b6d951802db655b35669fd35c4ca96330011720",
+      "services/api/src/auth.rs": "30e5c255ba408a8719186171920a3b9aa7eb564f0f69cc9ba8e677c48a2b3b8d",
+      "services/api/src/main.rs": "317173bc564ec08c6f8d3a43754266a05fa36612c907a9d57700a56b352cfd29"
+    },
+    "docker": "29.5.2 / aarch64",
+    "log_scan": {
+      "gateway": {
+        "secret_pattern_found": false
+      },
+      "web": {
+        "secret_pattern_found": false
+      },
+      "api": {
+        "secret_pattern_found": false
+      },
+      "db": {
+        "secret_pattern_found": false
+      },
+      "idp": {
+        "secret_pattern_found": false
+      },
+      "idp-db": {
+        "secret_pattern_found": false
+      },
+      "pdf-renderer": {
+        "secret_pattern_found": false
+      }
+    },
+    "services_stopped": true,
+    "elapsed_seconds": 137.975
+  },
+  "browser": {
+    "scope": "M1 browser E2E",
+    "status": "passed",
+    "tests": [
+      {
+        "name": "seven services are healthy; DB roles and immutable identity are enforced",
+        "status": "passed",
+        "duration_ms": 1344,
+        "errors": []
+      },
+      {
+        "name": "agency-a: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 1503,
+        "errors": []
+      },
+      {
+        "name": "agency-b: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 748,
+        "errors": []
+      },
+      {
+        "name": "employer-x: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 793,
+        "errors": []
+      },
+      {
+        "name": "employer-y: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 780,
+        "errors": []
+      },
+      {
+        "name": "same browser changes agency A to B after logout",
+        "status": "passed",
+        "duration_ms": 776,
+        "errors": []
+      },
+      {
+        "name": "unregistered user sees a recoverable HTML error and no new session",
+        "status": "passed",
+        "duration_ms": 384,
+        "errors": []
+      },
+      {
+        "name": "disabled user invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 898,
+        "errors": []
+      },
+      {
+        "name": "disabled organization invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 854,
+        "errors": []
+      },
+      {
+        "name": "nonce mismatch refuses authentication",
+        "status": "passed",
+        "duration_ms": 365,
+        "errors": []
+      },
+      {
+        "name": "expired attempt refuses authentication",
+        "status": "passed",
+        "duration_ms": 6405,
+        "errors": []
+      },
+      {
+        "name": "tampered encrypted verifier refuses authentication",
+        "status": "passed",
+        "duration_ms": 6421,
+        "errors": []
+      },
+      {
+        "name": "missing or foreign browser binding refuses authentication",
+        "status": "passed",
+        "duration_ms": 6268,
+        "errors": []
+      },
+      {
+        "name": "wrong state and malformed query are rejected without consuming a valid attempt",
+        "status": "passed",
+        "duration_ms": 6303,
+        "errors": []
+      },
+      {
+        "name": "callback reuse is rejected and cannot switch the existing identity",
+        "status": "passed",
+        "duration_ms": 6317,
+        "errors": []
+      },
+      {
+        "name": "expired session clears stale UI on focus and offers login",
+        "status": "passed",
+        "duration_ms": 6480,
+        "errors": []
+      },
+      {
+        "name": "logout clears the other tab and discards a delayed identity response",
+        "status": "passed",
+        "duration_ms": 6544,
+        "errors": []
+      },
+      {
+        "name": "API restart preserves the database session",
+        "status": "passed",
+        "duration_ms": 16691,
+        "errors": []
+      },
+      {
+        "name": "identity and logout network errors are visible and recoverable",
+        "status": "passed",
+        "duration_ms": 562,
+        "errors": []
+      },
+      {
+        "name": "mobile layout, keyboard login and logout work",
+        "status": "passed",
+        "duration_ms": 6576,
+        "errors": []
+      }
+    ],
+    "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+  }
+}

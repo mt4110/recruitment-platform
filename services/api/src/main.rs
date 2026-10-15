@@ -90,7 +90,36 @@ async fn ready(State(app): State<Arc<App>>) -> Response {
 }
 async fn headers(request: axum::extract::Request, next: Next) -> Response {
     // Never log URI queries, headers, request bodies or identity tokens.
+    let callback_page = request.uri().path() == "/auth/callback"
+        && request
+            .headers()
+            .get(header::ACCEPT)
+            .and_then(|v| v.to_str().ok())
+            .is_some_and(|v| v.contains("text/html"));
     let mut response = next.run(request).await;
+    if callback_page && response.status().is_client_error()
+        || callback_page && response.status().is_server_error()
+    {
+        let message = match response.status() {
+            StatusCode::FORBIDDEN => {
+                "このアカウントは利用できません。用意されたデモアカウントでログインしてください。"
+            }
+            StatusCode::SERVICE_UNAVAILABLE => {
+                "接続先が応答していません。しばらくしてからもう一度お試しください。"
+            }
+            _ => "ログイン情報が無効か、有効期限が切れています。最初からやり直してください。",
+        };
+        let html = format!(
+            r#"<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ログインを完了できませんでした</title><style>body{{font-family:system-ui,sans-serif;background:#f5f7f5;color:#172d32;margin:0;line-height:1.8}}main{{max-width:640px;margin:12vh auto;padding:24px}}h1{{font-size:26px}}a{{display:inline-block;margin:16px 16px 0 0;color:#13685e}}a:focus-visible{{outline:3px solid #a16612;outline-offset:4px}}</style><main><p>架空データ専用デモ</p><h1>ログインを完了できませんでした</h1><p role="alert">{message}</p><a href="/auth/login">ログインをやり直す</a><a href="/login">ログイン画面へ戻る</a></main></html>"#
+        );
+        *response.body_mut() = axum::body::Body::from(html);
+        response.headers_mut().remove(header::CONTENT_LENGTH);
+        response.headers_mut().insert(
+            header::CONTENT_TYPE,
+            HeaderValue::from_static("text/html; charset=utf-8"),
+        );
+        response.headers_mut().insert("content-security-policy",HeaderValue::from_static("default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"));
+    }
     let h = response.headers_mut();
     h.insert(
         header::CACHE_CONTROL,

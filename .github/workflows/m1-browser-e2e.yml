@@ -1,0 +1,34 @@
+name: M1 browser E2E
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  authentication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Install fixed E2E dependencies
+        run: |
+          npm ci --prefix e2e
+          npx --prefix e2e playwright install --with-deps chromium --only-shell
+      - name: Verify M1 in an isolated project
+        run: python3 scripts/e2e.py
+      - name: Preserve sanitized results only
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: m1-browser-results
+          path: |
+            .local/e2e-*/artifacts/*.json
+            .local/e2e-*/artifacts/*.png
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14

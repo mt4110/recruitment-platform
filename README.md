@@ -33,6 +33,18 @@ python3 scripts/local.py up
 
 完成後は、架空データを使って「求人登録 → 候補者登録・PDFレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
 
+## M1のブラウザE2E
+
+実Keycloakを含む認証テストを、通常デモと別のポート・DB・ブラウザcontextで実行します。
+
+```sh
+npm ci --prefix e2e
+npx --prefix e2e playwright install chromium --only-shell
+python3 scripts/e2e.py
+```
+
+既定のテスト用portは3001/18082。テストごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)を参照してください。
+
 ## 設計を読む
 
 [設計書の入口](docs/design/README.md)から、利用場面、画面、構成、データ、API、権限、受入条件を確認できます。

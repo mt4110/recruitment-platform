@@ -22,6 +22,8 @@ flowchart TB
 
 Composeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーを起動する。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
 
+M1の通常デモは入口3000/IdP18080、E2Eは毎回新しいCompose projectと設定/DB、既定で3001/18082を使う。portは1024〜65535の異なる値に限定し、APP_ORIGINのlocalhostとissuerのidp.recruitment.localhost以外は受け付けない。realm/redirect/コンテナ側HTTP portも同じ設定から生成する。テストは専用の新しいブラウザcontextを使い、既存デモのcookieを共有しない。
+
 M0で確認したローカルissuerの経路は、ブラウザ側の*.localhostと、コンテナ側の同名network aliasを組み合わせる。ブラウザ向けとAPI向けで別issuerへ読み替えない。PDF serviceは非root、必要なSYS_CHROOTのみ、公式seccomp profile、tmpfs内HOME/XDGでChromium sandboxを維持する。M0検証用コードはvalidation/m0に置き、製品の認証・保存・文書サービスへそのまま流用しない。
 
 M1の起動は設定作成→ローカル秘密値生成→基礎service起動→migration/架空データ投入→API/Web build/up→ログインの順序。確認済みコマンドはREADMEへ掲載する。初期データ投入は冪等にし、ユーザーのデータを初期化し直さない。データリセットは別コマンドで対象と不可逆性を示し、明示確認が必要。

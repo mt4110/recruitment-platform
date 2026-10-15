@@ -10,7 +10,7 @@ READMEのsetup/upを利用する。Python helperはDocker Compose pluginとstand
 
 - Rust: `cargo fmt --manifest-path services/api/Cargo.toml --check`、`cargo check --manifest-path services/api/Cargo.toml --locked`
 - Web: `cd apps/web`で`npm ci`、`npm run build`。本番用のCompose buildでも型検査する。
-- 変更した認証経路は、通常/拒否/期限/再起動時の動作を架空データで確認する。現時点の[実行済み確認](docs/validation/2026-10-15-m1-report.md)と、未実装の回帰テストを区別する。
+- 変更した認証経路は、通常/拒否/期限/再起動時の動作を架空データで確認する。M1の再実行には[E2E手順](e2e/README.md)を使い、私有の通常デモへ無効化/期限変更を行わない。現時点の[実行済み確認](docs/validation/2026-10-15-m1-report.md)と、未実装の回帰テストを区別する。
 - 依存はlockfileとimage digestを更新し、`npm audit`、`cargo audit --file services/api/Cargo.lock`を確認する。既知の指摘を無条件にignoreしない。
 
 APIの認証用roleへ業務表権限や管理権限を追加しない。所属はusersの1件から取得し、メール、URLのorg ID、ブラウザの自己申告から決めない。OIDC/sessionの生値やqueryをログへ出さない。PDF製品処理を追加するときはM0のsandbox/制限を維持し、M3/M5の受入を確認する。

@@ -53,9 +53,21 @@ impl Config {
         let origin = env::var("APP_ORIGIN")?;
         let issuer = env::var("OIDC_ISSUER")?;
         // This distribution is a loopback-only development prototype.
+        let app_url = reqwest::Url::parse(&origin)?;
+        let idp_url = reqwest::Url::parse(&issuer)?;
+        let app_port = app_url
+            .port()
+            .ok_or_else(|| anyhow::anyhow!("explicit loopback port required"))?;
+        let idp_port = idp_url
+            .port()
+            .ok_or_else(|| anyhow::anyhow!("explicit loopback port required"))?;
         anyhow::ensure!(
-            origin == "http://localhost:3000"
-                && issuer == "http://idp.recruitment.localhost:18080/realms/recruitment",
+            app_port >= 1024
+                && idp_port >= 1024
+                && app_port != idp_port
+                && origin == format!("http://localhost:{app_port}")
+                && issuer
+                    == format!("http://idp.recruitment.localhost:{idp_port}/realms/recruitment"),
             "unsupported deployment origin"
         );
         let key = B64
@@ -290,8 +302,9 @@ struct User {
 pub async fn callback(
     State(app): State<Arc<App>>,
     headers: HeaderMap,
-    Query(q): Query<Callback>,
+    query: Result<Query<Callback>, axum::extract::rejection::QueryRejection>,
 ) -> Result<Response, ApiError> {
+    let Query(q) = query.map_err(|_| invalid())?;
     let state = q.state.filter(|s| s.len() <= 512).ok_or_else(invalid)?;
     let binding = cookie(&headers, ATTEMPT).ok_or_else(invalid)?;
     let attempt=sqlx::query_as::<_,Attempt>("DELETE FROM auth_attempts WHERE state_hash=$1 AND browser_binding_hash=$2 AND expires_at>now() RETURNING nonce,encrypted_pkce_verifier")

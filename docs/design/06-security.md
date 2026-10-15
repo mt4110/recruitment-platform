@@ -8,7 +8,7 @@ userのキーは(issuer,subject)、所属はusers.organization_idの1件。メ�
 
 認証後は256bit以上の不透明sessionを発行し、DBにhashだけを保存、有効期限は8時間。CSRF tokenはsession原文と専用secretからHMACで導出して/meで返す。状態変更ではconstant-time比較とOrigin検査を行う。cookieはHttpOnly/SameSite=Lax/Path=/、HTTPSではSecure/Host限定。HTTP例外はloopback開発だけ。CORSは同一オリジンのみ。
 
-ログアウトでアプリsessionを失効、画面の機密状態を破棄する。デモの利用者交代は別browser contextを推奨。同じbrowserではlogout後prompt=loginを付けて再認証し、Keycloakで別のデモアカウントを入力できることを受入で確認する。prompt=login自体がアカウント選択を保証するとは扱わない。401後はフォームを遷移前まで保持し、OIDCから戻った後は再入力と案内する。PIIをlocalStorageへ保存しない。
+ログアウトでアプリsessionを失効、画面の機密状態を破棄する。デモの利用者交代は別browser contextを推奨。同じbrowserではlogout後prompt=loginを付けて再認証し、Keycloakで別のデモアカウントを入力できることを受入で確認する。prompt=login自体がアカウント選択を保証するとは扱わない。401後はフォームを遷移前まで保持し、OIDCから戻った後は再入力と案内する。PIIをlocalStorageへ保存しない。M1画面はfocus/再表示/既知のsession期限で/meを再照合し、401時に所属表示を消す。logoutは同一originの他タブへ秘密値を含まない通知を送り、処理中の/me応答をabortと世代番号で無効化して古い所属を復活させない。
 
 ## 認可と共有の失効（R1/R2/R4）
 

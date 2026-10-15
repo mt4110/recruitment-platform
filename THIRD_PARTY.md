@@ -24,3 +24,5 @@ Webのlockfile生成時にnpm auditは0件。RustSecのcargo auditでは、openi
 一次資料: [Next.js](https://github.com/vercel/next.js/blob/v16.4.1/license.md)、[React](https://github.com/facebook/react/blob/v19.3.1/LICENSE)、[Axum](https://docs.rs/crate/axum/0.8.9)、[SQLx](https://docs.rs/crate/sqlx/0.9.0)、[openidconnect](https://docs.rs/crate/openidconnect/4.0.1)、[PostgreSQL](https://www.postgresql.org/about/licence/)、[Keycloak](https://github.com/keycloak/keycloak/blob/26.8.1/LICENSE.txt)、[nginx](https://nginx.org/LICENSE)、[Python](https://docs.python.org/3.13/license.html)。
 
 開発用TypeScript 5.9.3はApache-2.0、@types/node 24.10.1・@types/react 19.2.2・@types/react-dom 19.2.2はMIT。npmの各固定版metadataで確認した。
+
+M1のテスト専用依存は@playwright/test 1.62.1（Playwright/coreを含みApache-2.0）。e2e/package-lock.jsonで固定し、認証のtrace/動画/storageStateは収集しない。
