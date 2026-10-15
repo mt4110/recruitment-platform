@@ -2,9 +2,9 @@
 
 人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプです。
 
-**M4の推薦・選考・スナップショット・共有失効まで実装しました。確定ソースの全件E2EとLinux/amd64 CIは確認中です。通知画面・請求プレビューは未実装です。**
+**M4の推薦・選考・スナップショット・共有失効まで実装・検証済みです。arm64/amd64で各50件のE2Eが成功しました。通知画面・請求プレビューは未実装です。**
 
-設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録し、M3で停止しています。
+設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録しています。[M4の実装・検証・残工数](docs/validation/2026-10-15-m4-report.md)を保存し、M4で停止しています。
 
 ## ローカルで試す
 
@@ -45,7 +45,7 @@ npx --prefix e2e playwright install chromium --only-shell
 python3 scripts/e2e.py
 ```
 
-既定のテスト用portは3001/18082。実行ごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)、実行結果は[M3の最終記録](docs/validation/2026-10-15-m3-report.md)（認証20件＋M2の10件＋M3の9件）を参照してください。
+既定のテスト用portは3001/18082。実行ごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)、実行結果は[M4の最終記録](docs/validation/2026-10-15-m4-report.md)（認証20件＋M2の10件＋M3の9件＋M4の11件）を参照してください。
 
 ## 設計を読む
 
