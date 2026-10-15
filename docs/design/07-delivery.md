@@ -1,6 +1,6 @@
 # 実装順序と受入計画
 
-## v0.2の前提
+## v0.3の前提
 
 1名でAI支援を使い、コードが空の状態からローカルで一巡できるOSSプロトタイプを作る計画。1ユーザー1組織、固定1ページ/1明細の請求PDF、架空データ専用。認証、組織分離、共有失効、PDF検査/復旧、必要な検証は含める。
 
@@ -35,7 +35,7 @@
 | 依存/ライセンス | サポート対象versionとlockfile/image digest、pikepdf/libqpdf・フォント・配布物のライセンスを確認。Apache-2.0候補のLICENSEは確認後に追加 |
 | OIDC | issuer/redirectがブラウザとコンテナで整合し、検証省略なしで4アカウントを使い分けられる |
 | RLS共有とjob lock | 通常ロールの共有参照取得、辞退後拒否、agencyのjob UPDATE拒否を維持したadvisory lockによる競合制御 |
-| PDF | static-resume-v1の正常/破損/暗号化/active content拒否、制限超過を許可しない、日本語固定1ページ |
+| PDF | static-resume-v1の通常静的PDFと構造属性/Aを持つタグ付きPDFの許可、破損/暗号化/active content・文脈偽装・属性配下の禁止要素の拒否、制限超過を許可しない、日本語固定1ページ |
 
 各技術確認は最大2時間の小さな単位に区切る提案。実装着手の承認と作業枠を得てから実施する。想定の方式/対応範囲で成立しない場合、結果と代案・残工数を示して設計を見直す。今回、この技術確認を実行したとは扱わない。
 
@@ -49,16 +49,16 @@
 | A04 | snapshotと募集終了後 | candidate/job編集が提出済み内容を変えない。閉じた求人も推薦のjob snapshotは表示可 |
 | A05 | 全状態の共有閲覧 | draft/withdrawn/撤回済みは企業の候補者/PDFを404、共有有効なsubmitted/screening/rejected/hiredは可。直接URLでも確認 |
 | A06 | version競合 | 2タブの古いversionで上書き不可、eventは一度のみ |
-| A07 | 冪等性 | 同キー同時/応答喪失後の古いversion付き再要求が同じresourceを参照、異payloadは409、二重処理なし |
+| A07 | 冪等性 | 同キー同時/応答喪失後の古いversion付き再要求が同じresourceを参照、異payloadは409、二重処理なし。upload完了→応答喪失→候補者アーカイブ後も、保持期間内の同bytes/同キーは同document/201、新キーは409 CANDIDATE_ARCHIVED。現在の認可を失えば再送も拒否 |
 | A08 | 採用と固定1ページPDF | placement一度のみ。共有失効後も維持。A4縦/1明細/1ページ、日本語・長い組織名・デモ表記 |
-| A09 | PDF拒否/隔離 | 暗号化/破損/禁止要素/深さ・object数・時間・容量超過は拒否/保留、renderer障害503/504、再試行可能 |
+| A09 | PDF許可/拒否・隔離 | 通常静的PDFと有効な構造属性/Aを持つタグ付きPDFは許可。型名の偽装・アクションとの参照共有・属性配下の禁止要素は拒否。暗号化/破損/禁止要素/深さ・object数・時間・容量超過は拒否/保留、renderer障害503/504、再試行可能 |
 | A10 | session/CSRF | 無効user/組織、期限切れ、logout後、CSRF/Origin不正を拒否。他アカウントへの自動再送なし |
 | A11 | pool/RLS | A/Bで接続再利用しても漏えいなし。通常DBロールで自社以外の原本拒否、企業の共有参照は正しく許可/失効 |
 | A12 | UI | keyboard、長い日本語、拡大、空/失敗/処理中状態、狭い画面で主操作完了 |
 | A13 | secretと監査 | 配布物/Git/logに秘密/候補者本文なし。rollbackした拒否もsecurity logで追跡 |
 | A14 | 募集終了/編集と提出 | 双方向の先行順で、終了先なら提出拒否、提出先ならcommit後に終了。job/candidate version不一致はsnapshotを作らない |
 | A15 | 全状態の共有撤回 | draft拒否、進行中は辞退同時、終端は状態/placement維持、重複はno-op、再共有なし |
-| A16 | upload中断と復旧 | DB予約前/検査前/合格後/配置後/ready commit前で停止。lease後に同docを復旧、重複不可、hash違いは停止、readyを消さない |
+| A16 | upload中断と復旧 | DB予約commit前の停止では未検査stagingを公開せず、同要求の再送で初めて単一documentを予約し孤立stagingを管理。予約commit後の検査前/合格後/配置後/ready commit前の停止ではlease切れ後に同document IDと冪等記録で復旧。重複不可、hash違いは停止、readyを消さない |
 
 A05の失効保証は撤回commit後の新しい要求。既に取得/stream開始したPDFの回収はできない。API試験とブラウザ試験を分け、PDFは文字抽出/page countに加えて日本語・配置を目視確認する。
 

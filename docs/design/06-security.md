@@ -24,9 +24,13 @@ userのキーは(issuer,subject)、所属はusers.organization_idの1件。メ�
 
 **pikepdf/libqpdfによる構文検査と全オブジェクトの禁止要素検査**を採用する設計とする。元PDFは改変せず、検査合格したbytesだけを保管する。qpdf系の構文検査合格だけでactive contentがないとは判定しない。具体的なversion/ライセンスと下記fixtureの実動作はM0で確認して固定する。
 
-許可するのは架空レジュメの静的PDF、最大10MiB、1〜20ページ。暗号化（空passwordでも暗号化されたものを含む）、構文の例外/警告、注釈/フォーム/添付/起動時動作を拒否する。リンク注釈を含むPDFも初期版では拒否し、利用者には「リンクやフォームを含めずPDFを書き出してください」と具体的に案内する。
+許可するのは架空レジュメの静的PDF、最大10MiB、1〜20ページ。構造属性を持つタグ付きPDFも、下記の文脈・型検証を満たせば対象とする。暗号化（空passwordでも暗号化されたものを含む）、構文の例外/警告、注釈/フォーム/添付/起動時動作を拒否する。リンク注釈を含むPDFも初期版では拒否し、利用者には「リンクやフォームを含めずPDFを書き出してください」と具体的に案内する。構造属性の型不正や対応外の/Aは「このPDFの構造には対応していません。添付のサンプルPDFでお試しください」と分けて案内する。
 
-検査はattempt_recovery=Falseで開き、is_encrypted、check_pdf_syntaxの結果、get_warningsを確認。pdf.objectsの全間接オブジェクト、各dictionary/array/stream dictionary内の直接オブジェクトを循環検出付きで走査し、名前をparserで解釈した上で、次のkeyがあれば拒否する：/Annots、/AcroForm、/XFA、/OpenAction、/AA、/A、/JS、/JavaScript、/EmbeddedFiles、/EF、/Launch、/RichMedia、/Collection。dictionaryの/Type=/Action、および/Sが/JavaScript・/Launch・/URI・/GoToR・/GoToE・/SubmitForm・/ImportData・/Renditionのいずれかでも拒否する。keyだけでなく解釈済みname値を判定する。構造数の上限は10,000 objects、直接構造の深さ64。上限超過や解釈不能も拒否し、単純なbytes検索では代替しない。
+検査はattempt_recovery=Falseで開き、is_encrypted、check_pdf_syntaxの結果、get_warningsを確認。pdf.objectsの全間接オブジェクト、各dictionary/array/stream dictionary内の直接オブジェクトを循環検出付きで走査し、名前をparserで解釈した上で、次のkeyがあれば拒否する：/Annots、/AcroForm、/XFA、/OpenAction、/AA、/JS、/JavaScript、/EmbeddedFiles、/EF、/Launch、/RichMedia、/Collection。dictionaryの/Type=/Action、および/Sが/JavaScript・/Launch・/URI・/GoToR・/GoToE・/SubmitForm・/ImportData・/Renditionのいずれかでも拒否する。keyだけでなく解釈済みname値を判定する。構造数の上限は10,000 objects、直接構造の深さ64。上限超過や解釈不能も拒否し、単純なbytes検索では代替しない。
+
+/Aはkey名だけで一律拒否せず、次の文脈で判定する（再レビューF2）。Catalogの/StructTreeRootから/Kをたどって構造要素として到達し、/Type=/StructElem、/Sのname、/Pの親参照が整合する辞書では、/Aを属性辞書または属性辞書とそのrevision番号を含む配列として型検証し、許可する。revision番号は直前の属性辞書に対応する非負整数とし、番号のない属性辞書も許可する。構造属性以外の/Aは初期版では拒否する。アクションを保持する文脈の/Aは、/Type=/Actionが省略されていても拒否する。/Type=/StructElemの自己申告だけでは例外にせず、同一オブジェクトがアクションを保持する位置でも参照される場合は拒否する。許可する属性の配下も全オブジェクト走査と禁止要素判定を継続し、走査済みオブジェクトの再参照でも参照位置の文脈判定を省略しない。
+
+M0の許可fixtureには通常の静的PDFと、上記/Aを持つ静的なタグ付きPDFを入れる。拒否fixtureには型名を偽装した/A、アクション側と構造側で参照を共有する辞書、属性配下の禁止要素、リンク注釈、フォーム、JavaScript、添付を入れる。文脈の例外で禁止要素を通過させない。
 
 これは対応するPDFを限定した受付policyであり、既知/未知の悪性PDFをすべて検出する保証ではない。メディア型はapplication/pdf、検査後もAPI経由・認可付きで配信する。共用公開デモでは任意ファイルのアップロードを公開しない。
 
@@ -38,14 +42,16 @@ userのキーは(issuer,subject)、所属はusers.organization_idの1件。メ�
 
 ## アップロードと復旧の順序（R5/R6）
 
-1. APIが認証/CSRF・架空データ確認と、短いorg context付き参照transactionで候補者の所有/非アーカイブを検証。multipartをAPI専用の管理stagingへstreamし、30秒/10MiB上限を適用。ランダムattempt IDの一時名を使い、SHA-256を計算する。この時点のファイルはどの閲覧APIからも見えない。
-2. org contextと冪等lockを設定した短いtransactionで実bytesのhashを照合する。新規ならdocument ID、staging_key、確定先storage_key、size/hashを保存しpending、冪等記録はprocessingにする。lease tokenを発行し60秒のleaseを設定してcommitする。
-3. 同一キーがcompleted/failedなら現在の認可でその結果を返す。processingで有効leaseがあれば202と既存document IDを返す。重複要求が作ったstagingはその要求の管理対象として整理する。lease切れはCASで新lease tokenを取得して既存データから復旧し、別documentを作らない。
+1. APIが現在の認証/CSRF・架空データ確認と、短いorg context付き参照transactionで候補者の所有を検証。ここでは非アーカイブ条件を検査しない。multipartをAPI専用の管理stagingへstreamし、30秒/10MiB上限を適用。ランダムattempt IDの一時名を使い、SHA-256を計算する。この時点のファイルはどの閲覧APIからも見えない。
+2. org contextと冪等lockを設定した短いtransactionで同じscopeの記録を読み、実bytesを含むrequest_hashを照合する。不一致は409 IDEMPOTENCY_MISMATCH。同一キーがcompleted/failedなら現在の認可を再確認し、記録済みHTTP status/codeと同じresource_idへの参照を返す。completedのDTOは現在の状態から作り直す。候補者のアーカイブだけでは既存文書の自社閲覧は失効しないため、完了済み要求に非アーカイブ条件を再適用しない。無効user/組織や所有外の要求は拒否する。processingで有効leaseがあれば現在の認可で202と既存document IDを返す。既存結果を返す要求が作った重複stagingは、その要求の管理対象として整理する。
+3. 新規またはlease切れなら手順2と同じtransactionを続ける。新規は候補者を再取得して非アーカイブを確認し、アーカイブ済みなら409 CANDIDATE_ARCHIVEDとして予約しない。許可された新規だけにdocument ID、staging_key、確定先storage_key、size/hashを保存しpending、冪等記録はprocessingにする。lease切れはCASで既存documentに新lease tokenを取得し、別documentを作らない。いずれも60秒のleaseを設定してcommitし、新規は検査へ、復旧は下記の保存状態別手順へ進む。再送分のstagingは既存参照を照合して整理し、復旧対象を消さない。
 4. DB transactionの外で内部PDF serviceへ検査を依頼する。不合格なら同じlease tokenを条件にdocumentをrejected、冪等記録をfailed、422のerror_codeを保存する。インフラ障害ならpendingを維持して503、再試行可能とする。生の検査診断をログへ流さない。
 5. 合格ならpolicy名static-resume-v1、検査日時、hashをpending行へ保存する。stagingと確定先は同一filesystemに置き、完全なファイルをcreate-onlyでatomicに配置する。既存の確定ファイルを上書きしない。同じ保存先があればexpected hashとの一致を確認し、異なれば503 STORAGE_CONFLICTで停止する。
 6. candidate→documentの行順で再取得し、現在の所有/有効性、policy/hash、lease tokenを確認してreadyへ更新する。冪等記録もcompleted/201としcommitする。候補者がアーカイブ済みに変わっていた場合はrejected/CANDIDATE_ARCHIVEDとし、冪等記録はfailed/409を保存する。leaseを失った旧processはreadyへ変更できない。readyのbytes/keyは以後不変。
 
 冪等記録のprocessingは期限だけで消さない。完了/拒否確定後から24時間保持する。422の同じキーは同じ拒否結果を返し、修正した別ファイルは新キーで登録する。request hash不一致は409。
+
+DB予約のcommit前に停止した場合は、永続的なdocument ID・冪等記録・leaseがまだない。同じ要求の再送で初めて単一documentを予約し、未検査stagingを公開しない。孤立stagingは下記の管理手順で整理する。commit後の停止は、検査前・合格後・配置後・ready commit前のどの段階でも既存document IDと元の冪等記録を使って復旧する（再レビューC1）。
 
 API再起動後も、同じupload要求の再試行またはPOST /documents/:id/retryで、lease切れpendingを復旧できる。retryは元の登録者かつ自社agencyだけを許可し、元の冪等記録のleaseをCAS取得して同じdocumentを処理する。readyは200、lease有効なpendingは202、rejectedなら409 DOCUMENT_REJECTEDを返して新規登録へ案内する。元のupload keyでの再要求は保存した拒否status/codeを返す。確定ファイルがあり保存済み検査policy/hashと一致すればreadyを完了する。stagingだけなら再検査から再開。両方なければrejected/UPLOAD_INTERRUPTEDとし、新キーで再登録する。hash不一致は自動置換せず管理上の障害として止める。UIは状態確認で期限切れpendingを検知したら元の登録者に再試行ボタンを出す。自動の組織横断recoveryロールや常駐workerは初期版に作らない。
 
@@ -63,4 +69,4 @@ OIDC client secret、session cookie、候補者/レジュメ本文、未加工�
 
 ローカルでも秘密を生成する。架空ログインの説明をREADMEに置く場合も、クラウドへ固定の公開passwordを持ち込まない。本番の保持/削除・復旧・脆弱性対応・法的整理は運用前ガイドで扱う。
 
-参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)。検査policyと処理順は本設計の判断で、実装検証は未実施。
+参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)、[PDFBoxの構造要素属性/Aの説明](https://pdfbox.apache.org/docs/2.0.10/javadocs/org/apache/pdfbox/pdmodel/documentinterchange/logicalstructure/PDStructureElement.html)。PDFBoxはPDFの用語・構造の参照資料であり、新しい実装依存ではない。検査policyと処理順は本設計の判断で、実装検証は未実施。
