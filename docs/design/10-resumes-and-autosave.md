@@ -1,6 +1,6 @@
 # レジュメ受付・ウイルス検査・全フォームの自動保存
 
-設計 v0.4 / 2026-10-15。**追加要件の設計であり、未実装・未検証。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。
+設計 v0.4 改訂1 / 2026-10-15（レビュー5件を設計へ反映）。**追加要件の設計であり、未実装・未検証。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
 
 ## 1. 対象と境界
 
@@ -34,7 +34,7 @@
 
 初期の内部式の許可文法は同一workbook内のA1参照/範囲・定数・四則/比較/括弧、関数はSUM/MIN/MAX/AVERAGE/IF/AND/OR/ROUND/DATE/YEAR/MONTH/DAY/DATEDIF/TODAY/TEXTに限定する。名前定義は_xlnm.Print_Area/Print_Titlesの内部範囲だけを許可し、その他の名前定義/拡張関数/未知namespaceは対応外。式を構文解析し、文字列の部分一致だけで外部式を判定しない。必須partは[Content_Types].xml、_rels/.rels、xl/workbook.xml、workbook relationshipsと参照sheet。styles/sharedStrings/theme/calcChain、docPropsのcore/app、PNG/JPEG・それらのdrawing/relationshipsは整合検証したものだけ許可し、これ以外のpart/型/名前空間は初期版で対応外とする。
 
-「未対応式/構造」は感染と区別して説明し、「PDFへ書き出す」「外部リンクを外してXLSXを保存」を案内する。一般のExcel互換を保証しない。実装前の小さな方式確認で、合成したExcel/Sheets相当の履歴書・職務経歴書fixtureを使い、許可リスト、parser依存/ライセンス/資源上限を固定する。実在情報を検証用に集めない。成立しなければ受付範囲/工数を提示して停止し、検査を緩めて合格にしない。
+「未対応式/構造」は感染と区別して説明し、「PDFへ書き出す」「外部リンクを外してXLSXを保存」を案内する。一般のExcel互換を保証しない。実装前の小さな方式確認で、架空情報を入力してExcelとGoogleスプレッドシートから実際に書き出した履歴書・職務経歴書fixtureを使い、許可リスト、parser依存/ライセンス/資源上限を固定する。手作りZIP/XMLだけでは実製品との互換確認を完了としない。実在情報を検証用に集めない。成立しなければ受付範囲/工数を提示して停止し、検査を緩めて合格にしない。
 
 ## 4. ウイルス検査と隔離
 
@@ -42,15 +42,17 @@
 
 - 既存PDF serviceはPDF/XLSXの構造検査を担当する。新しい内部scan serviceは認証付きHTTP wrapperから同コンテナのUnix socketのclamdへINSTREAMでbytesを渡す。任意path/コマンドを受け付けず、clamdのTCP portを公開しない。
 - scan serviceは外向き通信なし、非root/read-only/cap drop、tmpfs・資源制限、DB認証/原本volumeなし。APIからの内部通信と共有鍵だけを許可する。検査bytesや検出文字列をログに流さない。
-- 更新専用serviceだけがFreshClamの更新先へ外向き通信する。原本/DBへ接続せず、署名DB volumeのみ書込み可。検証済みの更新をpublishし、scan側は読み取り専用で取り込み、実際にロードしたDB版を応答する。途中のDBを使用しない。
+- 更新専用serviceだけがFreshClamの更新先へ外向き通信する。原本/DBへ接続せず、署名DB volumeのみ書込み可。検証済みの更新を不変な世代別directoryへpublishし、scan側は読み取り専用で取り込み、実際にロードしたDB版を応答する。途中のDBを使用しない。wrapperは新規scanを保留し、実行中のscanを完了/timeoutさせてから新世代directoryを指定してclamdを再起動し、ロード完了と版を照合して受付を再開する。この方式の成立/資源と版・hashの対応確認はR0に残す。
 - 既存7サービスにscan/updaterを追加し、設計上は9サービスとする。scan初期上限2GiB、同時1検査、wall time20秒、構造検査は既存256MiB/CPU5秒/wall5秒。上限値は性能保証ではなく、両archで調整・記録する。
 - アップロード全体はAV→形式検査の順。検査対象hashを応答へ結び付け、両結果が同じbytesであることをAPIが検証する。検査中もDB transactionを保持しない。upload leaseは60秒から120秒へ変更し、各外部要求にtimeoutを設定、期限切れ旧workerはCASで確定できない。
 - scanはStreamMaxLength=10MiB、MaxScanSize=64MiB、MaxFileSize=16MiB、MaxRecursion=8、MaxFiles=1,000を初期値とする。AlertExceedsMax等を有効にし、上限に達して一部をskipした結果をclean扱いにしない。20秒のAPI timeoutだけで裏の処理が残らないよう、engine制限・busy制御・異常時のworker復旧を確認する。
-- FreshClamは起動時と6時間ごとに更新確認する。署名DB未導入、検証失敗、ロード版不明、最後の正常な更新確認から24時間超は検査受付を保留する。更新なしの正常確認でもlast_successful_checkを更新するが、DBファイルのmtimeだけでは正常と判断しない。上流署名の公開時刻/版も記録し、後退を拒否する。
+- FreshClamは起動時と6時間ごとに更新確認する。更新側は世代ID・全DBファイルの版/hashを含むpublished_manifestと、その世代に対するlast_successful_checkを公開する。scan側はロード完了を確認したloaded_manifestを保持する。**新しいcleanを確定できるのはpublishedとloadedの世代/版/hashが一致し、その世代の正常確認が24時間以内の場合だけ。** 未導入/検証失敗/ロード不明/再ロード失敗/版不一致/確認期限超過はpending/503 SCANNER_UNAVAILABLEとする。更新なしの正常確認は同じ世代だけの時刻を更新し、新しい世代の確認時刻で旧ロード版を新鮮としない。DBのmtimeや単なる更新通知ではロード完了を認定しない。上流の公開時刻も記録し、版の後退を拒否する。
 - 感染/禁止要素/確定した検査上限超過はrejected/422。scan停止・期限切れ定義・timeout・解析worker障害はpending/503で復旧可能。UIは失敗と処理中を区別し、手動retryを用意する。検査に失敗しても保存/推薦できる迂回操作は作らない。
 - レート制限はuser毎10件/分、org毎30件/分、upload同時2/scan同時1を初期値とする。orgごとの原本・staging合計512MiBを予約込みで制限し、quotaは413 STORAGE_QUOTA_EXCEEDED、頻度は429/Retry-After。冪等replay用の一時領域もglobal上限1GiBで制限する。未検査の受信もglobal予約対象とし、予約は短いtx/CASで競合に耐える。容量不足時に既存ファイルを自動削除しない。
 
-検査情報はhash/形式policy/検査時刻/engine版/DB版/AV結果を保存する。ready後に別policyとして書き換えず、将来の検出や運用上の停止は別の利用可否記録で扱う。利用可能条件は同hashの対応policy cleanが存在し、blockedが存在せず、現在の取得認可があること。定義鮮度/scan障害は新しいclean確定を止める条件で、既存cleanを毎日失効させる条件ではない。新しい定義だけで未再検査の既存原本の安全性が上がったとは扱わない。
+検査応答は要求nonce・対象hash・engine版・検査に実際に使ったloaded世代/版/hash・その世代の確認時刻を返す。scan中の更新で判定を混ぜないよう、要求開始時の世代を固定し、APIは検査結果の保存直前にもpublishedとの一致と24時間以内を照合する。不一致ならcleanを保存せずpendingとして再試行する。認証付き内部応答を照合する方式とし、署名DBの検証と独自の応答署名を混同しない。
+
+検査情報はhash/形式policy/検査時刻/engine版/DB世代・版/hash/AV結果を保存する。ready後に別policyとして書き換えず、将来の検出や運用上の停止は別の利用可否記録で扱う。利用可能条件は同hashの対応policy cleanが存在し、blockedが存在せず、現在の取得認可があること。定義鮮度/scan障害は新しいclean確定を止める条件で、既存cleanを毎日失効させる条件ではない。新しい定義だけで未再検査の既存原本の安全性が上がったとは扱わない。
 
 ### 既存PDFの移行
 
@@ -63,22 +65,24 @@
 | 追加/拡張 | 契約 |
 | --- | --- |
 | documents | file_format(pdf/xlsx)、media_type、document_kind履歴書/職務経歴書/その他（API値resume/career_history/other）。新規は必須、不変。ready条件は形式policyとAV cleanの両方必須。既存行への移行例外は前節に限定 |
-| document_checks | id/document_id/org_id/hash/policy/engine_version/signature_version/scanned_at/verdict(clean/blocked)、actor_user_id。composite FK(document_id,org_id)、API内部で署名検証済み検査応答と対象hashを照合。追記のみ、runtime UPDATE/DELETE不可。blockedが1件でもあれば利用禁止、cleanの後もblockedを優先する。技術障害はclean/blockedを作らずpending相当。元所有userの再検査に限定。再検査jobはdocument ID UNIQUE、state/lease_token/lease_expires_atと元操作keyを持つ別表でCAS管理 |
+| document_checks | id/document_id/org_id/hash/policy/engine_version/signature_version/scanned_at/verdict(clean/blocked)、actor_user_id。composite FK(document_id,org_id)、API内部で認証付き検査応答の対象hash/要求nonce/定義世代を照合（定義DB自身の検証は更新側で実施）。追記のみ、runtime UPDATE/DELETE不可。blockedが1件でもあれば利用禁止、cleanの後もblockedを優先する。技術障害はclean/blockedを作らずpending相当。元所有userの再検査に限定。再検査jobはdocument ID UNIQUE、state/lease_token/lease_expires_atと元操作keyを持つ別表でCAS管理 |
 | application_documents | format/media_type/kindを提出時に複写し不変。既存参照はpdf/otherで補完。共有側は親案件のE_SHAREDとdocument_checksの可否を検証。checksのemployer SELECTはE_SHAREDのapplication_documentsにあるdocumentだけ。applicationsのpolicyから子を参照せず、再帰を作らない |
 | form_drafts | id UUID、org_id/user_id、form_type、target_id NULL、context_id NULL、schema_version、base_resource_version NULL、revision bigint、encrypted_payload、nonce、key_version、updated_at/expires_at、consumed_at NULL。UNIQUE(org_id,user_id,id)。対象/所有は作成後不変 |
+| draft_operations | org_id/user_id/operation_id UUID、draft_id/revision、method/normalized_path、request_hash、result_resource_type/id、result_status、committed_at/result_expires_at。UNIQUE(org_id,user_id,operation_id)、業務commitと同じtransactionでINSERT。PII本文/資格情報を含めず、結果参照はcommitから7日。期限後は最小の識別子/hash/期限切れ状態を保持し、同操作の新規実行を禁止 |
 | draft_keys | user_id/org_id/key_version、master keyでwrapした端末用256bit鍵、created_at/revoked_at。自分の有効鍵だけAPIが提供。業務runtimeには他user/他orgのSELECT不可。鍵生成は競合しても同じcurrent版を返す |
 
 検査記録はowner agencyがSELECT可、元登録者かつ所有agencyだけがINSERT可。企業は自社E_SHARED共有参照に結び付く記録の可否だけをAPIから受け取り、詳細のengine/hash/原本情報はDTOへ出さない。document_checksのRLSは共有参照→親applicationを確認し、applications/application_documents側のpolicyからchecksを参照しない。
 
-draftとdraft_keysはENABLE/FORCE RLSで自分かつ自組織のみ。form_typeはjob_new/job_edit/candidate_new/candidate_edit/application_new/application_reason/application_submit/selection_note/job_filters/candidate_filters/application_filters。後続フォームはschemaと受入を同じ変更で追加する。新規draft IDはブラウザがUUIDを生成して同じIDで再試行する。targetは既存resource、contextは推薦作成時のjob等を特定する。IDを暗号化本文だけに隠して認可を省略しない。
+form_drafts、draft_operations、draft_keysはENABLE/FORCE RLSで自分かつ自組織のみ。form_typeはjob_new/job_edit/candidate_new/candidate_edit/application_new/application_reason/application_submit/selection_note/document_upload/job_filters/candidate_filters/application_filters。後続フォームはschemaと受入を同じ変更で追加する。新規draft IDはブラウザがUUIDを生成して同じIDで再試行する。targetは既存resource、contextは推薦作成時のjob等を特定する。IDを暗号化本文だけに隠して認可を省略しない。
 
 payloadはフォーム別許可リストと各項目の既存文字数制限に従う。未入力/途中入力は許可するが、未知項目/型違い/超過を拒否する。検索語、編集値、選択document ID、focus field/selection/scroll、upload処理ID/操作キーを保存可。候補者原本の表示用複製、ファイルbytes、同意済みフラグ、token、HTML、任意遷移URLを保存しない。1draft plaintext最大64KiB、envelope要求最大96KiB。通常JSON64KiB制限とは別にdraft routeだけ96KiBを許可し、無制限に広げない。1userの有効draft最大50件/合計2MiB（plaintext換算）。tombstoneは有効draft quotaに数えず、空bodyの無制限生成を防ぐためdraftの新規作成はuser毎30件/時、更新は120件/分を初期制限とする（429/Retry-After）。超過は409 DRAFT_QUOTA_EXCEEDEDとし入力を消さない。
 
 | Method / Path（/api/v1以下、未実装） | 入力 / 応答 |
 | --- | --- |
-| POST /drafts/key | 認証/CSRF後の本人鍵/key_version、no-store。初回だけ競合安全に生成、再要求は同じ有効鍵。cookie/OIDC値は返さない |
+| POST /drafts/key | key_version省略時は認証/CSRF後の本人current鍵を競合安全に生成/取得。指定時は本人のその版だけ取得し、新規生成/current切替をしない。本人の未失効旧版は取得可、他人/他組織/存在しない版は404、本人の失効済み版は409 DRAFT_KEY_REVOKED。no-store、cookie/OIDC値は返さない |
 | GET /drafts?form_type=&target_id=&context_id= | 現在の本人scopeのmetadata一覧、limit20/最大50、期限内のみ。復元前に対象認可を再確認 |
 | GET /drafts/:id | 認可再確認後のpayload/revision/base_resource_version/schema_version/expires_at。復号できない/期限切れは復元しない |
+| GET /drafts/:id/outcome?operation_id= | 本人scopeでcommitted（現在認可に応じた結果ID/status）、not_recorded、expiredを返す。consume済みでも結果期限内は照合可。not_recordedは未実行の保証ではなく再試行時も同じ操作キーで直列化する。payload本文や旧PII応答は返さない |
 | PUT /drafts/:id | revision（新規0）、form_type/target/context/schema/base版/payload、mutation_id UUID。新規201/更新200、revision+1。厳密な同mutation_id+同payload再送は同じ結果参照、同ID異payload409。期限24hの冪等記録を業務POSTと別scopeで使用 |
 | POST /documents/:id/recheck | 所有agencyの元登録者、Idempotency-Key必須。旧readyでAV未検査の原本を同じID/hashで検査。完了200、処理中202、障害503、検出422/利用禁止。新規ready作成とは別の検査job/120秒leaseで直列化。既存blockedは409 DOCUMENT_BLOCKED、clean済みの再送は現在結果。候補者アーカイブ後も既存文書への自社権限があれば可 |
 | POST /drafts/:id/discard | revision/Idempotency-Key、本人の明示的破棄、204。本文を消しtombstoneを残す。自動の物理削除APIは作らない |
@@ -87,16 +91,41 @@ payloadはフォーム別許可リストと各項目の既存文字数制限に�
 
 書込みは1draftを直列化し、最新入力をcoalesceする。別タブ更新や不明な応答を新しいrevisionで盲目的に上書きしない。409は本人の入力と現行値の差を表示し、「最新から再開」「自分の入力を確認して適用」を選ぶ。自動mergeはしない。
 
-通常の業務保存は、任意のdraft_id/draft_revisionを受け取り、業務変更とdraftのconsumeを同一transactionで確定する。業務lock順の後にdraftをlockし、draft保存側は業務行をlockせず認可/版を照合する。consumeは本文を消しtombstone化する。冪等replayはconsumeを繰り返さない。業務成功時に対応draftが新revisionなら業務をrollbackして競合を返す。確定ボタンの前に最新の自動保存を待ち、応答したdraft revisionを確定要求に含める。失敗/未同期なら確定を止めて理由を示す。検索/絞込みdraftは業務consume対象ではなく本人の最新条件として保持する。初回公開・推薦・採否の確定には既存version/同意/Idempotency-Keyを必須とし、draftだけから勝手に実行しない。
+通常の業務保存は、API互換のためdraft_id/draft_revision/operation_idの3項目をすべて省略することも許可するが、v0.4の入力フォームからの確定では3項目を必須送信する。フォーム入力を持たないお気に入り/公開/アーカイブ等のボタン操作は既存APIの冪等・version契約に従い、無関係なフォームdraftを流用しない。一部だけの指定は422。operation_idを当該POSTのIdempotency-Keyと同じUUIDにし、PATCHでも3項目付き要求の操作照合に使う。通常の業務保存はこれらを受け取り、業務変更とdraftのconsumeを同一transactionで確定する。業務lock順の後にdraftをlockし、draft保存側は業務行をlockせず認可/版を照合する。consumeは本文を消しtombstone化する。対象user/org・form_type・target/context・draft revisionと要求の業務入力の対応を確認し、別フォームのdraftを消費しない。draft_operationsへの結果ID/status/要求hashの記録も同じtransactionに含める。冪等replayはconsumeを繰り返さない。業務成功時に対応draftが新revisionなら業務をrollbackして競合を返す。確定ボタンの前に最新の自動保存を待ち、応答したdraft revisionを確定要求に含める。失敗/未同期なら確定を止めて理由を示す。検索/絞込みdraftは業務consume対象ではなく本人の最新条件として保持する。初回公開・推薦・採否の確定には既存version/同意/Idempotency-Keyを必須とし、draftだけから勝手に実行しない。
 
 uploadは原本受付後の状態照合なので、このconsume方式で原本受付をrollbackしない。応答喪失時は既存upload key/状態から結果を確認し、消費済みupload draftを新規再送しない。成功後のdraft消去応答が失われても、復元時に原本/業務の現在状態・版を照合して再提出を止める。
+
+### 業務要求の送信と応答喪失からの復帰（指摘1）
+
+1. 確定前にdraft同期を完了し、操作対象フォームを一時固定する。ブラウザはoperation_id、draft ID/revision、method/path、正規化した要求のhash、再構成に必要な業務入力/元versionを、暗号化した送信予定記録としてIndexedDBへ保存する。この保存に失敗したら送信しない。CSRF/OIDC値と同意済みフラグは保存しない。確認値が必要な再送では本人に改めて確認し、元と同じ要求を組み立てる。
+2. APIは認証/CSRFと現在の関係確認→org/user/operation_idから決めるtransaction-level操作lock→既存の冪等lock→draft_operationsの照合→未完了時だけ業務version/状態検査→業務更新/consume/結果記録の順に処理する。処理中は元の入力を変更・自動保存しない。失敗時は入力を戻して編集可能とする。結果記録と業務更新が別々にcommitされる状態を作らない。
+3. 応答喪失/再読み込み後は本人再認証・対象認可を確認してからoutcomeを取得する。committedなら現在の結果IDへ移動し、端末の送信予定と下書きを終了扱いにする。既に共有が失効していれば許可されたmetadataのみ、閲覧不可なら結果本文を表示しない。新規求人/候補者のように送信前にresource IDがなくてもoperation_idから結果へ到達できる。
+4. not_recordedなら自動で新しい操作キーを作らず、同じキー/要求での再試行を本人に提示する。先の要求がまだ実行中でも同じlockで直列化され、片方のcommit後に結果を参照する。同じoperation_idのmethod/path/hash違いは409 IDEMPOTENCY_MISMATCH。古い業務versionや、消費済みdraftだけを根拠に二重実行しない。
+5. 通常の冪等記録は既存の24時間を維持するが、draft連動要求は先に7日保持のdraft_operationsも照合する（認証・現在の関係/閲覧認可は照合より前に確認）。24時間経過後もcommit済みを再実行しない。結果期限後は409 OPERATION_RESULT_EXPIREDとして自動/同キー再実行を禁止し、一覧から本人確認へ案内する。期限切れtombstoneも新規操作扱いにしない。
+
+送信予定は通常の編集payloadと別に同じIndexedDB内へ暗号化保存する。操作のpayload変更を同じoperation_idへ流用しない。元操作の結果を確認する前に、別キーによる同じ確定操作へ進まない。これはログアウト/別アカウントの自動再送を許可する契約ではない。
+
+### 全フォームと保存種別の対応（指摘4）
+
+| フォーム/入力 | form_typeと対象 | 完了・復元の境界 |
+| --- | --- | --- |
+| 求人新規/編集 | job_new（targetなし）/job_edit（job ID） | 求人作成/更新で当該draftのみconsume |
+| 候補者新規/編集 | candidate_new（targetなし）/candidate_edit（candidate ID） | 候補者作成/更新で当該draftのみconsume |
+| 書類の種類・登録待ち一覧・処理状態 | document_upload（candidate ID、contextなし） | upload操作キー/選択時metadata/受付済みIDを保存。候補者編集とは独立、編集の保存/破棄で消さない。File bytesは保存せず再選択。全件終端を照合後に本人が完了/破棄しtombstone化 |
+| 推薦新規/理由編集 | application_new（context=job ID）/application_reason（application ID） | 作成/理由更新で当該draftのみconsume |
+| 提出書類選択 | application_submit（application ID） | 選択IDを復元し、同意/架空確認はやり直す。提出成功で当該draftだけconsume |
+| 選考・辞退・共有取消の理由 | selection_note（application ID） | operation種別も保持。状態と権限を再確認し、該当する明示操作成功でconsume |
+| 求人/候補者/推薦の検索・絞込み | job_filters/candidate_filters/application_filters（一覧scope） | 検索ではconsumeせず、本人の最新条件/表示位置として保持 |
+| 後続の新しいフォーム | 実装時に専用schema/対象/consume条件を追記 | 保存種別と受入がないフォームを完成扱いにしない。ログインは対象外 |
+
+複数tab/複数の新規draftはIDで区別し、一覧scopeに複数候補があれば保存時刻と種類を示して本人が選ぶ。自動で別draftを上書きしない。document_uploadは非アーカイブ時に追加受付可、アーカイブ後も本人の受付済み処理IDの照合/表示は可とし、新規送信を無効化する。業務操作で別種の下書きが古くなった場合はconsumeせず、復元時に現在の状態/版を再検証する。
 
 ## 6. 保存・復元・鍵と端末保管
 
 通常は入力から500msのdebounce、連続入力中でも2秒ごとを目標に端末/サーバーへ保存する。これは通信・OSを含む完了時間保証ではない。日本語IME変換を妨げず、未確定文字も下書きとして保持し、composition終了で最新内容を保存する。最後の保存成功時刻と未同期状態を表示する。blur/visibilitychange/pagehideを補助にし、beforeunloadや終了時通信だけに依存しない。
 
 - 入力中に端末側の暗号化IndexedDBへ最新payloadを保存し、通信があれば本人のサーバーdraftへ同期する。保存中・端末保存済み/未同期・同期済み・失敗を区別する。storage quota/暗号化/保存失敗時は保存済みと表示せず、入力を保持して警告する。
-- AES-256-GCM、毎回新しい96bit IVを使う。AADにorigin/org/user/draft ID/schema/key_version/local sequenceを含め、別アカウントへ流用しない。鍵は認証済みAPIから取得しメモリだけに持つ。localStorage/sessionStorage/IndexedDBへ平文payload・復号鍵・File bytes・tokenを置かない。サーバーdraftも別のserver用鍵で暗号化し、DRAFT_MASTER_KEYから用途分離する（HKDFの固定contextでserver-payload/key-wrapを分ける）。master keyはGit外secret、wrap鍵とDBをセットで復旧する。端末鍵はuser/orgごとの暗号学的乱数で、revoked_atを持つ。通常のlogout/セッション期限では永続鍵を失効させずメモリだけ破棄する。鍵漏えい時の失効は以後の復元を拒否し、未同期分が復元不能になる影響を明示する。master/key version更新では参照中の旧鍵を保存し、再wrapしてから切り替える。
+- AES-256-GCM、毎回新しい96bit IVを使う。AADにorigin/org/user/draft ID/schema/key_version/local sequenceを含め、別アカウントへ流用しない。鍵は認証済みAPIから取得しメモリだけに持つ。localStorage/sessionStorage/IndexedDBへ平文payload・復号鍵・File bytes・tokenを置かない。サーバーdraftも別のserver用鍵で暗号化し、DRAFT_MASTER_KEYから用途分離する（HKDFの固定contextでserver-payload/key-wrapを分ける）。master keyはGit外secret、wrap鍵とDBをセットで復旧する。端末鍵はuser/orgごとの暗号学的乱数で、revoked_atを持つ。通常のlogout/セッション期限では永続鍵を失効させずメモリだけ破棄する。鍵漏えい時の失効は以後の復元を拒否し、未同期分が復元不能になる影響を明示する。master keyの更新は端末鍵そのものを変更せず再wrapする。端末鍵の版更新時は新しいcurrent版で以後の保存を暗号化し、未失効の旧版も復元用に保持する。再起動後は各端末envelopeのkey_versionを指定して鍵を取得し、AAD/期限/認可を確認して復号、current版で再暗号化・同期が成功してから旧envelopeを終了扱いにする。失効版は取得・復号を禁止する。旧版取得失敗時に暗号文を消したり空draftで上書きせず、復元不可の理由を示す。
 - 初期鍵取得失敗時は入力を無効化せず、永続保存が未準備と明示してメモリ内で保持し、成功後に保存する。消失保証ができない期間を「保存済み」としない。暗号化は端末保管時の対策で、ログイン中のXSSから守る保証ではない。
 - TTLは最後の成功保存から7日、期限はサーバー時刻で確定。未同期端末データも復元時にサーバーで期限/認可を再評価し、既存draftの期限切れをオフライン入力だけで延長しない。新規の未同期draftは初回作成時から7日以内に認証後同期する。browser時刻の偽装で期限を延長しないよう、認証時のserver時刻を基準に保存する。
 - 画面遷移/再読み込み/OIDC後はまず/meと対象認可・状態・版・draft期限を照合し、本人の下書きだけ復元する。復元中に既存値で空上書きしない。保存したcursorが現在の検索条件/権限で無効なら先頭へ戻し、その旨を案内する。focus/scroll位置は対応fieldがある場合のみ復元し、エラー/失効案内を隠さない。
@@ -112,17 +141,23 @@ uploadは原本受付後の状態照合なので、このconsume方式で原本�
 
 | ID | 確認する振る舞い |
 | --- | --- |
-| A17 | PDF/XLSXの履歴書・職務経歴書、複数版、画像/結合/内部数式/複数sheetを登録し選んだ版だけ推薦。旧snapshot/bytesは不変 |
+| A17 | Excel/Googleスプレッドシートから架空情報で実際に出力したXLSXとPDFの履歴書・職務経歴書を使用。出力製品/版/日付/hashを記録。複数版、画像/結合/内部数式/複数sheetを登録し選んだ版だけ推薦。旧snapshot/bytesは不変 |
 | A18 | MIME/拡張子偽装、ZIP/XML bomb、path逸脱、重複entry、VBA/XLM/OLE/外部参照/危険式/暗号化/未知part、境界容量を拒否。解析のCPU/メモリ/時間も上限を維持 |
 | A19 | 実ClamAVでEICAR無害テスト文字列入りのPDF/XLSXを拒否。正常fixtureのcleanを確認。mockだけで合格とせず、engine/署名DB版/日時/hashを記録。実マルウェアは用いない |
-| A20 | scanner停止/定義なし/更新失敗と24h超/timeout/検査上限の途中skipでreadyにならない。更新後retry、旧lease、同時quota/頻度制限、正常起動9サービスを確認 |
+| A20 | scanner停止/定義なし/更新失敗と24h超/timeout/検査上限の途中skipでreadyにならない。更新後retry、公開世代とロード世代の不一致/再ロード失敗/検査中更新/更新なし確認、旧lease、同時quota/頻度制限、正常起動9サービスを確認 |
 | A21 | 既存PDF/共有snapshotの追加検査前は配信不可、clean後のみ可、blocked優先。企業はdocuments原本を読まず、失効後はPDF/XLSX双方404 |
 | A22 | 全form_typeについて入力→別画面→戻る、reload、別アプリ相当のhidden→visible、再ログインで復元。検索・選択・focus/scrollも確認。同意は再確認、業務確定/通知が勝手に起きない |
-| A23 | 通信断→端末暗号化保存→ブラウザcontext終了→同一profile再起動→本人認証→復元/同期。未送信Fileは再選択、受付済みuploadはID/keyから復旧、二重作成なし |
-| A24 | user/org差替え、共有失効、期限切れ、schema違い、容量不足、鍵取得失敗、暗号化改ざん、期限切れ鍵/旧key_versionで漏えい/誤復元なし。Web Storage/IndexedDB/log/配布物へ平文/鍵/tokenを残さない |
-| A25 | 2タブ/2端末のrevision競合、応答喪失・遅延・順序逆転、IME入力、業務保存と自動保存の競合、consume/discard後の古いキューで入力消失/二重業務/下書き復活なし |
+| A23 | 通信断→端末暗号化保存→ブラウザcontext終了→同一profile再起動→本人認証→復元/同期。未送信Fileは再選択、受付済みuploadはID/keyから復旧。候補者編集の保存/破棄でdocument_upload draftを消さず、書類登録と候補者編集を独立して復元、二重作成なし |
+| A24 | user/org差替え、共有失効、期限切れ、schema違い、容量不足、鍵取得失敗、暗号化改ざん、旧key_versionの未失効鍵で再認証復元/再暗号化でき、失効鍵/他人の版は取得・復元不可。Web Storage/IndexedDB/log/配布物へ平文/鍵/tokenを残さない |
+| A25 | 2タブ/2端末のrevision競合、応答喪失・遅延・順序逆転、IME入力、業務保存と自動保存の競合、consume/discard後の古いキューで入力消失/二重業務/下書き復活なし。求人/候補者/推薦の作成・PATCH・確定でcommit直後に応答を落としbrowserを再起動、結果IDへ復帰する。24h超〜7日以内の照合、7日後の再実行禁止、別フォームdraftの誤consume拒否も確認 |
 
 arm64ローカルとLinux/amd64 CIで同じsource/fixtureを使い、追加ケースと既存50件の回帰を確認する。スマホ相当viewport/ブラウザhidden試験は実機の電話/アプリ切替/OS killを再現した証拠とは分ける。iOS Safari/Androidでの実機中断確認が未実施なら、その限界を配布文書に明記する。既存50件の成功をv0.4の成功に転用しない。
+
+### R0で準備・確認する実出力fixture（指摘5、今回未実施）
+
+ExcelとGoogleスプレッドシートそれぞれで、架空の履歴書・職務経歴書を作り、XLSXで書き出す（最低4ファイル）。写真相当PNG/JPEG、結合セル、複数sheet、印刷範囲/改ページ/余白、日付・年齢の内部式、日本語の長文を含む組合せを用意する。元製品で開けることと、対応予定の出力が検査を通ることを別々に確認する。元製品の種類・版（取得可能な範囲）・出力日・設定・hash、含まれるparts/namespace/式、検査結果と必要な利用者操作を記録する。手作りの攻撃fixtureと正常な実出力を分ける。
+
+実出力に未知part/namespaceがあれば、その役割と外部作用を確認するまでは許可しない。既存の安全条件を維持して対応リストへ明示追加するか、対応外として具体的な代替操作を示すかをR0の結果として報告する。最低4ファイルが揃わない、または対応予定の主要な出力が通らない場合は互換確認未完了とし、R1以降を始めず相談する。Excelへのアクセスや出力操作が必要な場合も、R0着手前には行わない。今回fixture作成/技術確認は行っていない。
 
 ## 8. 一次資料と設計上の位置付け
 

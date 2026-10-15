@@ -8,7 +8,7 @@ userのキーは(issuer,subject)、所属はusers.organization_idの1件。メ�
 
 認証後は256bit以上の不透明sessionを発行し、DBにhashだけを保存、有効期限は8時間。CSRF tokenはsession原文と専用secretからHMACで導出して/meで返す。状態変更ではconstant-time比較とOrigin検査を行う。cookieはHttpOnly/SameSite=Lax/Path=/、HTTPSではSecure/Host限定。HTTP例外はloopback開発だけ。CORSは同一オリジンのみ。
 
-ログアウトでアプリsessionを失効、画面の機密状態を破棄する。デモの利用者交代は別browser contextを推奨。同じbrowserではlogout後prompt=loginを付けて再認証し、Keycloakで別のデモアカウントを入力できることを受入で確認する。prompt=login自体がアカウント選択を保証するとは扱わない。v0.4では401/logout時に機密表示・メモリ鍵を破棄し、本人の再認証と対象認可を確認して暗号化した個人下書きを復元する。PIIをlocalStorageへ保存しない。端末保存/鍵/保持期限/失効時の詳細は[追加安全性契約](10-resumes-and-autosave.md#6-保存復元鍵と端末保管)に従う（未実装）。M1画面はfocus/再表示/既知のsession期限で/meを再照合し、401時に所属表示を消す。logoutは同一originの他タブへ秘密値を含まない通知を送り、処理中の/me応答をabortと世代番号で無効化して古い所属を復活させない。
+ログアウトでアプリsessionを失効、画面の機密状態を破棄する。デモの利用者交代は別browser contextを推奨。同じbrowserではlogout後prompt=loginを付けて再認証し、Keycloakで別のデモアカウントを入力できることを受入で確認する。prompt=login自体がアカウント選択を保証するとは扱わない。v0.4では401/logout時に機密表示・メモリ鍵を破棄し、本人の再認証と対象認可を確認して暗号化した個人下書きを復元する。端末鍵は本人のkey_version指定で未失効旧版を取得でき、失効版では復号しない。PIIをlocalStorageへ保存しない。端末保存/鍵/保持期限/失効時の詳細は[追加安全性契約](10-resumes-and-autosave.md#6-保存復元鍵と端末保管)に従う（未実装）。M1画面はfocus/再表示/既知のsession期限で/meを再照合し、401時に所属表示を消す。logoutは同一originの他タブへ秘密値を含まない通知を送り、処理中の/me応答をabortと世代番号で無効化して古い所属を復活させない。
 
 ## 認可と共有の失効（R1/R2/R4）
 
@@ -89,3 +89,7 @@ APIは管理stagingをcreate_newで作り、fsync後に同じvolumeの確定先�
 共有PDFの取得は通常runtimeによるapplication_documentsのRLS判定と、保存済み参照のsize/hash検査を使う。企業の処理でdocuments原本へJOINしない。snapshot/共有参照の子policyだけがapplicationsを参照し、親policyは子を参照しない。RLSの定義とadvisory lockの動作は[PostgreSQL 17 RLS](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)・[17のlock](https://www.postgresql.org/docs/17/explicit-locking.html#ADVISORY-LOCKS)を参照した。
 
 案件metadataとevent行は撤回後も企業へ返すが、候補者本文・PDFは行レベルで拒否し、推薦/履歴の自由記入reasonはDTOから省く。end userへDB接続を渡さない前提で、server runtimeが読めるevent行のreasonと、利用者へ返すJSONの範囲を区別する。再取得済みの画面は失効表示に更新するが、既に許可したstream/取得済みbytesの回収は保証しない。
+
+## v0.4改訂1の追加安全性契約（未実装）
+
+AVの新規clean確定は公開manifestと実ロードmanifestの世代/版/hashの一致、その世代の24時間以内の確認を必須とする。更新成功時刻だけで旧ロード版を許可しない。業務応答喪失は本人の操作結果台帳から復帰し、別userの自動再送や、結果不明のまま別キーでの二重実行を禁止する。[改訂仕様](10-resumes-and-autosave.md)と[対応表](../reviews/2026-10-15-v04-revisions.md)を参照。

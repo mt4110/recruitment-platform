@@ -124,9 +124,11 @@ RLSとtransaction timeoutは[PostgreSQL 17の公式資料](https://www.postgresq
 
 ## v0.4の追加API契約（未実装）
 
-[追加仕様のデータ/API節](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。/draftsの本人専用保存・復元・鍵取得・discard、業務要求の任意draft_id/draft_revision、既存原本の/documents/:id/recheckを追加する。draft JSONだけ96KiB、通常JSON64KiBを維持する。
+[追加仕様のデータ/API節](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。/draftsの本人専用保存・復元・版指定の鍵取得・outcome・discard、業務要求のdraft_id/draft_revision/operation_id（APIでは3項目まとめて省略可、v0.4の入力フォーム確定では必須）、既存原本の/documents/:id/recheckを追加する。draft JSONだけ96KiB、通常JSON64KiBを維持する。
 
 新文書DTOと共有文書DTOにはfile_format/media_type/document_kind、利用可否availability（pending/available/blocked/recheck_required）を追加する。登録中のstatusと利用可否を区別する。原本の検査engine/署名DB/hash/保存keyは内部専用。共有失効時は形式・種類を含む共有文書のkey自体を返さない。uploadは1要求1ファイルのまま、種類と形式を冪等hashへ加える。旧APIの結果を新policy合格と解釈しない。
+
+業務要求は送信前の暗号化送信予定とdraft_operationsのcommit結果をoperation_idで照合する。POSTではIdempotency-Keyと同じUUID、PATCHでもdraft連動の操作IDを使う。通常冪等記録の24時間後も7日間の結果台帳を先に照合し、期限後は同操作の再実行を禁止する。outcomeはconsume後も本人/現在権限で結果metadataだけ返す。旧鍵はPOST /drafts/keyのkey_version指定で本人の未失効版だけ取得し、別user/存在しない版404、本人の失効版409 DRAFT_KEY_REVOKED。詳しい状態・順序は追加契約に従う。
 
 形式別のattachment名とmedia_type、AV/構造の両合格・blocked優先・既存共有参照の再検査可否を原本/共有両経路で検証する。/retryのreadyは登録済みの意味であり、利用可否は別途返す。readyの旧原本への再検査は/recheckで行う。
 

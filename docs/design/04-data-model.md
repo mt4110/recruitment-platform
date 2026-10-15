@@ -27,7 +27,7 @@ IDはUUID、日時はUTCのtimestamptz、API上はISO 8601、画面はAsia/Tokyo
 | audit_events | id、actor_user_id、actor_org_id、action、resource_type、resource_id、result、request_id、created_at | PII本文・生トークン・秘密は記録しない |
 | idempotency_records | org_id、user_id、http_method、normalized_path、key、request_hash、resource_id、state、result_status、error_code NULL、lease_token UUID NULL、lease_expires_at NULL、expires_at NULL | PK(org_id,user_id,http_method,normalized_path,key)。state=processing/completed/failed。processingはexpires_at=NULL、完了/失敗は期限必須 |
 
-業務表には必要なcreated_at/updated_atを付ける。FKは原則RESTRICT。求人・候補者・文書・推薦の物理削除APIは用意せず、候補者はアーカイブする。documentsのready後はファイルbytes・保存参照・検査情報を変更しない。ユーザーが新しいPDF/XLSXを登録すると別documentになる。v0.4で追加する形式/書類種別、検査記録、個人下書き/鍵、RLS/移行の詳細は[追加データ契約](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。下表はM4までの既存列を示す。拒否・一時ファイルの扱いは[安全性設計](06-security.md)を参照。
+業務表には必要なcreated_at/updated_atを付ける。FKは原則RESTRICT。求人・候補者・文書・推薦の物理削除APIは用意せず、候補者はアーカイブする。documentsのready後はファイルbytes・保存参照・検査情報を変更しない。ユーザーが新しいPDF/XLSXを登録すると別documentになる。v0.4で追加する形式/書類種別、検査記録、個人下書き/操作結果台帳/版付き鍵、RLS/移行の詳細は[追加データ契約](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。下表はM4までの既存列を示す。拒否・一時ファイルの扱いは[安全性設計](06-security.md)を参照。
 
 consent_text_versionはdemo-share-v1。これは架空データの操作確認で、実在の本人同意の検証記録ではない。agency/employerのkind整合、candidate/documentの所有組織整合をAPIとDB制約/triggerで確認する。
 
