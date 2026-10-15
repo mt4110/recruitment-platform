@@ -1,6 +1,6 @@
 # データモデル
 
-設計草案 v0.3 / 2026-10-15。R1〜R6および再レビュー残件の対応先は[修正対応表](../reviews/2026-10-15-design-revisions.md)。
+設計草案 v0.4 / 2026-10-15。R1〜R6および再レビュー残件の対応先は[修正対応表](../reviews/2026-10-15-design-revisions.md)。
 
 ## 共通ルール
 
@@ -27,7 +27,7 @@ IDはUUID、日時はUTCのtimestamptz、API上はISO 8601、画面はAsia/Tokyo
 | audit_events | id、actor_user_id、actor_org_id、action、resource_type、resource_id、result、request_id、created_at | PII本文・生トークン・秘密は記録しない |
 | idempotency_records | org_id、user_id、http_method、normalized_path、key、request_hash、resource_id、state、result_status、error_code NULL、lease_token UUID NULL、lease_expires_at NULL、expires_at NULL | PK(org_id,user_id,http_method,normalized_path,key)。state=processing/completed/failed。processingはexpires_at=NULL、完了/失敗は期限必須 |
 
-業務表には必要なcreated_at/updated_atを付ける。FKは原則RESTRICT。求人・候補者・文書・推薦の物理削除APIは用意せず、候補者はアーカイブする。documentsのready後はファイルbytes・保存参照・検査情報を変更しない。ユーザーが新しいPDFを登録すると別documentになる。拒否・一時ファイルの扱いは[安全性設計](06-security.md)を参照。
+業務表には必要なcreated_at/updated_atを付ける。FKは原則RESTRICT。求人・候補者・文書・推薦の物理削除APIは用意せず、候補者はアーカイブする。documentsのready後はファイルbytes・保存参照・検査情報を変更しない。ユーザーが新しいPDF/XLSXを登録すると別documentになる。v0.4で追加する形式/書類種別、検査記録、個人下書き/鍵、RLS/移行の詳細は[追加データ契約](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。下表はM4までの既存列を示す。拒否・一時ファイルの扱いは[安全性設計](06-security.md)を参照。
 
 consent_text_versionはdemo-share-v1。これは架空データの操作確認で、実在の本人同意の検証記録ではない。agency/employerのkind整合、candidate/documentの所有組織整合をAPIとDB制約/triggerで確認する。
 
@@ -65,7 +65,7 @@ APIはnon-owner・non-superuser・NOBYPASSRLSのruntimeロールを使用。業�
 
 selection_eventsは共有失効後も企業が状態と時刻を確認するため行自体を読める。自由記入reasonはDTOで失効時に省略し、エンドユーザーへDB接続を渡さない。機密snapshot/PDFは行レベルでも非表示にする。
 
-employerによる選考はagency所有のcandidate/documentsを読まない。通知を相手組織へINSERTする場合、applicationの参加者であることと宛先がその2組織の一方であることをWITH CHECKで検査する。policyの参照方向は子表→applicationsに統一し、applicationsのpolicyは子表を参照しない。組織種別・有効性は認証と基礎表で解決し、policyの相互再帰を作らない。job_favoritesの自社保存解除を除き、runtimeの業務DELETEは許可しない。技術記録の期限整理は個別の保守権限で対象を限定する。
+employerによる選考はagency所有のcandidate/documentsを読まない。通知を相手組織へINSERTする場合、applicationの参加者であることと宛先がその2組織の一方であることをWITH CHECKで検査する。policyの参照方向は子表→applicationsに統一し、applicationsのpolicyは子表を参照しない。組織種別・有効性は認証と基礎表で解決し、policyの相互再帰を作らない。job_favoritesの自社保存解除を除き、runtimeの業務DELETEは許可しない。個人form_draftsのconsume/discardは本文を消したtombstoneとし、業務表の物理削除とは分ける。技術記録の期限整理は個別の保守権限で対象を限定する。
 
 ## 提出・求人変更の順序（R3）
 
@@ -75,7 +75,7 @@ runtimeロールのまま、求人UUIDから決まる **transaction-level adviso
 
 JSON更新の順序は、認証/CSRF→transaction開始とorg context→冪等lock/完了結果確認→必要なjob lock→candidate行→application行→ready documentのID昇順参照（readyは不変なので行ロック不要）→検証→書込み→commit。使用しない行はロックしない。documentの確定と候補者アーカイブもcandidate→documentの順序を守る。選考・辞退・共有撤回はapplication行だけをロックし、その後job/candidateをロックしない。
 
-提出ではcandidate_versionとjob_versionを両方照合し、job published（A_OWNERの既存draftでjobs行がRLSにより不可視ならJOB_NOT_OPEN）、candidate非アーカイブ、共有撤回なし、選択PDFが同一候補者のreadyであることを確認。snapshot/link/event/通知を作りsubmittedへ更新する。すべて同一transaction。失敗時は業務変更と冪等記録をrollbackする。DB lock待ちは3秒、transactionは10秒を初期制限とし、超過は503 RETRYABLE_BUSY。外部PDF検査/生成をこのtransactionの中に入れない。
+提出ではcandidate_versionとjob_versionを両方照合し、job published（A_OWNERの既存draftでjobs行がRLSにより不可視ならJOB_NOT_OPEN）、candidate非アーカイブ、共有撤回なし、選択PDF/XLSXが同一候補者のreadyかつ現在の形式/AV検査で利用可能であることを確認。snapshot/link/event/通知を作りsubmittedへ更新する。すべて同一transaction。失敗時は業務変更と冪等記録をrollbackする。DB lock待ちは3秒、transactionは10秒を初期制限とし、超過は503 RETRYABLE_BUSY。外部PDF検査/生成をこのtransactionの中に入れない。
 
 ## 状態・共有撤回（R4）
 
@@ -87,7 +87,7 @@ JSON更新の順序は、認証/CSRF→transaction開始とorg context→冪等l
 
 candidateは(agency_org_id,created_at,id)、jobは(status,created_at,id)と(employer_org_id,created_at,id)、applicationは各組織/status/updated_at/id、イベントは(application_id,created_at,id)に索引を作る。documentsは(agency_org_id,status,updated_at,id)、冪等記録は(org_id,user_id,resource_id)にも索引を作る。FK参照列の索引も確認する。qは1〜100文字、パラメータ化した部分一致、LIKEの%/_をエスケープ。limitは最大100。候補者検索は自社のみ。
 
-v0.1は架空データ専用。readyの文書・提出済みsnapshot・業務履歴は自動削除しない。アーカイブと共有撤回を区別する。技術的な期限切れauth attempt/冪等記録とstagingの整理は別の保守処理で、参照中のpending/readyを消さない。データ全体のリセットは対象と復旧可否を示した確認が必要。既に利用者が取得したPDFは回収できない。
+v0.1は架空データ専用。readyの文書・提出済みsnapshot・業務履歴は自動削除しない。アーカイブと共有撤回を区別する。個人下書きは保存から7日で復元不可とする。技術的な期限切れauth attempt/冪等記録とstagingの整理は別の保守処理で、参照中のpending/readyを消さない。データ全体のリセットは対象と復旧可否を示した確認が必要。既に利用者が取得したPDFは回収できない。
 
 参照：[PostgreSQL RLS](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)、[transaction-level advisory locks](https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)。方式・制限値は本設計の判断で、動作検証は実装段階で行う。
 

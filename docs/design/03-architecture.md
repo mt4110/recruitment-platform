@@ -4,7 +4,7 @@
 
 Web画面はNext.js / TypeScript、業務APIはRust / Axum / SQLx、永続化はPostgreSQLを使う。業務ロジックはRustの1プロセス内のモジュールにまとめる。初期版はDocker Composeでローカル起動できることを優先する。
 
-認証はOIDC、ローカルの認証基盤はKeycloak。レジュメはAPIだけが読み書きする専用ディレクトリに保存し、クラウド例ではオブジェクトストレージへ置き換える。内部PDF serviceは、pikepdf/libqpdfでのレジュメ検査と、Playwright/Chromiumでの固定1ページの請求PDF生成を担当する。両処理を1サービスへまとめ、DBと保管volumeは渡さない。
+認証はOIDC、ローカルの認証基盤はKeycloak。PDF/XLSXレジュメはAPIだけが読み書きする専用ディレクトリに保存し、クラウド例ではオブジェクトストレージへ置き換える。内部PDF serviceは、pikepdf/libqpdfによるPDF検査・隔離したXLSX構造検査と、Playwright/Chromiumでの固定1ページの請求PDF生成を担当する。両処理を1サービスへまとめ、DBと保管volumeは渡さない。
 
 ```mermaid
 flowchart TB
@@ -14,13 +14,17 @@ flowchart TB
     B --> I[OIDC / Keycloak]
     A --> I
     A --> D[(PostgreSQL)]
-    A --> F[(PDFレジュメ保管)]
-    A --> P[内部PDF service]
+    A --> F[(非公開PDF/XLSX保管)]
+    A --> P[内部PDF/XLSX構造検査・請求PDF]
+    A --> S[内部ウイルス検査]
+    U[定義更新専用service] --> V[(署名DB)]
+    V --> S
+    B --> C[(暗号化端末下書き)]
 ```
 
 ## ローカル起動の契約
 
-Composeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーを起動する。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
+M4のComposeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーの7サービスを起動する。v0.4は内部AV scannerと定義更新serviceを加えた9サービスを設計する（未実装）。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
 
 M1の通常デモは入口3000/IdP18080、E2Eは毎回新しいCompose projectと設定/DB、既定で3001/18082を使う。portは1024〜65535の異なる値に限定し、APP_ORIGINのlocalhostとissuerのidp.recruitment.localhost以外は受け付けない。realm/redirect/コンテナ側HTTP portも同じ設定から生成する。テストは専用の新しいブラウザcontextを使い、既存デモのcookieを共有しない。
 
@@ -32,17 +36,18 @@ M1の起動は設定作成→ローカル秘密値生成→基礎service起動�
 
 | 部分 | 担当 |
 | --- | --- |
-| Web | 表示、フォーム、検索条件、PDF表示。業務上の認可判断はAPIの結果に従う |
+| Web | 表示、全フォーム下書きの暗号化端末保存/同期/復元、検索条件、PDF表示。業務上の認可判断はAPIの結果に従う |
 | API | OIDC、セッション、認可、DBトランザクション、ファイル取得、PDF生成依頼 |
-| DB | 組織分離RLS、参照整合性、一意制約、推薦履歴、通知モック |
+| DB | 組織分離RLS、参照整合性、一意制約、推薦履歴、通知モック、本人の暗号化フォーム下書き/検査記録 |
 | BlobStore | 保存・取得・整合確認。初期実装はLocalBlobStoreのみ。後続のcloud adaptersをこの契約へ閉じる |
-| PDF service | bytesの制限付き検査と、固定schemaの請求PDF生成。任意HTML・URLを受け付けない |
+| PDF service | PDF/XLSX bytesの制限付き構造検査と、固定schemaの請求PDF生成。任意HTML・URLを受け付けない |
+| Scan / updater | scanは隔離したbytes検査のみ。updaterだけ署名更新の外向き通信を持ち、原本/DBを扱わない |
 
 APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ場合は必要なセッションcookieを明示的に引き継ぎ、応答を共有キャッシュへ置かない。ブラウザにOIDCトークンを保管させない。
 
-## PDFと非同期処理
+## 文書と非同期処理
 
-請求プレビューはAPIが認可済みデータを内部レンダラーへ渡し、PDF bytesを返す。内部共有鍵と内部ネットワークで制限する。レンダラーは固定テンプレートをHTMLエスケープし、外部通信を止め、日本語フォントを同梱する。10秒で失敗を返し、利用者が再試行できるようにする。請求生成の同時実行は初期2件、検査は1件、上限超過は503とする。検査とアップロードの復旧契約は[安全性設計](06-security.md)に従い、PDF serviceは保存先を直接操作しない。
+請求プレビューはAPIが認可済みデータを内部レンダラーへ渡し、PDF bytesを返す。内部共有鍵と内部ネットワークで制限する。レンダラーは固定テンプレートをHTMLエスケープし、外部通信を止め、日本語フォントを同梱する。10秒で失敗を返し、利用者が再試行できるようにする。請求生成の同時実行は初期2件、検査は1件、上限超過は503とする。検査とアップロードの復旧契約は[安全性設計](06-security.md)に従い、PDF serviceは保存先を直接操作しない。v0.4ではAV→形式検査を必須とし、120秒lease/利用可否照合を追加する。scan/updaterの権限・通信・更新障害の境界は[追加契約](10-resumes-and-autosave.md#4-ウイルス検査と隔離)に従う。
 
 通知モックは推薦変更と同一トランザクションでDBへ追加する。外部送信ジョブは存在しない。クラウドの常駐バックグラウンド処理に依存せず一巡できる。
 
@@ -53,7 +58,8 @@ APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ�
 ```text
 apps/web/                  Next.js UI
 services/api/              Rust API、domain、認可、DBアクセス
-services/pdf-renderer/     内部PDF service（検査子process、Chromium、固定テンプレート、日本語フォント）
+services/pdf-renderer/     内部PDF/XLSX構造検査、Chromium、請求テンプレート
+services/document-scanner/  AV wrapper/clamd、定義更新（v0.4の予定、未作成）
 migrations/                SQL、RLS、制約
 fixtures/                  架空データ、サンプルPDF
 infra/local/               Compose、入口、OIDC初期設定

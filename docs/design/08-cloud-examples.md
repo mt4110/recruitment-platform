@@ -2,17 +2,17 @@
 
 ## サンプルの役割
 
-同じWeb/API/PDF rendererを各クラウドへ配置する参考構成。3クラウドを同時運用する仕組みは作らない。Terraformはプロバイダーごとの独立例とし、共通化のためだけの抽象モジュールを作らない。今回は構成と入出力の設計のみで、.tfファイルやクラウド資源は作成しない。
+同じWeb/API/PDF renderer/内部AVを各クラウドへ配置する参考構成。3クラウドを同時運用する仕組みは作らない。Terraformはプロバイダーごとの独立例とし、共通化のためだけの抽象モジュールを作らない。今回は構成と入出力の設計のみで、.tfファイルやクラウド資源は作成しない。
 
 ## 共通の境界
 
 インターネットへ公開するのはHTTPSの入口と選択したOIDCのログイン先。Webと /auth・/api を同一オリジンに置く。アプリDB、ファイル、PDF rendererは直接公開しない。runtime identityとデプロイ権限を分け、objectアクセスは特定bucket/containerに限定する。
 
-PDF serviceには検査用pikepdf/libqpdfと生成用Chromiumを含める。クラウド実装時も検査/生成の子process制限と外向き通信制限を維持し、サービス名がPDFでも文書volumeやDB認証を付与しない。
+PDF serviceには検査用pikepdf/libqpdfと生成用Chromiumを含める。クラウド実装時も検査/生成の子process制限と外向き通信制限を維持し、サービス名がPDFでも文書volumeやDB認証を付与しない。v0.4では[追加契約](10-resumes-and-autosave.md)のscanner/updater分離、署名DBの版/更新確認、未検査/拒否原本の配信停止、下書き暗号鍵のsecret管理も保つ。署名付きupload URLはこの版のサンプル要件へ追加しない。
 
 OIDC issuer/clientの登録は運用者の前提作業とする。クラウド例でKeycloakの本番運用一式を新設することは含めない。ローカルではKeycloak、クラウドでは同じOIDC契約を満たす設定済みissuerを入力する。
 
-クラウド例を実装する際は、対応するS3/GCS/Azure BlobのBlobStore adapterと、内部renderer接続方式も実装・検証する必要がある。GCP例ではAPIからrendererへのID token認証を内部共有鍵に加えて使用する。Terraformだけでローカル版が全クラウド対応になるとは扱わず、これらはローカル80〜140時間の仮積算範囲とは別に積算する。
+クラウド例を実装する際は、対応するS3/GCS/Azure BlobのBlobStore adapterと、内部renderer接続方式も実装・検証する必要がある。GCP例ではAPIからrendererへのID token認証を内部共有鍵に加えて使用する。Terraformだけでローカル版が全クラウド対応になるとは扱わず、これらは[ローカルv0.4の残計画](07-delivery.md)の範囲とは別に積算する。
 
 ## サービス対応と経路
 
@@ -42,10 +42,10 @@ Azureは入口だけexternal ingress、Web/API/rendererはinternal ingressにす
 | --- | --- |
 | project_name / environment / region | 名前、環境、利用地域 |
 | domain / certificate reference | HTTPSドメインと証明書の設定済み参照 |
-| web/api/pdf image digest | 確認済みコンテナのdigest |
+| web/api/pdf/scanner/updater image digest | 確認済みコンテナのdigest |
 | oidc_issuer / oidc_client_id | 認証設定。秘密値はsecret referenceのみ |
 | db_size / app capacity / instance limits | サンプル初期値と費用・接続数への影響 |
-| secret references / storage settings | DB/renderer secret、保存領域、保持設定 |
+| secret references / storage settings | DB/renderer/scanner/draft暗号鍵のsecret、原本/署名DB/下書きの保存領域と保持設定 |
 
 出力はapp_url、resource IDs、image reference等の非秘密のみ。DB password、session secret、秘密鍵をoutputへ出さない。tfvars.exampleは架空値と設定方法だけを含める。
 

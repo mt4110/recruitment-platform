@@ -6,6 +6,8 @@
 
 設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録しています。[M4の実装・検証・残工数](docs/validation/2026-10-15-m4-report.md)を保存し、M4で停止しています。
 
+**設計v0.4を追加しました（未実装）。** [PDF/XLSX・ウイルス検査・全フォーム自動保存/復元](docs/design/10-resumes-and-autosave.md)と[残工数72〜132時間の条件付き積算](docs/design/07-delivery.md)を参照してください。現在動くM4はPDF専用で、AVと永続的なフォーム復元は未対応です。今回の変更は設計文書のみです。
+
 ## ローカルで試す
 
 必要環境は稼働中のDocker Engine/Desktop（Compose pluginまたはdocker-compose）とPython 3.11以上。Node/Rustのホストへのインストールは不要です。loopbackの3000/18080が空いていることを確認してください。
@@ -33,7 +35,7 @@ python3 scripts/local.py up
 
 現在は、企業X/Yで「自社求人 → 登録 → 下書き保存 → 公開 → 募集終了」、紹介会社A/Bで「求人検索 → 詳細 → 保存」と「候補者 → 登録 → 編集 → アーカイブ」を試せます。企業には自社求人、紹介会社には公開求人と自社候補者のみを表示します。初期データは架空求人8件、候補者6名です。候補者のアーカイブは不可逆です。
 
-完成後は、架空データを使って「求人登録 → 候補者登録・PDFレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
+完成後は、架空データを使って「求人登録 → 候補者登録・PDF/XLSXレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
 
 ## M1/M2/M3/M4のブラウザE2E
 
@@ -60,12 +62,13 @@ python3 scripts/e2e.py
 - [実装順序と受入計画](docs/design/07-delivery.md)
 - [AWS・GCP・AzureのIaCサンプル設計](docs/design/08-cloud-examples.md)
 - [LP・ガイド・利用文書の要件と目次](docs/design/09-documentation.md)
+- [PDF/XLSX・AV・全フォーム保存/復元の追加設計](docs/design/10-resumes-and-autosave.md)
 
 ## 利用上の前提
 
 プロトタイプは架空データ専用です。メールは送信せず、請求書はデモ用PDFとして表示します。個人情報を扱う本番運用は、運用体制・法務・安全性・復旧手順を確認した上で判断してください。
 
-初期範囲は1ユーザー1組織、請求PDFは固定1ページです。設計草案v0.3では、初回レビュー6件と再レビューの残件3件を設計に反映しています。[修正対応表](docs/reviews/2026-10-15-design-revisions.md)で変更内容と未実施の検証を、[実装計画](docs/design/07-delivery.md)で工数と受入条件を確認できます。
+初期範囲は1ユーザー1組織、請求PDFは固定1ページです。v0.4で追加した必須要件は上記の設計書を参照してください。旧設計v0.3では、初回レビュー6件と再レビューの残件3件を設計に反映しています。[修正対応表](docs/reviews/2026-10-15-design-revisions.md)で変更内容と未実施の検証を、[実装計画](docs/design/07-delivery.md)で工数と受入条件を確認できます。
 
 技術方針は Next.js / TypeScript、Rust / Axum / SQLx、PostgreSQL。ローカル起動を最初の完成条件とし、クラウド構成は参考例として設計します。本体は[Apache-2.0](LICENSE)です。[第三者依存と監査範囲](THIRD_PARTY.md)を併せて確認してください。
 

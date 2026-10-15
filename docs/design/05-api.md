@@ -22,7 +22,7 @@ JSON要求は次の順序を守る。
 
 同一キーの並行要求はlockで待ち、先行commit後に結果を参照する。3秒の待ち上限で503 RETRYABLE_BUSY、同じキーで再試行可能。別キーでの二重推薦にはDBの部分一意制約を適用し409 DUPLICATE_APPLICATION。completed記録は完了から24時間保持する。response bodyの完全一致ではなく、同じ操作結果/resourceへの参照を保証する。
 
-PDFアップロードだけはDBとファイルをまたぐ。multipartの実bytesをstagingへ保存して算出したSHA-256と、候補者ID・正規化表示名・架空データ確認をrequest_hashに使う。現在の認証・所有確認→staging/hash→冪等lock/既存結果の確認→新規だけ非アーカイブ確認と予約→検査→確定の順序とし、復旧も同じdocument IDを使う。完了済み要求は候補者のアーカイブ後も、現在の閲覧認可で同じ結果/resourceを参照できる。新キーのアーカイブ済み候補者への登録は409 CANDIDATE_ARCHIVED。詳細と中断時の扱いは[安全性設計](06-security.md)を正本にする。
+PDF/XLSXアップロードはDBとファイルをまたぐ。multipartの実bytesをstagingへ保存して算出したSHA-256と、候補者ID・正規化表示名・形式・書類種別・架空データ確認をrequest_hashに使う。v0.4でpayload契約を変更するため、旧キーは旧scope/versionとして照合し、新payloadに再利用しない。現在の認証・所有確認→staging/hash→冪等lock/既存結果の確認→新規だけ非アーカイブ確認と予約→検査→確定の順序とし、復旧も同じdocument IDを使う。完了済み要求は候補者のアーカイブ後も、現在の閲覧認可で同じ結果/resourceを参照できる。新キーのアーカイブ済み候補者への登録は409 CANDIDATE_ARCHIVED。詳細と中断時の扱いは[安全性設計](06-security.md)を正本にする。
 
 認証callbackの失敗はHTTP statusを維持する。Acceptがtext/htmlのブラウザ遷移には静的な再ログイン案内を返し、application/jsonのAPI要求には共通のerror/code/request_id形式を返す。入力queryの解釈失敗もAUTH_ATTEMPT_INVALIDに正規化し、生の入力を応答やlogへ含めない。
 
@@ -53,13 +53,13 @@ PDFアップロードだけはDBとファイルをまたぐ。multipartの実byt
 | GET /candidates/:id | なし | 自社agency、PDFのstatus/rejection_codeも含む |
 | PATCH /candidates/:id | version,name,summary | 自社agency |
 | POST /candidates/:id/archive | version | 自社agency、アーカイブ |
-| POST /candidates/:id/documents | multipart PDF、fictional_confirmed=true | 自社agency、readyなら201、処理中なら202、PDF拒否は422 |
+| POST /candidates/:id/documents | multipart PDF/XLSX、fictional_confirmed=true、document_kind | 自社agency、readyなら201、処理中なら202、検査拒否は422、検査障害はpending/503 |
 | GET /documents/:id | なし | 自社agency、status/rejection_code/再試行案内、200 |
 | POST /documents/:id/retry | なし | 自社agencyかつ元の登録user、lease切れpendingを復旧。readyは200/lease有効pendingは202/rejectedは409 DOCUMENT_REJECTED。document IDとleaseで冪等、追加key不要 |
-| GET /documents/:id/content | なし | 自社agencyのready文書、PDF attachment |
-| GET /applications/:id/documents/:document_id/content | なし | A_OWNERまたはE_SHARED、選択済み共有行からPDFを取得 |
+| GET /documents/:id/content | なし | 自社agencyのreadyかつ検査利用可の文書、形式別attachment |
+| GET /applications/:id/documents/:document_id/content | なし | A_OWNERまたはE_SHARED、選択済み共有行と検査可否からPDF/XLSXを取得 |
 
-求人のemployer_nameはサーバーが自社組織名から設定して返し、編集入力には含めない。employment_typeはfull_time/contract/part_time、description/summary最大10,000文字。PDFは最大10MiB、詳細な対応範囲は安全性設計を参照。storage_key/staging_keyは返さない。アップロード202にはdocument_idとstatus URLを返し、取得間隔は初期2秒とする。lease切れのpendingには元の登録者がretryを要求できる。利用者操作が必要な障害では自動再送を止める。
+求人のemployer_nameはサーバーが自社組織名から設定して返し、編集入力には含めない。employment_typeはfull_time/contract/part_time、description/summary最大10,000文字。PDF/XLSXは各最大10MiB、詳細な対応範囲は安全性設計を参照。storage_key/staging_keyは返さない。アップロード202にはdocument_idとstatus URLを返し、取得間隔は初期2秒とする。lease切れのpendingには元の登録者がretryを要求できる。利用者操作が必要な障害では自動再送を止める。
 
 ## 推薦・選考・請求・通知
 
@@ -96,7 +96,7 @@ A_OWNER/E_SHAREDは[DB設計](04-data-model.md)の定義をAPI・RLSで共用す
 
 撤回で変更があった場合だけversionを増やし、event・未送信通知・監査を同じtransactionへ記録。hiredの撤回でもplacementは維持し、自社agencyはデモ請求PDFを引き続き読める。企業はE_SHARED失効により読めない。再共有/終端状態の復帰は設けない。rejected/withdrawnから再推薦するなら新しいapplicationを作る。hiredは同じ候補者/求人への再推薦を許可しない。
 
-表以外の遷移は409 INVALID_TRANSITION、version不一致は409 VERSION_CONFLICT。企業の共有失効後の変更要求は403 SHARING_REVOKED、無関係な組織は404。提出前・共有撤回済みの共有PDF取得は404。
+表以外の遷移は409 INVALID_TRANSITION、version不一致は409 VERSION_CONFLICT。企業の共有失効後の変更要求は403 SHARING_REVOKED、無関係な組織は404。提出前・共有撤回済みの共有書類取得は404。
 
 ## 請求PDF：固定1ページ
 
@@ -122,7 +122,15 @@ A4縦・1明細・固定デモ金額500,000円・1ページ。IDはDEMO-{placeme
 
 RLSとtransaction timeoutは[PostgreSQL 17の公式資料](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)と[接続設定](https://www.postgresql.org/docs/17/runtime-config-client.html)を参照し、実装で検証する。
 
-## M3実装の補足（2026-10-15）
+## v0.4の追加API契約（未実装）
+
+[追加仕様のデータ/API節](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。/draftsの本人専用保存・復元・鍵取得・discard、業務要求の任意draft_id/draft_revision、既存原本の/documents/:id/recheckを追加する。draft JSONだけ96KiB、通常JSON64KiBを維持する。
+
+新文書DTOと共有文書DTOにはfile_format/media_type/document_kind、利用可否availability（pending/available/blocked/recheck_required）を追加する。登録中のstatusと利用可否を区別する。原本の検査engine/署名DB/hash/保存keyは内部専用。共有失効時は形式・種類を含む共有文書のkey自体を返さない。uploadは1要求1ファイルのまま、種類と形式を冪等hashへ加える。旧APIの結果を新policy合格と解釈しない。
+
+形式別のattachment名とmedia_type、AV/構造の両合格・blocked優先・既存共有参照の再検査可否を原本/共有両経路で検証する。/retryのreadyは登録済みの意味であり、利用可否は別途返す。readyの旧原本への再検査は/recheckで行う。
+
+## M3実装の補足（2026-10-15、v0.4追加対応前の実装記録）
 
 multipartのfile項目は1件だけ、Content-Typeはapplication/pdf。fictional_confirmed=trueも必須で、fileより前に送る。確認項目を検証してからbytesを受信する。未知/重複項目を拒否する。表示名は区切り文字以前のpathを落として前後空白を除き、制御文字・空・255文字超を拒否する。ファイル受信は30秒、実bytesは10MiB、multipart全体は10MiB+64KiB。gatewayの11MiB上限はこのupload routeだけに適用し、JSONの64KiB制限を維持する。
 
@@ -130,7 +138,7 @@ multipartのfile項目は1件だけ、Content-Typeはapplication/pdf。fictional
 
 原本downloadは保存size/hash確認後のbytesをattachment; filename="resume.pdf"で返す。元表示名は画面に表示し、HTTP headerへ生の入力を埋め込まない。候補者のアーカイブは既存ready文書の自社閲覧を失効させない。
 
-## M4で確定した補足（2026-10-15）
+## M4で確定した補足（2026-10-15、v0.4追加対応前の実装記録）
 
 推薦の一覧はupdated_at/id降順、limit初期20/最大100。cursorは組織・状態filter・limitに結び付け、条件変更は422。通常runtimeのapplicationsと、RLS適用済みapplication_snapshotsを一度のqueryで読む。求人原本や他組織organizationsを追加権限で読まない。
 
