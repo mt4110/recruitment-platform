@@ -1,6 +1,6 @@
 """M0-only native-platform verification, no product services or migrations."""
 from pathlib import Path
-import os,sys,json,subprocess,time,platform,hashlib,unicodedata
+import os,sys,json,subprocess,time,platform,hashlib,unicodedata,tarfile,io
 from pypdf import PdfReader
 
 ROOT=Path(__file__).parent;os.chdir(ROOT)
@@ -45,7 +45,15 @@ try:
         time.sleep(1)
     else:
         print(docker('logs','--tail','12',PREFIX+'-pdf'));raise RuntimeError('PDF probe did not finish')
-    docker('cp',PREFIX+'-pdf:/out/.',str(out))
+    # Docker archive/cp can omit tmpfs mount contents. Read a fixed allowlist
+    # through exec while the isolated service is running.
+    allowed=('pdf-validation-result.json','pdf-generation-result.json','invoice-normal.pdf','invoice-long.pdf','invoice-escaped.pdf')
+    archive=subprocess.check_output([*D,'exec',PREFIX+'-pdf','tar','-C','/out','-cf','-',*allowed])
+    with tarfile.open(fileobj=io.BytesIO(archive)) as files:
+        for name in allowed:
+            member=files.getmember(name)
+            assert member.isfile() and member.size<10*1024*1024
+            (out/name).write_bytes(files.extractfile(member).read())
     for name in ('auth-result.json','rls-result.json'):(out/name).write_text((ROOT/name).read_text())
     result['pdf_artifacts']=[]
     for p in sorted(out.glob('*.pdf')):
