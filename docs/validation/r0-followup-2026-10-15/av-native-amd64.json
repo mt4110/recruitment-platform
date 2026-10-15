@@ -1,0 +1,299 @@
+{
+  "scope": "R0 isolated feasibility; gate is a model, not product integration",
+  "arch": "amd64",
+  "image": "clamav/clamav@sha256:99f1e9b79d0a5ec8c019483b40577f6bae4f30a954f9f057a7b39da600861391",
+  "containers": [
+    "recruitment-r0-followup-112510-a6d5-source",
+    "recruitment-r0-followup-112510-a6d5-old-load",
+    "recruitment-r0-followup-112510-a6d5-update",
+    "recruitment-r0-followup-112510-a6d5-new-load",
+    "recruitment-r0-followup-112510-a6d5-failed-update",
+    "recruitment-r0-followup-112510-a6d5-bad-load",
+    "recruitment-r0-followup-112510-a6d5-recovered-load"
+  ],
+  "checks": {
+    "old-load": {
+      "ready": true,
+      "seconds": 5.349,
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3198,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:25:18.409395124Z",
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "Health": {
+          "Status": "healthy",
+          "FailingStreak": 0,
+          "Log": [
+            {
+              "Start": "2026-10-15T11:25:23.454802697Z",
+              "End": "2026-10-15T11:25:23.476581482Z",
+              "ExitCode": 0,
+              "Output": "Clamd is up\n"
+            }
+          ]
+        }
+      },
+      "loaded_version": "ClamAV 1.5.4/28151/Mon Oct 12 06:24:02 2026",
+      "manifest_unchanged_after_load": true,
+      "database_verification": {
+        "bytecode": {
+          "verified": true,
+          "version": 339
+        },
+        "daily": {
+          "verified": true,
+          "version": 28151
+        },
+        "main": {
+          "verified": true,
+          "version": 63
+        }
+      },
+      "clean": "stream: OK",
+      "eicar": "stream: Eicar-Test-Signature FOUND",
+      "fixtures": {
+        "sheets-career-history.xlsx": "stream: OK",
+        "sheets-resume.xlsx": "stream: OK"
+      },
+      "over_10m": "INSTREAM size limit exceeded. ERROR",
+      "memory_peak_bytes": 1309749248,
+      "isolation": {
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 2147483648,
+        "PidsLimit": 32,
+        "NetworkMode": "none",
+        "PortBindings": {}
+      }
+    },
+    "new-load": {
+      "ready": true,
+      "seconds": 5.334,
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3967,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:25:29.601859667Z",
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "Health": {
+          "Status": "healthy",
+          "FailingStreak": 0,
+          "Log": [
+            {
+              "Start": "2026-10-15T11:25:34.645516521Z",
+              "End": "2026-10-15T11:25:34.667346735Z",
+              "ExitCode": 0,
+              "Output": "Clamd is up\n"
+            }
+          ]
+        }
+      },
+      "loaded_version": "ClamAV 1.5.4/28154/Thu Oct 15 06:24:22 2026",
+      "manifest_unchanged_after_load": true,
+      "database_verification": {
+        "bytecode": {
+          "verified": true,
+          "version": 339
+        },
+        "daily": {
+          "verified": true,
+          "version": 28154
+        },
+        "main": {
+          "verified": true,
+          "version": 63
+        }
+      },
+      "clean": "stream: OK",
+      "eicar": "stream: Eicar-Test-Signature FOUND",
+      "fixtures": {
+        "sheets-career-history.xlsx": "stream: OK",
+        "sheets-resume.xlsx": "stream: OK"
+      },
+      "over_10m": "INSTREAM size limit exceeded. ERROR",
+      "memory_peak_bytes": 1306890240,
+      "isolation": {
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 2147483648,
+        "PidsLimit": 32,
+        "NetworkMode": "none",
+        "PortBindings": {}
+      }
+    },
+    "actual_update_failure": {
+      "exit": 2,
+      "valid_manifest_unchanged": true
+    },
+    "bad-load": {
+      "ready": false,
+      "seconds": 1.055,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:25:36.834128236Z",
+        "FinishedAt": "2026-10-15T11:25:36.886116471Z",
+        "Health": {
+          "Status": "unhealthy",
+          "FailingStreak": 0,
+          "Log": []
+        }
+      }
+    },
+    "recovered-load": {
+      "ready": true,
+      "seconds": 5.333,
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 4834,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:25:37.959104089Z",
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "Health": {
+          "Status": "healthy",
+          "FailingStreak": 0,
+          "Log": [
+            {
+              "Start": "2026-10-15T11:25:43.002790582Z",
+              "End": "2026-10-15T11:25:43.024120465Z",
+              "ExitCode": 0,
+              "Output": "Clamd is up\n"
+            }
+          ]
+        }
+      },
+      "loaded_version": "ClamAV 1.5.4/28154/Thu Oct 15 06:24:22 2026",
+      "manifest_unchanged_after_load": true,
+      "database_verification": {
+        "bytecode": {
+          "verified": true,
+          "version": 339
+        },
+        "daily": {
+          "verified": true,
+          "version": 28154
+        },
+        "main": {
+          "verified": true,
+          "version": 63
+        }
+      },
+      "clean": "stream: OK",
+      "eicar": "stream: Eicar-Test-Signature FOUND",
+      "fixtures": {
+        "sheets-career-history.xlsx": "stream: OK",
+        "sheets-resume.xlsx": "stream: OK"
+      },
+      "over_10m": "INSTREAM size limit exceeded. ERROR",
+      "memory_peak_bytes": 1306992640,
+      "isolation": {
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 2147483648,
+        "PidsLimit": 32,
+        "NetworkMode": "none",
+        "PortBindings": {}
+      }
+    },
+    "gate_model": {
+      "matching_ready": true,
+      "old_loaded_new_check": true,
+      "stale": true,
+      "future_check": true,
+      "busy": true,
+      "updating": true,
+      "load_failed": true,
+      "hash_mismatch": true,
+      "rollback_rejected": true,
+      "update_failed": true,
+      "failed_load_keeps_closed": true,
+      "recovered": true
+    }
+  },
+  "old_manifest": {
+    "bytecode": {
+      "file": "bytecode.cvd",
+      "version": 339,
+      "published_at": "11 Sep 2025 08-29 -0400",
+      "sha256": "6d4aa01f219e988060fc419f495d07f27e0cdf1a2cccc065971da922c76f7ffb"
+    },
+    "daily": {
+      "file": "daily.cvd",
+      "version": 28151,
+      "published_at": "12 Oct 2026 06-24 +0000",
+      "sha256": "6a98e015d9702b44d2834b4d95d563999c673e5b8a906a6a146fe03d08855d85"
+    },
+    "main": {
+      "file": "main.cvd",
+      "version": 63,
+      "published_at": "16 Dec 2025 23-18 +0000",
+      "sha256": "0b2182d229f46981ec8f535382222f7c9dfdd656b250ad47988b910a8d302365"
+    }
+  },
+  "new_manifest": {
+    "bytecode": {
+      "file": "bytecode.cvd",
+      "version": 339,
+      "published_at": "11 Sep 2025 08-29 -0400",
+      "sha256": "6d4aa01f219e988060fc419f495d07f27e0cdf1a2cccc065971da922c76f7ffb"
+    },
+    "daily": {
+      "file": "daily.cld",
+      "version": 28154,
+      "published_at": "15 Oct 2026 06-24 +0000",
+      "sha256": "db299c9b4215efb8c731397bae9c40994481b232e6ca6ecacb3fcbf7ef353f03"
+    },
+    "main": {
+      "file": "main.cvd",
+      "version": 63,
+      "published_at": "16 Dec 2025 23-18 +0000",
+      "sha256": "0b2182d229f46981ec8f535382222f7c9dfdd656b250ad47988b910a8d302365"
+    }
+  },
+  "real_upstream_version_advance": [
+    28151,
+    28154
+  ],
+  "result": "established_for_R0_probe_scope"
+}

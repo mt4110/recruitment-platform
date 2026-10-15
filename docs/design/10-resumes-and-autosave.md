@@ -1,11 +1,11 @@
 # レジュメ受付・ウイルス検査・全フォームの自動保存
 
-設計 v0.4 改訂2 / 2026-10-15（レビュー5件と再レビュー残件P2を設計へ反映）。**追加要件の設計であり、未実装・未検証。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
+設計 v0.4 R0追補 / 2026-10-15（レビュー5件と再レビュー残件P2を設計へ反映）。**追加要件の製品実装は未着手。R0の独立方式確認は[追補記録](../validation/2026-10-15-r0-followup-report.md)を参照。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
 
 ## 1. 対象と境界
 
 - 履歴書・職務経歴書をPDFまたはXLSXの原本のまま登録できる。共通テンプレートへの転記は必須にしない。
-- GoogleスプレッドシートはXLSXへ書き出して登録する。Googleへの直接接続、旧形式XLS、XLSM、CSV、DOCX、XLSXのPDF変換・ブラウザ内プレビューは今回の対象外。
+- 初期のXLSX互換確認範囲はGoogleスプレッドシートからの実出力とする。Excel由来の実出力は未検証で、Excel固有機能との互換性を保証しない。producer申告を信頼して検査を省かず、由来を問わず同じ構造policyで判定する。GoogleスプレッドシートはXLSXへ書き出して登録する。Googleへの直接接続、旧形式XLS、XLSM、CSV、DOCX、XLSXのPDF変換・ブラウザ内プレビューは今回の対象外。
 - PDF/XLSX双方で形式検査とウイルス検査の合格を必須にする。認証付きAPIで受け付け、非公開保管し、原本・共有とも取得時に認可する。署名URLは今回導入しない。
 - ログインを除くすべてのフォームで下書きを自動保存する。求人・候補者の新規/編集、推薦作成/理由、提出書類の選択、選考/共有取消の理由、検索/絞込みと表示位置、後続M5のフォームも対象。ログインの認証情報・OIDC・CSRF値は保存しない。
 - 保存先は利用者個人の下書き。公開、候補者作成/更新、推薦提出、採否、辞退、共有取消は既存の明示操作を維持し、下書き保存で業務表や通知を変更しない。架空データ専用という境界も維持する。
@@ -32,17 +32,26 @@
 | active/external | VBA/XLM、OLE/ActiveX、埋め込みファイル、外部workbook/接続/query、外部relationship（リンク画像/クリックリンク含む）を拒否。DDE/WEBSERVICE/HYPERLINK/RTD等の外部作用を持つ式と未対応式も拒否。内部数式は対応する文法/関数の許可リストだけを通し、cached valueを含め実行しない。単なるURL文字列はリンク動作と区別する |
 | 静的画像 | PNG/JPEGのみ、各4MiB以内/計10枚まで。画像の再エンコードや描画はせず、形式と格納関係を照合。その他図形/グラフ/画像形式は初期版で対応外として案内する |
 
-初期の内部式の許可文法は同一workbook内のA1参照/範囲・定数・四則/比較/括弧、関数はSUM/MIN/MAX/AVERAGE/IF/AND/OR/ROUND/DATE/YEAR/MONTH/DAY/DATEDIF/TODAY/TEXTに限定する。名前定義は_xlnm.Print_Area/Print_Titlesの内部範囲だけを許可し、その他の名前定義/拡張関数/未知namespaceは対応外。式を構文解析し、文字列の部分一致だけで外部式を判定しない。必須partは[Content_Types].xml、_rels/.rels、xl/workbook.xml、workbook relationshipsと参照sheet。styles/sharedStrings/theme/calcChain、docPropsのcore/app、PNG/JPEG・それらのdrawing/relationshipsは整合検証したものだけ許可し、これ以外のpart/型/名前空間は初期版で対応外とする。
+初期の内部式の許可文法は同一workbook内のA1参照/範囲・定数・四則/比較/括弧、関数はSUM/MIN/MAX/AVERAGE/IF/AND/OR/ROUND/DATE/YEAR/MONTH/DAY/DATEDIF/TODAY/TEXTに限定する。名前定義は_xlnm.Print_Area/Print_Titlesの内部範囲だけを許可し、その他の名前定義/拡張関数/未知namespaceは対応外。式を構文解析し、文字列の部分一致だけで外部式を判定しない。必須partは[Content_Types].xml、_rels/.rels、xl/workbook.xml、workbook relationshipsと参照sheet。styles/sharedStrings/theme/calcChain、docPropsのcore/app、PNG/JPEG・それらのdrawing/relationshipsは整合検証したものだけ許可し、これ以外のpart/型/名前空間は初期版で対応外とする。ただし、以下のSheets実出力に限定した例外を加える。
 
-「未対応式/構造」は感染と区別して説明し、「PDFへ書き出す」「外部リンクを外してXLSXを保存」を案内する。一般のExcel互換を保証しない。実装前の小さな方式確認で、架空情報を入力してExcelとGoogleスプレッドシートから実際に書き出した履歴書・職務経歴書fixtureを使い、許可リスト、parser依存/ライセンス/資源上限を固定する。手作りZIP/XMLだけでは実製品との互換確認を完了としない。実在情報を検証用に集めない。成立しなければ受付範囲/工数を提示して停止し、検査を緩めて合格にしない。
+### Sheets実出力の空metadata例外（R0確認後）
+
+- `xl/persons/person.xml`は最大16KiB、UTF-8（BOM可）のXMLだけ。rootは`{http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments}personList`、属性なし・子要素なし・本文は空白だけ。person、extLst、未知要素/属性、別namespace、DTD/entity、他encodingは対応外。namespaceをworkbook全域へ許可するのではなく、このrootの用途にだけ許可する。
+- Content typeは`application/vnd.ms-excel.person+xml`のOverrideがこのpartへ一つ。参照はworkbook relationshipsから`http://schemas.microsoft.com/office/2017/10/relationships/person`が一つだけ、Target=`persons/person.xml`、TargetMode省略またはInternal。part/関係の重複、不正path、別source、外部Target、persons自身のrelationshipsは拒否する。ZIP全体の重複・参照整合検査も維持する。
+- 投稿者データ、threaded comments/comment partsは初期対応外。空metadataは削除せず、原本bytesを保持して検査する。Microsoftの[Persons仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/1a170d26-42a2-46f0-b2b6-0ff1dec1c344)と[personList仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/9f1b6e0e-79cd-4ae2-b3a7-6dea649c57f6)を参照した限定対応。
+- Sheetsは実在partのない`odttf`用Default（`application/vnd.openxmlformats-officedocument.obfuscatedFont`）も宣言する。この特定の未使用宣言だけを許可する。実font part・同拡張子のentry、他の未知宣言、重複/矛盾は拒否し、埋込fontを許可する意味にしない。
+
+R1は既存Python serviceの標準`zipfile`＋`xml.parsers.expat`で、実展開量/比率、深さ/要素数を逐次制限し、DOCTYPE/外部entityをparser handlerでも拒否する方針。XMLは初期対応をUTF-8に限定。内部式は専用の小さな構文解析で上記文法を実装し、evalや数式計算は行わない。新しいOffice描画libraryは追加しない。[Python XMLの注意事項](https://docs.python.org/3.13/library/xml.html#xml-vulnerabilities)に従い、採用runtimeの`pyexpat.EXPAT_VERSION`を記録して2.7.2以上を必要条件とする。子process制限と悪性ZIP/XML/式の完全な受入はR1/R6に残り、R0の空metadata実験をその代替にしない。
+
+「未対応式/構造」は感染と区別して説明し、「PDFへ書き出す」「外部リンクを外してXLSXを保存」を案内する。一般のExcel互換を保証しない。実装前の小さな方式確認で、架空情報を入力してGoogleスプレッドシートから実際に書き出した履歴書・職務経歴書fixtureを使い、許可リスト、parser依存/ライセンス/資源上限を固定する。手作りZIP/XMLだけでは実製品との互換確認を完了としない。実在情報を検証用に集めない。成立しなければ受付範囲/工数を提示して停止し、検査を緩めて合格にしない。
 
 ## 4. ウイルス検査と隔離
 
-採用候補はClamAVのclamd + FreshClam。エンジン/image digest、対応arm64/amd64、ライセンス/配布条件、必要メモリは追加方式確認で確定する。現時点で動作確認済みとは扱わない。
+採用方式は公式Debian版ClamAV 1.5.4のclamd + FreshClam（`1.5.4-debian13-slim`、各archのmanifest digestをR0追補に固定）。native arm64/amd64での実行と公式定義の世代切替の独立確認結果は[R0追補](../validation/2026-10-15-r0-followup-report.md)を参照。Alpine版だけを確認していた前回のarm64未成立を更新する。ClamAVはGPL v2のライセンス本文・第三者ライセンスを保持し、公式配布imageを利用する。自前改変imageの再配布/商用配布条件の最終確認はM7。独立実験の成立を製品のHTTP認証/受付ゲートの結合成立とは扱わない。
 
 - 既存PDF serviceはPDF/XLSXの構造検査を担当する。新しい内部scan serviceは認証付きHTTP wrapperから同コンテナのUnix socketのclamdへINSTREAMでbytesを渡す。任意path/コマンドを受け付けず、clamdのTCP portを公開しない。
 - scan serviceは外向き通信なし、非root/read-only/cap drop、tmpfs・資源制限、DB認証/原本volumeなし。APIからの内部通信と共有鍵だけを許可する。検査bytesや検出文字列をログに流さない。
-- 更新専用serviceだけがFreshClamの更新先へ外向き通信する。原本/DBへ接続せず、署名DB volumeのみ書込み可。検証済みの更新を不変な世代別directoryへpublishし、scan側は読み取り専用で取り込み、実際にロードしたDB版を応答する。途中のDBを使用しない。wrapperは新規scanを保留し、実行中のscanを完了/timeoutさせてから新世代directoryを指定してclamdを再起動し、ロード完了と版を照合して受付を再開する。この方式の成立/資源と版・hashの対応確認はR0に残す。
+- 更新専用serviceだけがFreshClamの更新先へ外向き通信する。原本/DBへ接続せず、署名DB volumeのみ書込み可。検証済みの更新を不変な世代別directoryへpublishし、scan側は読み取り専用で取り込み、実際にロードしたDB版を応答する。途中のDBを使用しない。wrapperは新規scanを保留し、実行中のscanを完了/timeoutさせてから新世代directoryを指定してclamdを再起動し、ロード完了と版を照合して受付を再開する。方式/資源と版・hashの対応はR0で独立確認する。製品の受付停止・drain・manifest publishとHTTP応答の結合受入はR2に残す。
 - 既存7サービスにscan/updaterを追加し、設計上は9サービスとする。scan初期上限2GiB、同時1検査、wall time20秒、構造検査は既存256MiB/CPU5秒/wall5秒。上限値は性能保証ではなく、両archで調整・記録する。
 - アップロード全体はAV→形式検査の順。検査対象hashを応答へ結び付け、両結果が同じbytesであることをAPIが検証する。検査中もDB transactionを保持しない。upload leaseは60秒から120秒へ変更し、各外部要求にtimeoutを設定、期限切れ旧workerはCASで確定できない。
 - scanはStreamMaxLength=10MiB、MaxScanSize=64MiB、MaxFileSize=16MiB、MaxRecursion=8、MaxFiles=1,000を初期値とする。AlertExceedsMax等を有効にし、上限に達して一部をskipした結果をclean扱いにしない。20秒のAPI timeoutだけで裏の処理が残らないよう、engine制限・busy制御・異常時のworker復旧を確認する。
@@ -156,7 +165,7 @@ uploadはファイルとDBをまたぐためdraft_operationsの業務consume処�
 
 | ID | 確認する振る舞い |
 | --- | --- |
-| A17 | Excel/Googleスプレッドシートから架空情報で実際に出力したXLSXとPDFの履歴書・職務経歴書を使用。出力製品/版/日付/hashを記録。複数版、画像/結合/内部数式/複数sheetを登録し選んだ版だけ推薦。旧snapshot/bytesは不変 |
+| A17 | 初期互換範囲のGoogleスプレッドシートから架空情報で実際に出力したXLSXとPDFの履歴書・職務経歴書を使用（Excel実出力は未検証）。出力製品/版/日付/hashを記録。複数版、画像/結合/内部数式/複数sheetを登録し選んだ版だけ推薦。旧snapshot/bytesは不変 |
 | A18 | MIME/拡張子偽装、ZIP/XML bomb、path逸脱、重複entry、VBA/XLM/OLE/外部参照/危険式/暗号化/未知part、境界容量を拒否。解析のCPU/メモリ/時間も上限を維持 |
 | A19 | 実ClamAVでEICAR無害テスト文字列入りのPDF/XLSXを拒否。正常fixtureのcleanを確認。mockだけで合格とせず、engine/署名DB版/日時/hashを記録。実マルウェアは用いない |
 | A20 | scanner停止/定義なし/更新失敗と24h超/timeout/検査上限の途中skipでreadyにならない。更新後retry、公開世代とロード世代の不一致/再ロード失敗/検査中更新/更新なし確認、旧lease、同時quota/頻度制限、正常起動9サービスを確認 |
@@ -170,13 +179,13 @@ arm64ローカルとLinux/amd64 CIで同じsource/fixtureを使い、追加ケ�
 
 ### R0で準備・確認する実出力fixture（指摘5、完了条件）
 
-ExcelとGoogleスプレッドシートそれぞれで、架空の履歴書・職務経歴書を作り、XLSXで書き出す（最低4ファイル）。写真相当PNG/JPEG、結合セル、複数sheet、印刷範囲/改ページ/余白、日付・年齢の内部式、日本語の長文を含む組合せを用意する。元製品で開けることと、対応予定の出力が検査を通ることを別々に確認する。元製品の種類・版（取得可能な範囲）・出力日・設定・hash、含まれるparts/namespace/式、検査結果と必要な利用者操作を記録する。手作りの攻撃fixtureと正常な実出力を分ける。
+初期対応のGoogleスプレッドシートで、架空の履歴書・職務経歴書を作り、XLSXで書き出す（最低2ファイル）。Excel契約なし・Sheetsで進めるという利用者判断により変更した。Excel出力を保証する段階では、別途Excel実出力2点以上の互換確認を追加する。写真相当PNG/JPEG、結合セル、複数sheet、印刷範囲/改ページ/余白、日付・年齢の内部式、日本語の長文を含む組合せを用意する。元製品で開けることと、対応予定の出力が検査を通ることを別々に確認する。元製品の種類・版（取得可能な範囲）・出力日・設定・hash、含まれるparts/namespace/式、検査結果と必要な利用者操作を記録する。手作りの攻撃fixtureと正常な実出力を分ける。R0は基本2点と抽出partの方式確認まで。印刷設定差を含む追加正常fixtureはR1/R6の相互運用受入で追加し、R0で全組合せが試験済みとは扱わない。
 
-実出力に未知part/namespaceがあれば、その役割と外部作用を確認するまでは許可しない。既存の安全条件を維持して対応リストへ明示追加するか、対応外として具体的な代替操作を示すかをR0の結果として報告する。最低4ファイルが揃わない、または対応予定の主要な出力が通らない場合は互換確認未完了とし、R1以降を始めず相談する。Excelへのアクセスや出力操作が必要な場合も、R0着手前には行わない。設計時点では未実施。その後の[R0結果](../validation/2026-10-15-r0-report.md)ではSheets実出力2点を取得したが未知partを検出し、Excel実出力は未取得。Excel契約なしとの回答を受け、Sheets由来のみを初期対応にする案を提示した。最低4点条件や許可リストを暗黙に緩めず、対応範囲の判断を待って停止している。
+実出力に未知part/namespaceがあれば、その役割と外部作用を確認するまでは許可しない。既存の安全条件を維持して対応リストへ明示追加するか、対応外として具体的な代替操作を示すかをR0の結果として報告する。初期範囲の最低2ファイルが揃わない、または対応予定の主要な出力が通らない場合は互換確認未完了とし、R1以降を始めず相談する。Excelへのアクセスや出力操作が必要な場合も、R0着手前には行わない。設計時点では未実施。[初回R0結果](../validation/2026-10-15-r0-report.md)の未成立を受け、今回の承認範囲でSheetsを初期対応と明示し、空metadata例外を追加した。実出力2点と限定異常系の確認は[R0追補](../validation/2026-10-15-r0-followup-report.md)へ記録する。印刷設定を含む任意レイアウトやOffice全般の互換性を保証するものではない。
 
 ## 8. 一次資料と設計上の位置付け
 
-2026-10-15参照。下記は方式の根拠で、上記の容量/時間/保持日数/工数は本プロジェクトの初期設計値。対応versionの部分的な確認結果と未成立範囲は[R0記録](../validation/2026-10-15-r0-report.md)を参照。
+2026-10-15参照。下記は方式の根拠で、上記の容量/時間/保持日数/工数は本プロジェクトの初期設計値。対応versionの独立確認と製品受入に残る範囲は[最新R0追補](../validation/2026-10-15-r0-followup-report.md)を参照。
 
 - [OWASP File Upload](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)：認可、形式検査、隔離/AV、保管と容量制限。
 - [Microsoft SpreadsheetML構造](https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/structure-of-a-spreadsheetml-document)：workbook/sheet/relationshipを持つZIP packageの構造。

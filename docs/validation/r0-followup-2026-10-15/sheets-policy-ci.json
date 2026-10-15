@@ -1,0 +1,22 @@
+{
+  "scope": "empty persons metadata only; not full OOXML/namespace/formula/AV qualification",
+  "fixtures": {
+    "sheets-career-history.xlsx": true,
+    "sheets-resume.xlsx": true
+  },
+  "negative_cases": {
+    "person_child": "refused",
+    "foreign_child": "refused",
+    "attribute": "refused",
+    "text": "refused",
+    "wrong_namespace": "refused",
+    "doctype": "refused",
+    "utf16": "refused",
+    "oversize": "refused",
+    "external_target": "refused",
+    "wrong_source_type": "refused",
+    "duplicate_person_rel": "refused",
+    "wrong_content_type": "refused"
+  },
+  "result": "established_for_targeted_metadata_policy"
+}

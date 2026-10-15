@@ -1,0 +1,32 @@
+{
+  "probe_commit": "d0e6c16a722e7335df136deb1ad78fd2a0209c4f",
+  "result": "R0_followup_scope_established",
+  "scope": "five authorized R0 followups; not full R1-R6 product acceptance",
+  "r1_started": false,
+  "ci": {
+    "url": "https://github.com/mt4110/recruitment-platform/actions/runs/38727136793",
+    "conclusion": "success",
+    "job_started_at": "2026-10-15T11:24:46Z",
+    "job_completed_at": "2026-10-15T11:25:48Z"
+  },
+  "fixture_sha256": {
+    "sheets-career-history.xlsx": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+    "sheets-resume.xlsx": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9"
+  },
+  "fixture_hash_matches_ci": true,
+  "old_db_manifests_match_between_arches": true,
+  "new_db_versions_match_between_arches": true,
+  "new_daily_cld_hash_matches_between_arches": false,
+  "hash_scope": "Independently updated CLD files differ. Each scanner must match its own published immutable generation exactly; equal version is insufficient.",
+  "local_parser_runtime": {
+    "image": "python:3.13-slim-bookworm@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+    "architecture": "arm64",
+    "python": "3.13.16",
+    "expat": "2.8.5"
+  },
+  "remaining_planning_hours": [
+    82,
+    144
+  ],
+  "human_hours_measured": false
+}
