@@ -27,8 +27,9 @@ jobs:
           node validation/r0/key_probe.cjs .local/r0-ci/keys
           python validation/r0/resource_probe.py .local/r0-ci/resources.json
           python validation/r0/inventory.py validation/r0/fixtures .local/r0-ci/xlsx-inventory.json
-      - name: Probe actual ClamAV in isolated containers
-        run: python validation/r0/av_probe.py .local/r0-ci/av
+          python validation/r0/sheets_policy_probe.py .local/r0-ci/sheets-policy.json
+      - name: Probe native Debian ClamAV and real generation transition
+        run: python validation/r0/followup_av.py .local/r0-ci/av-followup
       - name: Preserve bounded evidence only
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -38,8 +39,7 @@ jobs:
             .local/r0-ci/keys/keys.json
             .local/r0-ci/resources.json
             .local/r0-ci/xlsx-inventory.json
-            .local/r0-ci/av/av.json
-            .local/r0-ci/av/freshclam-0.log
-            .local/r0-ci/av/freshclam-1.log
-            .local/r0-ci/av/clamd.log
+            .local/r0-ci/sheets-policy.json
+            .local/r0-ci/av-followup/result.json
+            .local/r0-ci/av-followup/*.log
           include-hidden-files: true
