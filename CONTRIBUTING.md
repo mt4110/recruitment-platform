@@ -16,3 +16,5 @@ READMEのsetup/upを利用する。Python helperはDocker Compose pluginとstand
 APIの認証用roleへ業務表権限や管理権限を追加しない。所属はusersの1件から取得し、メール、URLのorg ID、ブラウザの自己申告から決めない。OIDC/sessionの生値やqueryをログへ出さない。PDF製品処理を追加するときはM0のsandbox/制限を維持し、M3/M5の受入を確認する。
 
 データのreset/削除、外部公開、外部送信、本番変更を通常起動の副作用へ含めない。変更の目的・差分・確認範囲・残る制約をPRに記載する。
+
+入口の`infra/local/nginx.conf`を変更した場合、起動済みコンテナはbind先の変更だけでは設定を再読込しない。`python3 scripts/local.py compose exec -T gateway nginx -s reload`で反映する。Docker contextを選ぶ場合は起動時と同じ`DOCKER_CONTEXT`を指定する。

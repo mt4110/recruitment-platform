@@ -43,7 +43,7 @@ npx --prefix e2e playwright install chromium --only-shell
 python3 scripts/e2e.py
 ```
 
-既定のテスト用portは3001/18082。テストごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)を参照してください。
+既定のテスト用portは3001/18082。実行ごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)、実行結果は[M1 E2E記録](docs/validation/2026-10-15-m1-e2e-report.md)を参照してください。
 
 ## 設計を読む
 

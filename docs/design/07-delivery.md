@@ -64,7 +64,7 @@
 
 A05の失効保証は撤回commit後の新しい要求。既に取得/stream開始したPDFの回収はできない。API試験とブラウザ試験を分け、PDFは文字抽出/page countに加えて日本語・配置を目視確認する。
 
-後続M6の製品CIはformat/lint/typecheck、Rustのdomain/認可、実DB/RLSとlock/冪等の結合試験、Compose上の主要E2E、依存・image確認を実装する。M0専用CIとM1認証基盤を作成済み。製品の業務テスト/回帰CIはM6に残る。
+後続M6の製品CIはformat/lint/typecheck、Rustのdomain/認可、実DB/RLSとlock/冪等の結合試験、Compose上の主要E2E、依存・image確認を実装する。M0専用CI、M1認証基盤とM1限定の再実行可能なブラウザE2E/手動CIを作成済み。製品の業務テスト/回帰CIはM6に残る。
 
 ## 性能と引渡し記録
 
@@ -75,3 +75,5 @@ A05の失効保証は撤回commit後の新しい要求。既に取得/stream開�
 ## M1での停止記録（2026-10-15）
 
 [M1結果](../validation/2026-10-15-m1-report.md)のとおり、ローカル7サービス・OIDC・固定所属・DB session/CSRF・架空fixtureまで実装して確認した。製品の業務表/RLS・PDF処理は後続。M2へは進んでいない。M2〜M7の計画幅は64〜112時間で、実測からの再見積もりや追加予算の承認ではない。
+
+M1の不足修正と認証E2Eは[最終記録](../validation/2026-10-15-m1-e2e-report.md)のとおり、arm64/amd64で各20件を確認した。実装/E2Eの対象commitは901d245。最終記録を保存してM1で停止し、M2は未着手。
