@@ -1,6 +1,6 @@
 # レジュメ受付・ウイルス検査・全フォームの自動保存
 
-設計 v0.4 改訂1 / 2026-10-15（レビュー5件を設計へ反映）。**追加要件の設計であり、未実装・未検証。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
+設計 v0.4 改訂2 / 2026-10-15（レビュー5件と再レビュー残件P2を設計へ反映）。**追加要件の設計であり、未実装・未検証。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
 
 ## 1. 対象と境界
 
@@ -75,13 +75,14 @@
 
 form_drafts、draft_operations、draft_keysはENABLE/FORCE RLSで自分かつ自組織のみ。form_typeはjob_new/job_edit/candidate_new/candidate_edit/application_new/application_reason/application_submit/selection_note/document_upload/job_filters/candidate_filters/application_filters。後続フォームはschemaと受入を同じ変更で追加する。新規draft IDはブラウザがUUIDを生成して同じIDで再試行する。targetは既存resource、contextは推薦作成時のjob等を特定する。IDを暗号化本文だけに隠して認可を省略しない。
 
-payloadはフォーム別許可リストと各項目の既存文字数制限に従う。未入力/途中入力は許可するが、未知項目/型違い/超過を拒否する。検索語、編集値、選択document ID、focus field/selection/scroll、upload処理ID/操作キーを保存可。候補者原本の表示用複製、ファイルbytes、同意済みフラグ、token、HTML、任意遷移URLを保存しない。1draft plaintext最大64KiB、envelope要求最大96KiB。通常JSON64KiB制限とは別にdraft routeだけ96KiBを許可し、無制限に広げない。1userの有効draft最大50件/合計2MiB（plaintext換算）。tombstoneは有効draft quotaに数えず、空bodyの無制限生成を防ぐためdraftの新規作成はuser毎30件/時、更新は120件/分を初期制限とする（429/Retry-After）。超過は409 DRAFT_QUOTA_EXCEEDEDとし入力を消さない。
+payloadはフォーム別許可リストと各項目の既存文字数制限に従う。未入力/途中入力は許可するが、未知項目/型違い/超過を拒否する。検索語、編集値、選択document ID、focus field/selection/scroll、upload処理ID/操作キーを保存可。uploadの結果照合/期限切れ拒否は以下の7日契約に従う。候補者原本の表示用複製、ファイルbytes、同意済みフラグ、token、HTML、任意遷移URLを保存しない。1draft plaintext最大64KiB、envelope要求最大96KiB。通常JSON64KiB制限とは別にdraft routeだけ96KiBを許可し、無制限に広げない。1userの有効draft最大50件/合計2MiB（plaintext換算）。tombstoneは有効draft quotaに数えず、空bodyの無制限生成を防ぐためdraftの新規作成はuser毎30件/時、更新は120件/分を初期制限とする（429/Retry-After）。超過は409 DRAFT_QUOTA_EXCEEDEDとし入力を消さない。
 
 | Method / Path（/api/v1以下、未実装） | 入力 / 応答 |
 | --- | --- |
 | POST /drafts/key | key_version省略時は認証/CSRF後の本人current鍵を競合安全に生成/取得。指定時は本人のその版だけ取得し、新規生成/current切替をしない。本人の未失効旧版は取得可、他人/他組織/存在しない版は404、本人の失効済み版は409 DRAFT_KEY_REVOKED。no-store、cookie/OIDC値は返さない |
 | GET /drafts?form_type=&target_id=&context_id= | 現在の本人scopeのmetadata一覧、limit20/最大50、期限内のみ。復元前に対象認可を再確認 |
 | GET /drafts/:id | 認可再確認後のpayload/revision/base_resource_version/schema_version/expires_at。復号できない/期限切れは復元しない |
+| GET /candidates/:id/document-upload-outcome?key= | 本人/自社候補者/元登録userのupload結果を7日間照合。期限後409 OPERATION_RESULT_EXPIRED、詳細は次節のupload契約 |
 | GET /drafts/:id/outcome?operation_id= | 本人scopeでcommitted（現在認可に応じた結果ID/status）、not_recorded、expiredを返す。consume済みでも結果期限内は照合可。not_recordedは未実行の保証ではなく再試行時も同じ操作キーで直列化する。payload本文や旧PII応答は返さない |
 | PUT /drafts/:id | revision（新規0）、form_type/target/context/schema/base版/payload、mutation_id UUID。新規201/更新200、revision+1。厳密な同mutation_id+同payload再送は同じ結果参照、同ID異payload409。期限24hの冪等記録を業務POSTと別scopeで使用 |
 | POST /documents/:id/recheck | 所有agencyの元登録者、Idempotency-Key必須。旧readyでAV未検査の原本を同じID/hashで検査。完了200、処理中202、障害503、検出422/利用禁止。新規ready作成とは別の検査job/120秒leaseで直列化。既存blockedは409 DOCUMENT_BLOCKED、clean済みの再送は現在結果。候補者アーカイブ後も既存文書への自社権限があれば可 |
@@ -94,6 +95,20 @@ payloadはフォーム別許可リストと各項目の既存文字数制限に�
 通常の業務保存は、API互換のためdraft_id/draft_revision/operation_idの3項目をすべて省略することも許可するが、v0.4の入力フォームからの確定では3項目を必須送信する。フォーム入力を持たないお気に入り/公開/アーカイブ等のボタン操作は既存APIの冪等・version契約に従い、無関係なフォームdraftを流用しない。一部だけの指定は422。operation_idを当該POSTのIdempotency-Keyと同じUUIDにし、PATCHでも3項目付き要求の操作照合に使う。通常の業務保存はこれらを受け取り、業務変更とdraftのconsumeを同一transactionで確定する。業務lock順の後にdraftをlockし、draft保存側は業務行をlockせず認可/版を照合する。consumeは本文を消しtombstone化する。対象user/org・form_type・target/context・draft revisionと要求の業務入力の対応を確認し、別フォームのdraftを消費しない。draft_operationsへの結果ID/status/要求hashの記録も同じtransactionに含める。冪等replayはconsumeを繰り返さない。業務成功時に対応draftが新revisionなら業務をrollbackして競合を返す。確定ボタンの前に最新の自動保存を待ち、応答したdraft revisionを確定要求に含める。失敗/未同期なら確定を止めて理由を示す。検索/絞込みdraftは業務consume対象ではなく本人の最新条件として保持する。初回公開・推薦・採否の確定には既存version/同意/Idempotency-Keyを必須とし、draftだけから勝手に実行しない。
 
 uploadは原本受付後の状態照合なので、このconsume方式で原本受付をrollbackしない。応答喪失時は既存upload key/状態から結果を確認し、消費済みupload draftを新規再送しない。成功後のdraft消去応答が失われても、復元時に原本/業務の現在状態・版を照合して再提出を止める。
+
+### アップロード結果の7日照合と期限後の再実行禁止（再レビューP2）
+
+uploadはファイルとDBをまたぐためdraft_operationsの業務consume処理とは分けるが、結果の照合期間は同じ7日間とする。既存のidempotency_recordsのupload scopeを拡張し、別の結果台帳を二重に作らない。
+
+- scopeはorg/user/POST/正規化した候補者のupload path/Idempotency-Key。processingは期限なし、120秒leaseとCASで同じdocument IDを復旧する。completed/failedは**完了または拒否確定から7日間**、resource_id・request_hash・結果status/codeを保持する。再表示/照合/再送で期限を延長しない。ほかの通常の冪等記録の24時間とは区別する。
+- GET /candidates/:id/document-upload-outcome?key=:uuidを追加する。本人の有効session・所属・自社候補者・元登録userを検証し、そのscopeだけを読む。200でcompleted/failed/processing/not_recordedと、記録がある場合のdocument_id/status_url/結果status・拒否code/結果期限を返す。hash/保存key/lease token/過去の本文は返さない。no-storeを付け、候補者のアーカイブ後も自社の既存文書照合は許可する。他人/他組織/候補者不正は404。
+- ブラウザは送信前に元キー・候補者ID・種類・表示名等の要求metadataを暗号化してdocument_upload下書きへ保存する。応答喪失でdocument IDがなくても、再認証後は元キーから先に結果を照合する。completedなら同じdocumentを一覧へ戻し、failedなら保存された拒否理由を表示し、processingなら同じIDの状態確認/既存retryへ進む。元Fileの再選択や新しい原本登録を、結果照合の代わりに行わない。
+- not_recordedはDB予約前/実行中の可能性もあるため、未実行の証明としない。元Fileを再選択し、架空データを再確認して元キー/同要求で本人が再試行できる。通常のPOST再送は従来どおり実bytesのhashを照合し、異payloadは409 IDEMPOTENCY_MISMATCH、同payloadは同resource/保存済み結果。先行要求との競合は同じ冪等lockで直列化する。
+- サーバー時刻が結果期限以上なら、整理処理がまだ走っていなくても照合/同キー再送は409 OPERATION_RESULT_EXPIREDとし、元の結果DTOを返さず、新しいdocument/検査/ファイル配置を開始しない。POSTでは認証・現在の所有確認後に期限切れscopeを先に確認し、未検査bytesの受信/保存前に拒否できる構成にする。確定結果照合後にも同じlock内で再判定する。
+- 期限後もscope/key/hash/期限とstate=expiredの最小tombstoneを残す。idempotency_recordsにupload専用のexpired状態と対応制約を追加する設計とし、通常の期限整理でこの識別子を削除しない。元キーを新規キー扱いに戻さず、古い端末キューから復活させない。期限切れを新しいキーで自動迂回せず、本人が文書一覧と現状を確認してから、別の新規登録を明示的に判断する。
+- outcomeはGETで照合するだけなのでCSRF不要、upload/retryは既存のOrigin/CSRFを維持する。結果照合は登録の可否と配信の可否を分け、completedでも現在のAV利用禁止/共有失効を迂回しない。元キーは認可用の秘密として扱わず、必ず現在の認証と本人scopeを要求する。
+
+この変更はv0.4の追加migrationで行い、0001〜0005は変更しない。残存する旧upload記録は元の終端確定時点を基準に7日へ揃え、移行時刻から7日に延長しない。移行前に既に整理されて追跡不能なキーは復元保証対象外と明示し、旧端末キューの自動再送を止めて一覧確認へ案内する。今回migration/整理/実験は実行しない。
 
 ### 業務要求の送信と応答喪失からの復帰（指摘1）
 
@@ -147,7 +162,7 @@ uploadは原本受付後の状態照合なので、このconsume方式で原本�
 | A20 | scanner停止/定義なし/更新失敗と24h超/timeout/検査上限の途中skipでreadyにならない。更新後retry、公開世代とロード世代の不一致/再ロード失敗/検査中更新/更新なし確認、旧lease、同時quota/頻度制限、正常起動9サービスを確認 |
 | A21 | 既存PDF/共有snapshotの追加検査前は配信不可、clean後のみ可、blocked優先。企業はdocuments原本を読まず、失効後はPDF/XLSX双方404 |
 | A22 | 全form_typeについて入力→別画面→戻る、reload、別アプリ相当のhidden→visible、再ログインで復元。検索・選択・focus/scrollも確認。同意は再確認、業務確定/通知が勝手に起きない |
-| A23 | 通信断→端末暗号化保存→ブラウザcontext終了→同一profile再起動→本人認証→復元/同期。未送信Fileは再選択、受付済みuploadはID/keyから復旧。候補者編集の保存/破棄でdocument_upload draftを消さず、書類登録と候補者編集を独立して復元、二重作成なし |
+| A23 | 通信断→端末暗号化保存→ブラウザcontext終了→同一profile再起動→本人認証→復元/同期。未送信Fileは再選択、受付済みuploadはID/keyから復旧。候補者編集の保存/破棄でdocument_upload draftを消さず、書類登録と候補者編集を独立して復元、二重作成なし。PDF/XLSXともupload成功commit直後に応答を落としdocument ID未取得→3日後の再認証で元キーから同じdocumentを取得。24時間の整理後も結果が残ること、7日直前は照合可/期限ちょうど以後は409、再送/別キー自動発行をせずdocument数・検査・確定ファイルが増えないことを確認。拒否結果の7日保持、pendingの継続復旧、アーカイブ後/他user・org拒否も確認 |
 | A24 | user/org差替え、共有失効、期限切れ、schema違い、容量不足、鍵取得失敗、暗号化改ざん、旧key_versionの未失効鍵で再認証復元/再暗号化でき、失効鍵/他人の版は取得・復元不可。Web Storage/IndexedDB/log/配布物へ平文/鍵/tokenを残さない |
 | A25 | 2タブ/2端末のrevision競合、応答喪失・遅延・順序逆転、IME入力、業務保存と自動保存の競合、consume/discard後の古いキューで入力消失/二重業務/下書き復活なし。求人/候補者/推薦の作成・PATCH・確定でcommit直後に応答を落としbrowserを再起動、結果IDへ復帰する。24h超〜7日以内の照合、7日後の再実行禁止、別フォームdraftの誤consume拒否も確認 |
 

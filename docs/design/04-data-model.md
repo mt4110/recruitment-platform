@@ -29,6 +29,8 @@ IDはUUID、日時はUTCのtimestamptz、API上はISO 8601、画面はAsia/Tokyo
 
 業務表には必要なcreated_at/updated_atを付ける。FKは原則RESTRICT。求人・候補者・文書・推薦の物理削除APIは用意せず、候補者はアーカイブする。documentsのready後はファイルbytes・保存参照・検査情報を変更しない。ユーザーが新しいPDF/XLSXを登録すると別documentになる。v0.4で追加する形式/書類種別、検査記録、個人下書き/操作結果台帳/版付き鍵、RLS/移行の詳細は[追加データ契約](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。下表はM4までの既存列を示す。拒否・一時ファイルの扱いは[安全性設計](06-security.md)を参照。
 
+v0.4改訂2ではidempotency_recordsのupload scopeにstate=expiredを追加し、completed/failedの結果を終端確定から7日保持する。processingの無期限/lease復旧は維持し、期限後も識別子/hash/期限のtombstoneを残す。通常業務の24時間整理でuploadの結果/識別子を消さない。[upload保持・移行契約](10-resumes-and-autosave.md#アップロード結果の7日照合と期限後の再実行禁止再レビューp2)を参照。上表は既存実装のstateであり、今回はmigrationを実行しない。
+
 consent_text_versionはdemo-share-v1。これは架空データの操作確認で、実在の本人同意の検証記録ではない。agency/employerのkind整合、candidate/documentの所有組織整合をAPIとDB制約/triggerで確認する。
 
 ## 共有情報の読取り経路（R1/R2）

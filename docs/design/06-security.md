@@ -53,7 +53,7 @@ M0のarm64/amd64確認では、drop ALLにSYS_CHROOTだけを追加し、no-new-
 5. v0.4では両検査合格時だけ形式policy名（static-resume-v2/xlsx-resume-v1）、検査日時/hashとdocument_checksのengine/DB版/cleanを同じ短いtransactionで保存する。readyへの変更はこの記録を必須とする。stagingと確定先は同一filesystemに置き、完全なファイルをcreate-onlyでatomicに配置する。既存の確定ファイルを上書きしない。同じ保存先があればexpected hashとの一致を確認し、異なれば503 STORAGE_CONFLICTで停止する。
 6. candidate→documentの行順で再取得し、現在の所有/有効性、policy/hash、lease tokenを確認してreadyへ更新する。冪等記録もcompleted/201としcommitする。候補者がアーカイブ済みに変わっていた場合はrejected/CANDIDATE_ARCHIVEDとし、冪等記録はfailed/409を保存する。leaseを失った旧processはreadyへ変更できない。readyのbytes/keyは以後不変。
 
-冪等記録のprocessingは期限だけで消さない。完了/拒否確定後から24時間保持する。422の同じキーは同じ拒否結果を返し、修正した別ファイルは新キーで登録する。request hash不一致は409。
+冪等記録のprocessingは期限だけで消さない。v0.4改訂2のuploadは完了/拒否確定後から7日間、同じresourceと結果を照合できる。通常のJSON業務要求の24時間とは区別する。期限以後は409 OPERATION_RESULT_EXPIREDとし、scope/key/hash/期限を持つexpired tombstoneを残して同キーの新規実行を禁止する。outcomeとPOSTの両方で現在認可と期限を判定する。期間内の422は同キーで同じ拒否結果を返す。修正した別ファイルの新規登録は本人の明示操作とし、期限切れの別キー自動迂回は行わない。request hash不一致は409。詳細は[uploadの7日契約](10-resumes-and-autosave.md#アップロード結果の7日照合と期限後の再実行禁止再レビューp2)。
 
 DB予約のcommit前に停止した場合は、永続的なdocument ID・冪等記録・leaseがまだない。同じ要求の再送で初めて単一documentを予約し、未検査stagingを公開しない。孤立stagingは下記の管理手順で整理する。commit後の停止は、検査前・合格後・配置後・ready commit前のどの段階でも既存document IDと元の冪等記録を使って復旧する（再レビューC1）。
 

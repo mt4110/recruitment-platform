@@ -20,7 +20,7 @@ JSON要求は次の順序を守る。
 4. 未実行ならprocessing記録をINSERTし、[DB設計のlock順序](04-data-model.md)に従ってversion・許可状態を検査、業務を更新する。
 5. 記録をcompletedにし、業務・イベント・通知と同じtransactionでcommit。失敗はすべてrollbackする。
 
-同一キーの並行要求はlockで待ち、先行commit後に結果を参照する。3秒の待ち上限で503 RETRYABLE_BUSY、同じキーで再試行可能。別キーでの二重推薦にはDBの部分一意制約を適用し409 DUPLICATE_APPLICATION。completed記録は完了から24時間保持する。response bodyの完全一致ではなく、同じ操作結果/resourceへの参照を保証する。
+同一キーの並行要求はlockで待ち、先行commit後に結果を参照する。3秒の待ち上限で503 RETRYABLE_BUSY、同じキーで再試行可能。別キーでの二重推薦にはDBの部分一意制約を適用し409 DUPLICATE_APPLICATION。通常のJSON業務要求のcompleted記録は完了から24時間保持する。v0.4改訂2のuploadは完了/拒否から7日間保持し、期限後もexpired tombstoneで同キー再実行を禁止する。response bodyの完全一致ではなく、同じ操作結果/resourceへの参照を保証する。
 
 PDF/XLSXアップロードはDBとファイルをまたぐ。multipartの実bytesをstagingへ保存して算出したSHA-256と、候補者ID・正規化表示名・形式・書類種別・架空データ確認をrequest_hashに使う。v0.4でpayload契約を変更するため、旧キーは旧scope/versionとして照合し、新payloadに再利用しない。現在の認証・所有確認→staging/hash→冪等lock/既存結果の確認→新規だけ非アーカイブ確認と予約→検査→確定の順序とし、復旧も同じdocument IDを使う。完了済み要求は候補者のアーカイブ後も、現在の閲覧認可で同じ結果/resourceを参照できる。新キーのアーカイブ済み候補者への登録は409 CANDIDATE_ARCHIVED。詳細と中断時の扱いは[安全性設計](06-security.md)を正本にする。
 
@@ -125,6 +125,8 @@ RLSとtransaction timeoutは[PostgreSQL 17の公式資料](https://www.postgresq
 ## v0.4の追加API契約（未実装）
 
 [追加仕様のデータ/API節](10-resumes-and-autosave.md#5-個人下書きのデータapi)を正本とする。/draftsの本人専用保存・復元・版指定の鍵取得・outcome・discard、業務要求のdraft_id/draft_revision/operation_id（APIでは3項目まとめて省略可、v0.4の入力フォーム確定では必須）、既存原本の/documents/:id/recheckを追加する。draft JSONだけ96KiB、通常JSON64KiBを維持する。
+
+upload結果はGET /candidates/:id/document-upload-outcome?key=:uuidで、本人の認証/自社候補者/元登録userを確認して7日間照合できる。document ID未取得でも元キーから同じ結果へ復帰する。期限以後は照合/同キーPOSTとも409 OPERATION_RESULT_EXPIRED、not_recordedは未実行の保証としない。別キーの自動再送を禁止し、現在の検査利用可否/認可も維持する。[uploadの7日契約](10-resumes-and-autosave.md#アップロード結果の7日照合と期限後の再実行禁止再レビューp2)を正本とする。
 
 新文書DTOと共有文書DTOにはfile_format/media_type/document_kind、利用可否availability（pending/available/blocked/recheck_required）を追加する。登録中のstatusと利用可否を区別する。原本の検査engine/署名DB/hash/保存keyは内部専用。共有失効時は形式・種類を含む共有文書のkey自体を返さない。uploadは1要求1ファイルのまま、種類と形式を冪等hashへ加える。旧APIの結果を新policy合格と解釈しない。
 
