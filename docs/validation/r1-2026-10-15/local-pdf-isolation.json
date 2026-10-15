@@ -1,0 +1,25 @@
+{
+  "checks": {
+    "worker_memory_limit": true,
+    "worker_cpu_limit": true,
+    "worker_sanitized_environment": true,
+    "worker_accepted": true,
+    "non_root": true,
+    "no_capabilities": true,
+    "seccomp": true,
+    "read_only_root": true,
+    "no_storage_mount": true,
+    "no_db_environment": true,
+    "no_egress": true,
+    "internal_auth_required": true,
+    "concurrency_one": true,
+    "valid_worker_response": true
+  },
+  "versions": {
+    "pikepdf": "10.17.0",
+    "pillow": "12.3.0",
+    "lxml": "6.1.3",
+    "packaging": "26.3"
+  },
+  "libqpdf": "12.4.2"
+}

@@ -1,0 +1,26 @@
+{
+  "source_commit": "194e2b99198e9d0f657c816c1f8575720b899a75",
+  "source_hashes_equal_between_arches": true,
+  "local": {
+    "browser_passed": 56,
+    "xlsx_cases": 67,
+    "docker": "29.5.2 / aarch64",
+    "elapsed_seconds": 252.044
+  },
+  "ci": {
+    "run": "https://github.com/mt4110/recruitment-platform/actions/runs/38735209052",
+    "conclusion": "success",
+    "browser_passed": 56,
+    "xlsx_cases": 67,
+    "docker": "28.0.4 / x86_64",
+    "elapsed_seconds": 437.42
+  },
+  "r2_started": false,
+  "normal_demo_updated": false,
+  "positive_delivery_uses_synthetic_AV_records": true,
+  "remaining_plan_hours": [
+    70,
+    124
+  ],
+  "human_hours_measured": false
+}

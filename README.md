@@ -6,7 +6,7 @@
 
 設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録しています。[M4の実装・検証・残工数](docs/validation/2026-10-15-m4-report.md)を保存し、M4で停止しています。
 
-**設計v0.4を追加しました（未実装）。** [PDF/XLSX・ウイルス検査・全フォーム自動保存/復元](docs/design/10-resumes-and-autosave.md)と[残工数82〜144時間の条件付き積算](docs/design/07-delivery.md)を参照してください。現在動くM4はPDF専用で、AVと永続的なフォーム復元は未対応です。レビュー5件の[設計への反映](docs/reviews/2026-10-15-v04-revisions.md)を記録しました。[R0残件の追補結果](docs/validation/2026-10-15-r0-followup-report.md)を追加しました。Sheets由来の初期互換範囲・空metadataの許可条件、native arm64/amd64 AVと実定義の切替を独立確認済み。製品の追加実装は未着手で、R1以降へ進まず停止しています。
+**v0.4のR1まで実装・検証済みです。** [R1結果](docs/validation/2026-10-15-r1-report.md)と[残工数70〜124時間の暫定積算](docs/design/07-delivery.md)を参照してください。PDF/XLSXの形式検査・DB/API・旧PDF移行・原本/共有の未検査配信拒否を追加しました。新規文書はAV待ちで配信/推薦できません。実AVと全フォーム自動保存は後続で、R2には進まず停止しています。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。
 
 ## ローカルで試す
 
