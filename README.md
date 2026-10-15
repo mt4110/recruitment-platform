@@ -2,11 +2,11 @@
 
 人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプです。
 
-**M0の技術確認とM1のローカル認証基盤まで実装済みです。求人・候補者・推薦などの業務機能はまだ操作できません。**
+**M2の求人・保存・候補者機能を追加しました。組織間のアクセス拒否を含む検証を進めています。PDF登録・推薦・選考は未実装です。**
 
-設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の実装結果・未確認事項・残工数](docs/validation/2026-10-15-m1-report.md)を記録し、ここで作業を止めています。
+設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、今回はM2までを対象にしています。
 
-## ローカルで認証を試す
+## ローカルで試す
 
 必要環境は稼働中のDocker Engine/Desktop（Compose pluginまたはdocker-compose）とPython 3.11以上。Node/Rustのホストへのインストールは不要です。loopbackの3000/18080が空いていることを確認してください。
 
@@ -31,11 +31,13 @@ python3 scripts/local.py up
 
 今回確認したApple Silicon環境では専用Colima profileを使いました。環境を選ぶ場合は各コマンドの先頭に`DOCKER_CONTEXT=colima-recruitment-m1`を付けます。Buildxがない今回の環境では`DOCKER_BUILDKIT=0`も指定して、通常のDocker buildで確認しています。既存のdefault contextを切り替える必要はありません。
 
+現在は、企業X/Yで「自社求人 → 登録 → 下書き保存 → 公開 → 募集終了」、紹介会社A/Bで「求人検索 → 詳細 → 保存」と「候補者 → 登録 → 編集 → アーカイブ」を試せます。企業には自社求人、紹介会社には公開求人と自社候補者のみを表示します。初期データは架空求人8件、候補者6名です。候補者のアーカイブは不可逆です。
+
 完成後は、架空データを使って「求人登録 → 候補者登録・PDFレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
 
-## M1のブラウザE2E
+## M1/M2のブラウザE2E
 
-実Keycloakを含む認証テストを、通常デモと別のポート・DB・ブラウザcontextで実行します。
+実Keycloakを含む認証と、求人・候補者の操作/組織分離テストを、通常デモと別のポート・DB・ブラウザcontextで実行します。
 
 ```sh
 npm ci --prefix e2e

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run M1 browser E2E in a new local Compose project; retain all evidence/data."""
+"""Run M1/M2 browser E2E in a new local Compose project; retain all evidence/data."""
 import argparse, hashlib, json, os, re, secrets, socket, subprocess, time
 from pathlib import Path
 
@@ -20,7 +20,15 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'M1 only', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed'}
+summary = {'scope': 'M1 + M2; stop before M3', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed'}
+def source_hashes():
+    tracked = ['scripts/local.py','scripts/e2e.py','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
+               'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts']
+    tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file()]
+    for folder in ['migrations','fixtures','services/api/src','apps/web/app']:
+        tracked += [str(p.relative_to(ROOT)) for p in (ROOT/folder).rglob('*') if p.is_file()]
+    return {name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sorted(set(tracked))}
+summary['source_sha256'] = source_hashes()
 start = time.monotonic()
 code = 1
 try:
@@ -37,9 +45,9 @@ try:
     summary['phase'] = 'complete'
     summary['source_commit'] = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     summary['source_dirty'] = bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip())
-    tracked = ['scripts/local.py','scripts/e2e.py','infra/local/compose.yaml','infra/local/nginx.conf','fixtures/0001_auth.sql','services/api/src/auth.rs','services/api/src/main.rs','apps/web/app/page.tsx']
-    tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file()]
-    summary['source_sha256'] = {name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sorted(tracked)}
+    final_hashes = source_hashes()
+    summary['source_unchanged_during_run'] = final_hashes == summary['source_sha256']
+    if not summary['source_unchanged_during_run']: code = 1; summary['status'] = 'failed'
     summary['docker'] = subprocess.check_output(['docker','info','--format','{{.ServerVersion}} / {{.Architecture}}'],env=env,text=True).strip()
     values = list(json.loads((local/'demo-accounts.json').read_text()).values())
     values += [s.split('=',1)[1] for s in (local/'local.env').read_text().splitlines() if '=' in s and len(s.split('=',1)[1])>=30]
@@ -61,5 +69,5 @@ finally:
     if stopped.returncode != 0: code = 1; summary['status'] = 'failed'
     summary['elapsed_seconds'] = round(time.monotonic() - start, 3)
     (artifacts/'run.json').write_text(json.dumps(summary, indent=2)+'\n')
-    print(f"M1 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
+    print(f"M1/M2 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
 raise SystemExit(code)

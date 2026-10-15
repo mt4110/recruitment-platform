@@ -1,4 +1,5 @@
 mod auth;
+mod business;
 
 use auth::{ApiError, App, Config};
 use axum::{
@@ -37,6 +38,19 @@ async fn start() -> anyhow::Result<()> {
         .acquire_timeout(std::time::Duration::from_secs(5))
         .connect_with(options)
         .await?;
+    let runtime = PgPoolOptions::new()
+        .max_connections(5)
+        .acquire_timeout(std::time::Duration::from_secs(5))
+        .connect_with(
+            PgConnectOptions::new()
+                .host("db")
+                .database("recruitment")
+                .username("app_runtime")
+                .password(&std::env::var("RUNTIME_DB_PASSWORD")?)
+                .ssl_mode(PgSslMode::Disable)
+                .disable_statement_logging(),
+        )
+        .await?;
     let http = openidconnect::reqwest::Client::builder()
         .redirect(openidconnect::reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(5))
@@ -45,6 +59,7 @@ async fn start() -> anyhow::Result<()> {
     let app = Arc::new(App {
         config,
         db,
+        runtime,
         http,
         oidc,
     });
@@ -55,6 +70,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/auth/callback", get(auth::callback))
         .route("/auth/logout", post(auth::logout))
         .route("/api/v1/me", get(auth::me))
+        .merge(business::routes())
         .fallback(|| async {
             ApiError::new(
                 StatusCode::NOT_FOUND,
@@ -78,8 +94,10 @@ async fn ready(State(app): State<Arc<App>>) -> Response {
     )
     .fetch_one(&app.db)
     .await;
+    let business = sqlx::query_scalar::<_,bool>("SELECT to_regclass('jobs') IS NOT NULL AND to_regclass('candidates') IS NOT NULL AND to_regclass('idempotency_records') IS NOT NULL").fetch_one(&app.runtime).await;
     let pdf = app.http.get("http://pdf-renderer:8080/live").send().await;
     if matches!(db, Ok(true))
+        && matches!(business, Ok(true))
         && pdf.is_ok_and(|r| r.status().is_success())
         && Path::new("/data/resumes").is_dir()
     {
@@ -97,8 +115,7 @@ async fn headers(request: axum::extract::Request, next: Next) -> Response {
             .and_then(|v| v.to_str().ok())
             .is_some_and(|v| v.contains("text/html"));
     let mut response = next.run(request).await;
-    if callback_page && response.status().is_client_error()
-        || callback_page && response.status().is_server_error()
+    if callback_page && (response.status().is_client_error() || response.status().is_server_error())
     {
         let message = match response.status() {
             StatusCode::FORBIDDEN => {

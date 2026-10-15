@@ -42,7 +42,7 @@ async function identity(context) {
 }
 async function anonymous(page) { await expect(page.getByRole('link',{name:'ログインする',exact:true})).toBeVisible(); }
 async function shot(page,name) {
-  expect(new URL(page.url()).origin===origin && (['/', '/login'].includes(new URL(page.url()).pathname) || (new URL(page.url()).pathname==='/auth/callback' && await page.getByRole('heading',{name:'ログインを完了できませんでした'}).count()===1)), 'safe screenshot path').toBe(true);
+  expect(new URL(page.url()).origin===origin && ((['/', '/login'].includes(new URL(page.url()).pathname) || /^\/(jobs|candidates)(?:\/[a-f0-9-]{36}(?:\/edit)?|\/new)?$/.test(new URL(page.url()).pathname)) || (new URL(page.url()).pathname==='/auth/callback' && await page.getByRole('heading',{name:'ログインを完了できませんでした'}).count()===1)), 'safe screenshot path').toBe(true);
   await page.screenshot({path:path.join(dir,'artifacts',name+'.png'),fullPage:true});
 }
 module.exports={sql,signIn,identity,anonymous,shot,origin,loginPage};

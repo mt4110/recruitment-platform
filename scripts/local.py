@@ -49,7 +49,8 @@ def migrate():
         digest=hashlib.sha256(p.read_bytes()).hexdigest();v=p.stem
         body+=f"DO $$ BEGIN IF EXISTS(SELECT 1 FROM schema_migrations WHERE version='{v}' AND sha256<>'{digest}') THEN RAISE EXCEPTION 'migration checksum changed'; END IF; END $$;\n"
         body+=f"SELECT NOT EXISTS(SELECT 1 FROM schema_migrations WHERE version='{v}') AS apply_migration \\gset\n\\if :apply_migration\n"+p.read_text()+f"\nINSERT INTO schema_migrations VALUES('{v}','{digest}');\n\\endif\n"
-    body+='COMMIT;\n'+(ROOT/'fixtures/0001_auth.sql').read_text()
+    body+='COMMIT;\n'
+    for fixture in sorted((ROOT/'fixtures').glob('*.sql')): body+=fixture.read_text()+'\n'
     compose('exec','-T','db','psql','-U','postgres','-d','recruitment',input=body,text=True,stdout=subprocess.DEVNULL)
     print('Migrations and fictional fixtures applied; existing records retained.')
 if len(sys.argv)<2:raise SystemExit('Usage: python3 scripts/local.py setup|up|stop|status|migrate|compose <args>')

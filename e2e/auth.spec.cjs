@@ -38,7 +38,7 @@ for(const [name,organization] of [['agency-a','架空紹介会社A'],['agency-b'
       expect(sql(`SELECT expires_at>now()+interval '4 minutes' AND octet_length(encrypted_pkce_verifier)>28 FROM auth_attempts WHERE ${attempt(page)};`)).toBe('t');
     })).status()).toBe(303);
     await expect(page.getByRole('heading',{name:'ログインできました'})).toBeVisible();
-    await expect(page.getByText(organization,{exact:true})).toBeVisible();
+    await expect(page.getByRole('region',{name:'アカウント'}).getByText(organization,{exact:true})).toBeVisible();
     const me=await identity(context);
     expect(me.organization.name).toBe(organization);
     expect(Object.keys(me).sort()).toEqual(['csrf_token','expires_at','organization','user']);

@@ -1,6 +1,6 @@
-# M1 ブラウザE2E
+# M1/M2 ブラウザE2E
 
-対象は認証基盤だけ。7サービスの起動、実Keycloakを通した4アカウントのログイン、唯一の所属、DB session/CSRF、拒否・期限・再起動・画面の復帰を確認する。求人・候補者・推薦などM2以降を実装/検証するテストではない。
+対象はM1の認証基盤とM2の求人・保存・候補者。実Keycloakの4アカウント、固定所属、session/CSRF、求人の公開/終了、候補者の更新/アーカイブ、組織間のID差替え・通常runtimeロールのRLS拒否、冪等性・version競合・job lock待ち上限、画面の入力保持を確認する。M3のPDF登録、M4以降の推薦・選考は対象外。
 
 ## 実行
 
@@ -32,4 +32,7 @@ build/startの詳細は同runの私有`operations.log`に残る。外部共有�
 
 終了時は成功/失敗にかかわらず、作成したrunのサービスだけstopする。container、volume、設定、以前の証拠を削除しない。片付けは対象を確認した別操作とする。
 
-手動workflowは`M1 browser E2E`。M1の再現確認用であり、M6の業務全体のCIや本番適合性を完了扱いにしない。
+手動workflowは`M1/M2 browser E2E`。M1/M2の再現確認用であり、M6の業務全体のCIや本番適合性を完了扱いにしない。
+
+
+Browser pluginはこの環境にないため、リポジトリのPlaywrightを使用する（Browser plugin not available）。1280×900と390×844のChromiumで日本語の操作、URL/title、非空表示、overlay/console/runtime例外、画面の収まりを確認する。スクリーンショットには架空情報だけを含める。

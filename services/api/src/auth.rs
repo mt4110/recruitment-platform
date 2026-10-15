@@ -92,6 +92,7 @@ impl Config {
 pub struct App {
     pub config: Config,
     pub db: PgPool,
+    pub runtime: PgPool,
     pub http: reqwest::Client,
     pub oidc: Oidc,
 }
@@ -135,7 +136,13 @@ impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let id = Uuid::new_v4().to_string();
         tracing::warn!(event="request_rejected",code=self.code,status=self.status.as_u16(),request_id=%id);
-        let mut r=(self.status,Json(serde_json::json!({"error":{"code":self.code,"message":self.message,"request_id":id}}))).into_response();
+        let mut body =
+            serde_json::json!({"error":{"code":self.code,"message":self.message,"request_id":id}});
+        if self.code == "INVALID_INPUT" {
+            body["error"]["field_errors"] =
+                serde_json::json!({"_form":"必須項目・許可項目・文字数を確認してください。"});
+        }
+        let mut r = (self.status, Json(body)).into_response();
         r.headers_mut()
             .insert("x-request-id", HeaderValue::from_str(&id).unwrap());
         r
@@ -379,12 +386,12 @@ pub async fn callback(
     Ok(r)
 }
 #[derive(Serialize, FromRow)]
-struct Identity {
-    user_id: Uuid,
+pub struct Identity {
+    pub user_id: Uuid,
     display_name: String,
-    organization_id: Uuid,
-    organization_name: String,
-    organization_kind: String,
+    pub organization_id: Uuid,
+    pub organization_name: String,
+    pub organization_kind: String,
     expires_at: DateTime<Utc>,
 }
 async fn identity(app: &App, session: &str) -> Result<Identity, ApiError> {
@@ -439,4 +446,34 @@ pub async fn logout(State(app): State<Arc<App>>, headers: HeaderMap) -> Result<R
     set_cookie(&mut r, SESSION, "", "/", 0, app.config.secure);
     set_cookie(&mut r, ATTEMPT, "", "/auth", 0, app.config.secure);
     Ok(r)
+}
+
+/// Reuse session validation and the exact Origin/HMAC check for every business mutation.
+pub async fn authorize(app: &App, headers: &HeaderMap, write: bool) -> Result<Identity, ApiError> {
+    let session = cookie(headers, SESSION).ok_or_else(unauthorized)?;
+    let identity = identity(app, &session).await?;
+    if write {
+        let denied = || {
+            ApiError::new(
+                StatusCode::FORBIDDEN,
+                "CSRF_REJECTED",
+                "操作をやり直してください。",
+            )
+        };
+        if headers.get(header::ORIGIN).and_then(|v| v.to_str().ok())
+            != Some(app.config.origin.as_str())
+        {
+            return Err(denied());
+        }
+        let supplied = headers
+            .get("x-csrf-token")
+            .and_then(|v| v.to_str().ok())
+            .and_then(|v| B64.decode(v).ok())
+            .ok_or_else(denied)?;
+        let mut mac = <HmacSha256 as hmac::KeyInit>::new_from_slice(&app.config.csrf)
+            .map_err(|_| unavailable())?;
+        mac.update(session.as_bytes());
+        mac.verify_slice(&supplied).map_err(|_| denied())?;
+    }
+    Ok(identity)
 }

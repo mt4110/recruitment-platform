@@ -109,3 +109,15 @@ A4縦・1明細・固定デモ金額500,000円・1ページ。IDはDEMO-{placeme
 ## 可観測性
 
 /liveはプロセス応答、/readyはDB/migration、保存領域、PDF service疎通を確認する。外部へ依存先の詳細を出さない。request_idを応答とlogに共通化し、認可失敗・状態変更・文書取得を記録する。rollbackした業務transactionに拒否監査を依存させず、拒否記録は秘密を含まない独立したsecurity logへ出す。
+
+
+## M2で確定した補足
+
+- candidateのアーカイブは不可逆。アーカイブ後のPATCHと新キーのarchiveは409 CANDIDATE_ARCHIVED。同じ完了キーのarchive/作成は現在のDTOを返し、versionや監査を増やさない。
+- 一覧はcreated_at/id降順、candidateは既定で非アーカイブ、archived=trueはアーカイブ済みのみ。求人のfavoritedはagencyだけで使用できる。検索locationも1〜100文字、qは求人名/仕事内容または候補者氏名/概要の部分一致。
+- cursorは日時・ID・組織/検索条件/limitのhashをbase64url化する。条件が変わったcursorは422。署名や認可には使用せず、すべてのページでRLSを適用する。
+- M2のcandidate詳細のdocumentsは空配列。M3で実際の文書の状態を接続する。M2では登録/配信APIを公開しない。
+- job lockは各要素のUTF-8 byte長をunsigned 64bit big endianで前置し、`job`と小文字UUIDをSHA-256、先頭8byteをsigned 64bit big endianへ変換。冪等lockは同じ形式で`idem`とorg/user/method/path/keyを順番に使う。M4もこの関数を共用する。
+- 通常JSONの上限は64KiB。文字数上限と別にbyte上限を設ける。JSONの入力不正にはfield_errorsを付ける。
+
+RLSとtransaction timeoutは[PostgreSQL 17の公式資料](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)と[接続設定](https://www.postgresql.org/docs/17/runtime-config-client.html)を参照し、実装で検証する。

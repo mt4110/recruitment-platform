@@ -37,6 +37,7 @@ services:
       APP_ORIGIN: http://localhost:${APP_PORT:-3000}
       OIDC_ISSUER: http://idp.recruitment.localhost:${IDP_PORT:-18080}/realms/recruitment
       AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:?Run setup}
+      RUNTIME_DB_PASSWORD: ${RUNTIME_DB_PASSWORD:?Run setup}
       ATTEMPT_KEY: ${ATTEMPT_KEY:?Run setup}
       CSRF_KEY: ${CSRF_KEY:?Run setup}
     networks: [default,pdf]
