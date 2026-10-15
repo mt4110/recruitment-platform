@@ -68,6 +68,13 @@ cases['unknown_unused_namespace']=(rewrite(base,'xl/workbook.xml',lambda d:d.rep
 cases['formula_length_limit']=(form('1+'*2100+'1'),False)
 cases['formula_token_limit']=(form('1+'*1100+'1'),False)
 cases['formula_depth_limit']=(form('('*66+'A1'+')'*66),False)
+# ZipInfo.filename drops a NUL suffix. Reject the original name before trusting it.
+nul_archive=io.BytesIO()
+with zipfile.ZipFile(io.BytesIO(base)) as src,zipfile.ZipFile(nul_archive,'w') as dst:
+ for name in src.namelist():dst.writestr(name+'X' if name=='xl/workbook.xml' else name,src.read(name))
+cases['nul_zip_name']=(nul_archive.getvalue().replace(b'xl/workbook.xmlX',b'xl/workbook.xml\0'),False)
+for index,name in enumerate(['[evil.xlsx]履歴書','a'*32,"'invalid"]):
+ cases['invalid_sheet_name_'+str(index)]=(rewrite(base,'xl/workbook.xml',lambda d,n=name:d.replace('name="履歴書"'.encode(),('name="'+n+'"').encode())),False)
 results={}
 for name,(raw,accepted) in cases.items():
  p=subprocess.run([sys.executable,'/app/xlsx_validator.py'],input=raw,capture_output=True,timeout=6,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'})

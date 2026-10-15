@@ -41,7 +41,7 @@
 - 投稿者データ、threaded comments/comment partsは初期対応外。空metadataは削除せず、原本bytesを保持して検査する。Microsoftの[Persons仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/1a170d26-42a2-46f0-b2b6-0ff1dec1c344)と[personList仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/9f1b6e0e-79cd-4ae2-b3a7-6dea649c57f6)を参照した限定対応。
 - Sheetsは実在partのない`odttf`用Default（`application/vnd.openxmlformats-officedocument.obfuscatedFont`）も宣言する。この特定の未使用宣言だけを許可する。実font part・同拡張子のentry、他の未知宣言、重複/矛盾は拒否し、埋込fontを許可する意味にしない。
 
-Sheets実出力にある未使用namespace宣言も、[`xlsx_validator.py`](../../services/pdf-renderer/xlsx_validator.py)の`UNUSED_NS`に列挙した13 URIに限り許可する。これらを使う要素・属性・part/relationshipは許可せず、未知の宣言自体も拒否する。[XML namespace仕様](https://www.w3.org/TR/xml-names/#ns-decl)の名前識別と、構造を実際に利用することを区別する。数式は最大4,096文字/2,048 token/深さ64とし、Print_Titlesの行/列範囲も内部参照だけを許可する。
+Sheets実出力にある未使用namespace宣言も、[`xlsx_validator.py`](../../services/pdf-renderer/xlsx_validator.py)の`UNUSED_NS`に列挙した13 URIに限り許可する。これらを使う要素・属性・part/relationshipは許可せず、未知の宣言自体も拒否する。[XML namespace仕様](https://www.w3.org/TR/xml-names/#ns-decl)の名前識別と、構造を実際に利用することを区別する。ZIP名はZipInfoが切り詰める前の元名も照合してNULを拒否し、Unicode NFC/大文字小文字の正規化衝突を拒否する。sheet名は1〜31文字、`[]:*?/\`・制御文字・先頭末尾apostropheを拒否し、外部workbookの表記を内部sheetとして扱わない。数式は最大4,096文字/2,048 token/深さ64とし、Print_Titlesの行/列範囲も内部参照だけを許可する。
 
 R1は既存Python serviceの標準`zipfile`＋`xml.parsers.expat`で、実展開量/比率、深さ/要素数を逐次制限し、DOCTYPE/外部entityをparser handlerでも拒否する方針。XMLは初期対応をUTF-8に限定。内部式は専用の小さな構文解析で上記文法を実装し、evalや数式計算は行わない。新しいOffice描画libraryは追加しない。[Python XMLの注意事項](https://docs.python.org/3.13/library/xml.html#xml-vulnerabilities)に従い、採用runtimeの`pyexpat.EXPAT_VERSION`を記録して2.7.2以上を必要条件とする。子process制限と悪性ZIP/XML/式の完全な受入はR1/R6に残り、R0の空metadata実験をその代替にしない。
 

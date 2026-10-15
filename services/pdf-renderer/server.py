@@ -30,6 +30,7 @@ class Handler(BaseHTTPRequestHandler):
             worker=subprocess.run([sys.executable,worker_path],input=raw,capture_output=True,timeout=5,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'})
             if worker.returncode:return self.reply(503,{})
             result=json.loads(worker.stdout)
+            if result.get('reason')=='PARSER_VERSION':return self.reply(503,{})
             self.reply(200,{'ok':result['accepted'],'policy':policy,'sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':None if result['accepted'] else result['reason']})
         except (OSError,ValueError,subprocess.TimeoutExpired):self.reply(503,{})
         finally:SLOT.release()

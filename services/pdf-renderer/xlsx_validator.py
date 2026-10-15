@@ -8,6 +8,7 @@ import resource
 import stat
 import sys
 import zipfile
+import unicodedata
 from xml.parsers import expat
 import xml.etree.ElementTree as ET
 
@@ -192,8 +193,8 @@ def inspect(raw):
             parts={};roots={};kinds={};normalized=set();budget=[0];total=0
             for e in entries:
                 name=e.filename
-                if (not name or name.startswith('/') or '\\' in name or '%' in name or ':' in name or '\x00' in name or any(p in {'.','..',''} for p in name.split('/')) or e.is_dir() or e.flag_bits&1 or stat.S_ISLNK(e.external_attr>>16)):refuse()
-                norm=posixpath.normpath(name).casefold()
+                if (name!=e.orig_filename or not name or name.startswith('/') or '\\' in name or '%' in name or ':' in name or '\x00' in name or any(p in {'.','..',''} for p in name.split('/')) or e.is_dir() or e.flag_bits&1 or stat.S_ISLNK(e.external_attr>>16)):refuse()
+                norm=unicodedata.normalize('NFC',posixpath.normpath(name)).casefold()
                 if norm in normalized:refuse()
                 normalized.add(norm)
                 if e.file_size>16*1024*1024:refuse('STRUCTURE_LIMIT')
@@ -253,6 +254,7 @@ def inspect(raw):
             sheets=workbook.findall('./'+q(S,'sheets')+'/'+q(S,'sheet'))
             sheet_names=[s.get('name','') for s in sheets]
             if not 1<=len(sheets)<=20 or any(not s for s in sheet_names) or len({s.casefold() for s in sheet_names})!=len(sheets):refuse()
+            if any(len(name)>31 or name.startswith("'") or name.endswith("'") or re.search(r'[\[\]:*?/\\\x00-\x1f]',name) for name in sheet_names):refuse()
             for sheet in sheets:
                 rel=relations.get('xl/workbook.xml',{}).get(sheet.get(q(R,'id')))
                 if not rel or rel[0]!=R+'/worksheet':refuse()
