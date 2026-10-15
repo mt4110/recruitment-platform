@@ -2,9 +2,9 @@
 
 人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプです。
 
-**M2の求人・保存・候補者機能まで実装・検証済みです。組織間のアクセス拒否を含め、arm64/amd64で各30件のE2Eを確認しました。PDF登録・推薦・選考は未実装です。**
+**M3の架空PDF登録・隔離検査・復旧・ダウンロードまで実装しました。確定ソースでのローカル再確認とLinux/amd64 CIは進行中です。推薦・選考は未実装です。**
 
-設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録し、M2で停止しています。
+設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。M3の最終結果は検証完了後に記録します。
 
 ## ローカルで試す
 
@@ -35,7 +35,7 @@ python3 scripts/local.py up
 
 完成後は、架空データを使って「求人登録 → 候補者登録・PDFレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
 
-## M1/M2のブラウザE2E
+## M1/M2/M3のブラウザE2E
 
 実Keycloakを含む認証と、求人・候補者の操作/組織分離テストを、通常デモと別のポート・DB・ブラウザcontextで実行します。
 
@@ -68,3 +68,6 @@ python3 scripts/e2e.py
 初期範囲は1ユーザー1組織、請求PDFは固定1ページです。設計草案v0.3では、初回レビュー6件と再レビューの残件3件を設計に反映しています。[修正対応表](docs/reviews/2026-10-15-design-revisions.md)で変更内容と未実施の検証を、[実装計画](docs/design/07-delivery.md)で工数と受入条件を確認できます。
 
 技術方針は Next.js / TypeScript、Rust / Axum / SQLx、PostgreSQL。ローカル起動を最初の完成条件とし、クラウド構成は参考例として設計します。本体は[Apache-2.0](LICENSE)です。[第三者依存と監査範囲](THIRD_PARTY.md)を併せて確認してください。
+
+
+M3の更新後も最初に `python3 scripts/local.py setup` を実行してください。既存の資格情報を保持したまま、内部PDF service用の共有鍵だけを不足時に生成します。既存migrationを書き換えず、`up`時に文書tableを追加します。PDFは架空情報だけを使い、登録した文書・一時ファイルをこの段階で自動削除しません。

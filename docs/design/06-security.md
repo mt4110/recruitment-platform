@@ -72,3 +72,11 @@ OIDC client secret、session cookie、候補者/レジュメ本文、未加工�
 ローカルでも秘密を生成する。架空ログインの説明をREADMEに置く場合も、クラウドへ固定の公開passwordを持ち込まない。本番の保持/削除・復旧・脆弱性対応・法的整理は運用前ガイドで扱う。
 
 参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)、[PDFBoxの構造要素属性/Aの説明](https://pdfbox.apache.org/docs/2.0.10/javadocs/org/apache/pdfbox/pdmodel/documentinterchange/logicalstructure/PDStructureElement.html)。PDFBoxはPDFの用語・構造の参照資料であり、新しい実装依存ではない。検査policyと処理順は本設計の判断で、M0で最小fixtureによる方式確認を実施済み。製品実装での統合検証は後続段階。
+
+## M3実装の保存・隔離（2026-10-15）
+
+pikepdf 10.17.0とPython推移依存を版・wheel SHA-256で固定する。検査子processはstdinからbytesを受け、内部共有鍵を含む親環境を引き継がない。256MiBの子process制限に親の余裕を加え、service全体のmemoryは384MiB、pidsは32にする。検査同時実行1件、APIのupload/retryは同時2件。rendererにはDB環境変数もresumes volumeも渡さない。
+
+APIは管理stagingをcreate_newで作り、fsync後に同じvolumeの確定先へhard linkする。リンク先があればsize/hashを確認し、上書きしない。確定後はdirectoryもfsyncする。重複・拒否・孤立stagingと受信開始manifestを保持し、今回の処理には削除/自動GCを含めない。整理候補の判定にはDB参照・lease・受信中の状態の照合が別途必要。容量の増加を運用時の制約として記録する。
+
+検査policyはM0の構造検査を製品workerへ移し、直接objectも構造数の上限に数える。間接objectだけを訪問済みに記録し、直接objectのラッパーidentityの再利用で配下走査を省略しない。検査例外/時間超過/worker異常は503、PDFのpolicy拒否は422とする。

@@ -1,5 +1,6 @@
 mod auth;
 mod business;
+mod documents;
 
 use auth::{ApiError, App, Config};
 use axum::{
@@ -62,6 +63,8 @@ async fn start() -> anyhow::Result<()> {
         runtime,
         http,
         oidc,
+        pdf_key: std::env::var("PDF_SHARED_KEY")?,
+        uploads: Arc::new(tokio::sync::Semaphore::new(2)),
     });
     let router = Router::new()
         .route("/live", get(|| async { StatusCode::OK }))
@@ -71,6 +74,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/auth/logout", post(auth::logout))
         .route("/api/v1/me", get(auth::me))
         .merge(business::routes())
+        .merge(documents::routes())
         .fallback(|| async {
             ApiError::new(
                 StatusCode::NOT_FOUND,
@@ -94,7 +98,7 @@ async fn ready(State(app): State<Arc<App>>) -> Response {
     )
     .fetch_one(&app.db)
     .await;
-    let business = sqlx::query_scalar::<_,bool>("SELECT to_regclass('jobs') IS NOT NULL AND to_regclass('candidates') IS NOT NULL AND to_regclass('idempotency_records') IS NOT NULL").fetch_one(&app.runtime).await;
+    let business = sqlx::query_scalar::<_,bool>("SELECT to_regclass('documents') IS NOT NULL AND to_regclass('jobs') IS NOT NULL AND to_regclass('candidates') IS NOT NULL AND to_regclass('idempotency_records') IS NOT NULL").fetch_one(&app.runtime).await;
     let pdf = app.http.get("http://pdf-renderer:8080/live").send().await;
     if matches!(db, Ok(true))
         && matches!(business, Ok(true))

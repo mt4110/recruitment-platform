@@ -40,6 +40,7 @@ services:
       RUNTIME_DB_PASSWORD: ${RUNTIME_DB_PASSWORD:?Run setup}
       ATTEMPT_KEY: ${ATTEMPT_KEY:?Run setup}
       CSRF_KEY: ${CSRF_KEY:?Run setup}
+      PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
     networks: [default,pdf]
     volumes: ['resumes:/data/resumes']
     read_only: true
@@ -110,6 +111,8 @@ services:
       retries: 20
     mem_limit: 512m
   pdf-renderer:
+    environment:
+      PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
     build: ./services/pdf-renderer
     networks: [pdf]
     read_only: true
@@ -121,7 +124,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-    mem_limit: 128m
+    mem_limit: 384m
+    pids_limit: 32
 networks:
   pdf: {internal: true}
 volumes:

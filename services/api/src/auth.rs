@@ -95,6 +95,8 @@ pub struct App {
     pub runtime: PgPool,
     pub http: reqwest::Client,
     pub oidc: Oidc,
+    pub pdf_key: String,
+    pub uploads: std::sync::Arc<tokio::sync::Semaphore>,
 }
 pub async fn discover(config: &Config, http: &reqwest::Client) -> anyhow::Result<Oidc> {
     let metadata =
@@ -120,24 +122,40 @@ pub async fn discover(config: &Config, http: &reqwest::Client) -> anyhow::Result
 
 pub struct ApiError {
     status: StatusCode,
-    code: &'static str,
+    pub(crate) code: &'static str,
     message: &'static str,
+    document_id: Option<Uuid>,
+    request_id: Option<Uuid>,
 }
 impl ApiError {
+    pub(crate) fn request(mut self, id: Uuid) -> Self {
+        self.request_id = Some(id);
+        self
+    }
+    pub(crate) fn document(mut self, id: Uuid) -> Self {
+        self.document_id = Some(id);
+        self
+    }
     pub fn new(status: StatusCode, code: &'static str, message: &'static str) -> Self {
         Self {
             status,
             code,
             message,
+            document_id: None,
+            request_id: None,
         }
     }
 }
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
-        let id = Uuid::new_v4().to_string();
+        let id = self.request_id.unwrap_or_else(Uuid::new_v4).to_string();
         tracing::warn!(event="request_rejected",code=self.code,status=self.status.as_u16(),request_id=%id);
         let mut body =
             serde_json::json!({"error":{"code":self.code,"message":self.message,"request_id":id}});
+        if let Some(id) = self.document_id {
+            body["error"]["document_id"] = serde_json::json!(id);
+            body["error"]["status_url"] = serde_json::json!(format!("/api/v1/documents/{id}"));
+        }
         if self.code == "INVALID_INPUT" {
             body["error"]["field_errors"] =
                 serde_json::json!({"_form":"必須項目・許可項目・文字数を確認してください。"});

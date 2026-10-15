@@ -17,7 +17,7 @@ use sqlx::{FromRow, PgConnection, Postgres, Transaction};
 use std::sync::Arc;
 use uuid::Uuid;
 
-type Tx = Transaction<'static, Postgres>;
+pub(crate) type Tx = Transaction<'static, Postgres>;
 pub fn routes() -> Router<Arc<App>> {
     Router::new()
         .route("/api/v1/jobs", get(handle).post(handle))
@@ -34,17 +34,17 @@ pub fn routes() -> Router<Arc<App>> {
             axum::routing::post(handle),
         )
 }
-fn error(status: StatusCode, code: &'static str, message: &'static str) -> ApiError {
+pub(crate) fn error(status: StatusCode, code: &'static str, message: &'static str) -> ApiError {
     ApiError::new(status, code, message)
 }
-fn invalid() -> ApiError {
+pub(crate) fn invalid() -> ApiError {
     error(
         StatusCode::UNPROCESSABLE_ENTITY,
         "INVALID_INPUT",
         "入力内容・項目・長さを確認してください。",
     )
 }
-fn missing() -> ApiError {
+pub(crate) fn missing() -> ApiError {
     error(
         StatusCode::NOT_FOUND,
         "NOT_FOUND",
@@ -58,7 +58,7 @@ fn conflict(code: &'static str) -> ApiError {
         "情報が変更されています。入力を控えたうえで最新情報を読み直してください。",
     )
 }
-fn db_error(e: sqlx::Error) -> ApiError {
+pub(crate) fn db_error(e: sqlx::Error) -> ApiError {
     let code = e.as_database_error().and_then(|v| v.code());
     if matches!(code.as_deref(), Some("55P03" | "57014" | "25P04" | "40P01")) {
         return error(
@@ -73,14 +73,14 @@ fn db_error(e: sqlx::Error) -> ApiError {
         "処理を完了できませんでした。",
     )
 }
-async fn begin(app: &App, u: &Identity) -> Result<Tx, ApiError> {
+pub(crate) async fn begin(app: &App, u: &Identity) -> Result<Tx, ApiError> {
     let mut tx = app.runtime.begin().await.map_err(db_error)?;
     sqlx::query("SELECT set_config('app.user_id',$1,true),set_config('app.org_id',$2,true),set_config('lock_timeout','3s',true),set_config('statement_timeout','5s',true),set_config('transaction_timeout','10s',true)")
         .bind(u.user_id.to_string()).bind(u.organization_id.to_string()).execute(&mut *tx).await.map_err(db_error)?;
     Ok(tx)
 }
 /// Length-delimited domain and components, SHA-256 first signed 64 bits, big endian.
-fn lock_key(domain: &str, parts: &[String]) -> i64 {
+pub(crate) fn lock_key(domain: &str, parts: &[String]) -> i64 {
     let mut hash = Sha256::new();
     for part in std::iter::once(domain).chain(parts.iter().map(String::as_str)) {
         hash.update((part.len() as u64).to_be_bytes());
@@ -88,7 +88,7 @@ fn lock_key(domain: &str, parts: &[String]) -> i64 {
     }
     i64::from_be_bytes(hash.finalize()[..8].try_into().expect("8 bytes"))
 }
-async fn lock(tx: &mut PgConnection, key: i64) -> Result<(), ApiError> {
+pub(crate) async fn lock(tx: &mut PgConnection, key: i64) -> Result<(), ApiError> {
     sqlx::query("SELECT pg_advisory_xact_lock($1)")
         .bind(key)
         .execute(tx)
@@ -178,12 +178,12 @@ async fn read(tx: &mut PgConnection, jobs: bool, id: Uuid) -> Result<Value, ApiE
         let mut v = dto(
             sqlx::query_as::<_, Candidate>("SELECT * FROM candidates WHERE id=$1")
                 .bind(id)
-                .fetch_optional(tx)
+                .fetch_optional(&mut *tx)
                 .await
                 .map_err(db_error)?
                 .ok_or_else(missing)?,
         )?;
-        v["documents"] = json!([]);
+        v["documents"] = crate::documents::list(tx, id).await?;
         Ok(v)
     }
 }

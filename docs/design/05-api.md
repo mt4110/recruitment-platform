@@ -116,8 +116,16 @@ A4縦・1明細・固定デモ金額500,000円・1ページ。IDはDEMO-{placeme
 - candidateのアーカイブは不可逆。アーカイブ後のPATCHと新キーのarchiveは409 CANDIDATE_ARCHIVED。同じ完了キーのarchive/作成は現在のDTOを返し、versionや監査を増やさない。
 - 一覧はcreated_at/id降順、candidateは既定で非アーカイブ、archived=trueはアーカイブ済みのみ。求人のfavoritedはagencyだけで使用できる。検索locationも1〜100文字、qは求人名/仕事内容または候補者氏名/概要の部分一致。
 - cursorは日時・ID・組織/検索条件/limitのhashをbase64url化する。条件が変わったcursorは422。署名や認可には使用せず、すべてのページでRLSを適用する。
-- M2のcandidate詳細のdocumentsは空配列。M3で実際の文書の状態を接続する。M2では登録/配信APIを公開しない。
+- M3ではcandidate詳細のdocumentsを実際の文書に接続し、登録・状態・retry・原本取得を実装。M4の共有文書取得APIは後続。
 - job lockは各要素のUTF-8 byte長をunsigned 64bit big endianで前置し、`job`と小文字UUIDをSHA-256、先頭8byteをsigned 64bit big endianへ変換。冪等lockは同じ形式で`idem`とorg/user/method/path/keyを順番に使う。M4もこの関数を共用する。
 - 通常JSONの上限は64KiB。文字数上限と別にbyte上限を設ける。JSONの入力不正にはfield_errorsを付ける。
 
 RLSとtransaction timeoutは[PostgreSQL 17の公式資料](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)と[接続設定](https://www.postgresql.org/docs/17/runtime-config-client.html)を参照し、実装で検証する。
+
+## M3実装の補足（2026-10-15）
+
+multipartのfile項目は1件だけ、Content-Typeはapplication/pdf。fictional_confirmed=trueも必須で、fileより前に送る。確認項目を検証してからbytesを受信する。未知/重複項目を拒否する。表示名は区切り文字以前のpathを落として前後空白を除き、制御文字・空・255文字超を拒否する。ファイル受信は30秒、実bytesは10MiB、multipart全体は10MiB+64KiB。gatewayの11MiB上限はこのupload routeだけに適用し、JSONの64KiB制限を維持する。
+
+文書DTOはid/document_id、candidate_id、original_name、size_bytes、status、rejection_code、created_at/updated_at、status_url、retry_allowed、lease_expires_at。leaseのtoken・ファイル保存key・SHAは返さない。期限情報とretry可否は元登録者のpendingにだけ返す。拒否済みuploadの応答にもerror.document_id/status_urlを含め、現在の状態へたどれる。同じキーの拒否codeは正規化した利用者向けcodeで一貫させる。
+
+原本downloadは保存size/hash確認後のbytesをattachment; filename="resume.pdf"で返す。元表示名は画面に表示し、HTTP headerへ生の入力を埋め込まない。候補者のアーカイブは既存ready文書の自社閲覧を失効させない。

@@ -5,3 +5,5 @@
 !next.config.ts
 !app/
 !app/**
+!public/
+!public/**

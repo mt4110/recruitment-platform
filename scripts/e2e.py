@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Run M1/M2 browser E2E in a new local Compose project; retain all evidence/data."""
-import argparse, hashlib, json, os, re, secrets, socket, subprocess, time
+"""Run M1/M2/M3 browser E2E in a new local Compose project; retain all evidence/data."""
+import argparse, hashlib, json, os, re, secrets, socket, subprocess, time, io, tarfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,12 +20,12 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'M1 + M2; stop before M3', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed'}
+summary = {'scope': 'M1 + M2 + M3; stop before M4', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed'}
 def source_hashes():
     tracked = ['scripts/local.py','scripts/e2e.py','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
-               'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts']
+               'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file()]
-    for folder in ['migrations','fixtures','services/api/src','apps/web/app']:
+    for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer']:
         tracked += [str(p.relative_to(ROOT)) for p in (ROOT/folder).rglob('*') if p.is_file()]
     return {name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sorted(set(tracked))}
 summary['source_sha256'] = source_hashes()
@@ -36,6 +36,16 @@ try:
         subprocess.run(['python3', 'scripts/local.py', 'setup'], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         summary['phase'] = 'build/start'
         subprocess.run(['python3', 'scripts/local.py', 'up'], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+    fixture_hex=(ROOT/'apps/web/public/sample-resume.pdf').read_bytes().hex()
+    subprocess.run(['python3','scripts/local.py','compose','exec','-T','pdf-renderer','python','-c',(ROOT/'e2e/make_pdf_fixtures.py').read_text(),fixture_hex],cwd=ROOT,env=env,text=True,check=True,stdout=subprocess.DEVNULL)
+    fixture_archive=subprocess.check_output(['python3','scripts/local.py','compose','exec','-T','pdf-renderer','python','-c',"import tarfile,sys; t=tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz'); t.add('/tmp/m3-fixtures',arcname='fixtures'); t.close()"],cwd=ROOT,env=env)
+    (local/'pdf-fixtures').mkdir()
+    with tarfile.open(fileobj=io.BytesIO(fixture_archive),mode='r:gz') as archive:
+        for entry in archive:
+            if entry.isdir():continue
+            name=Path(entry.name).name
+            if not entry.isfile() or not re.fullmatch(r'(?:[a-z-]+\.pdf|manifest\.json)',name) or entry.size>12*1024*1024:raise RuntimeError('Invalid fixture archive')
+            with (local/'pdf-fixtures'/name).open('xb') as output:output.write(archive.extractfile(entry).read())
     summary['phase'] = 'browser'
     # Only this newly created project may be controlled by test DB helpers.
     (local/'test-instance.json').write_text(json.dumps({'instance': instance, 'test_only': True}))
@@ -69,5 +79,5 @@ finally:
     if stopped.returncode != 0: code = 1; summary['status'] = 'failed'
     summary['elapsed_seconds'] = round(time.monotonic() - start, 3)
     (artifacts/'run.json').write_text(json.dumps(summary, indent=2)+'\n')
-    print(f"M1/M2 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
+    print(f"M1/M2/M3 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
 raise SystemExit(code)
