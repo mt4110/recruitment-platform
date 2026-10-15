@@ -38,6 +38,8 @@ M0の許可fixtureには通常の静的PDFと、上記/Aを持つ静的なタグ
 
 既存の内部PDF service内で、検査は1要求ごとのPython子processとして実行する。APIのファイルvolume・DB認証情報をserviceへ渡さず、PDF bytesだけを送る。入力10MiB、子processのメモリ256MiB/CPU時間5秒/wall time5秒、同時検査1件、tmpfsを用いる。非root、read-only root filesystem、不要capabilityなし、外向き通信なし。制限値は初期設計値で、実測した性能や安全性の認定ではない。
 
+M0のarm64確認では、drop ALLにSYS_CHROOTだけを追加し、no-new-privilegesと[Playwright公式seccomp profile](../../validation/m0/seccomp_profile.json)を維持する構成でsandboxが起動した。SYS_ADMIN/privileged/--no-sandboxは使わない。HOME/XDG_CONFIG_HOME/XDG_CACHE_HOMEはtmpfs内の専用ディレクトリへ置く。Playwrightと同梱Chromiumは対応する版を同時に固定し、namespaceとSeccomp-BPFの有効性を実行環境ごとに確認する。Linux/amd64はM0用の手動CIで再現確認し、結果を[技術確認記録](../validation/2026-10-15-m0-report.md)とは別に保存する。
+
 内部endpointはPOST /internal/pdf/check（bytes→ok/sha256/policy/rejection_code）とPOST /internal/pdf/render-invoice（固定schema→PDF）。内部共有鍵とネットワーク制限を両方使う。待ち過多/検査サービス障害/timeoutは503で受付を保留し、検査不合格の422と区別する。失敗を検査合格に変換しない。
 
 ## アップロードと復旧の順序（R5/R6）

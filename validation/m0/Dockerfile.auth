@@ -1,0 +1,4 @@
+FROM python:3.13-slim-bookworm@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641
+RUN pip install --no-cache-dir httpx==0.28.1 'PyJWT[crypto]==2.15.1'
+WORKDIR /probe
+USER 1000:1000

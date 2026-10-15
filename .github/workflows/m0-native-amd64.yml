@@ -1,0 +1,37 @@
+name: M0 native amd64 verification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: validation/m0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Assert native Linux amd64
+        run: python -c "import platform; assert platform.system() == 'Linux' and platform.machine() == 'x86_64'"
+      - name: Install probe dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          npm ci
+          npx playwright install --with-deps chromium --only-shell
+      - name: Verify M0 only
+        run: python run.py
+      - name: Preserve only sanitized evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: m0-native-amd64
+          path: validation/m0/collected/
+          if-no-files-found: warn
+          retention-days: 14

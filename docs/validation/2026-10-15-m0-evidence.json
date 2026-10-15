@@ -1,0 +1,794 @@
+{
+  "source_commit": "22161808daa4c86052bef02326fd270371d5245d",
+  "scope": "M0 isolated feasibility only; not product implementation",
+  "environment": {
+    "host": "macOS 27.0.1 arm64",
+    "colima": "0.10.3, VZ, dedicated recruitment-m0 profile, 4 CPU/6 GiB/20 GiB disk",
+    "docker_server": "29.5.2 arm64",
+    "linux_kernel": "6.8.0-117-generic aarch64",
+    "ci_linux_amd64": "NOT TESTED"
+  },
+  "images": [
+    {
+      "name": "postgres:17-bookworm",
+      "id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+      "repo_digests": [
+        "postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+      ],
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "name": "quay.io/keycloak/keycloak:26.8.1",
+      "id": "sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244",
+      "repo_digests": [
+        "quay.io/keycloak/keycloak@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+      ],
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "name": "mcr.microsoft.com/playwright:v1.62.1-noble",
+      "id": "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e",
+      "repo_digests": [
+        "mcr.microsoft.com/playwright@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e"
+      ],
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "name": "python:3.13-slim-bookworm",
+      "id": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "repo_digests": [
+        "python@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+      ],
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  ],
+  "runtime_controls": [
+    {
+      "container": "rp-m0-db",
+      "CapAdd": null,
+      "CapDrop": null,
+      "ReadonlyRootfs": false,
+      "NetworkMode": "recruitment-m0",
+      "Memory": 536870912,
+      "NanoCpus": 1000000000,
+      "ShmSize": 67108864,
+      "PortBindings": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "15432"
+          }
+        ]
+      },
+      "SecurityOpt": []
+    },
+    {
+      "container": "rp-m0-idp",
+      "CapAdd": null,
+      "CapDrop": null,
+      "ReadonlyRootfs": false,
+      "NetworkMode": "recruitment-m0",
+      "Memory": 1073741824,
+      "NanoCpus": 2000000000,
+      "ShmSize": 67108864,
+      "PortBindings": {
+        "18080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18080"
+          }
+        ]
+      },
+      "SecurityOpt": []
+    },
+    {
+      "container": "rp-m0-auth-v2",
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "ReadonlyRootfs": true,
+      "NetworkMode": "recruitment-m0",
+      "Memory": 268435456,
+      "NanoCpus": 1000000000,
+      "ShmSize": 67108864,
+      "PortBindings": {
+        "18081/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18081"
+          }
+        ]
+      },
+      "SecurityOpt": [
+        "no-new-privileges"
+      ]
+    },
+    {
+      "container": "rp-m0-pdf-verified",
+      "CapAdd": [
+        "CAP_SYS_CHROOT"
+      ],
+      "CapDrop": [
+        "ALL"
+      ],
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 1610612736,
+      "NanoCpus": 2000000000,
+      "ShmSize": 268435456,
+      "PortBindings": {},
+      "SecurityOpt": [
+        "no-new-privileges",
+        "seccomp-profile-sha256:cc3e61cabda6bbc1e53e54d27ba4d55a9d3be829b6dd1a596f4a7b31b1cc7849"
+      ]
+    }
+  ],
+  "host_probe_packages": [
+    {
+      "name": "pikepdf",
+      "host_probe_version": "10.17.0",
+      "license": "MPL-2.0"
+    },
+    {
+      "name": "psycopg",
+      "host_probe_version": "3.3.6",
+      "license": "LGPL-3.0-only"
+    },
+    {
+      "name": "PyJWT",
+      "host_probe_version": "2.15.1",
+      "license": "MIT"
+    },
+    {
+      "name": "cryptography",
+      "host_probe_version": "50.0.2",
+      "license": "Apache-2.0 OR BSD-3-Clause"
+    },
+    {
+      "name": "httpx",
+      "host_probe_version": "0.28.1",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "reportlab",
+      "host_probe_version": "5.0.1",
+      "license": "BSD license (see license.txt for details), Copyright (c) 2000-2025, ReportLab Inc."
+    },
+    {
+      "name": "pypdf",
+      "host_probe_version": "6.20.1",
+      "license": "BSD-3-Clause"
+    }
+  ],
+  "authentication": {
+    "scope": "real Keycloak + disposable Python OIDC relying party; not Rust API",
+    "harness_sha256": "a773f6652c56b4c9a5d8c30bdd6a3d53ad3ab3a8ed19aba3ed7b3b09b3ce5b69",
+    "elapsed_seconds": 39.792,
+    "checks": [
+      {
+        "name": "agency-a/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/agency-a",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/agency-a",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/agency-a",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/agency-a",
+        "pass": true
+      },
+      {
+        "name": "agency-b/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/agency-b",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/agency-b",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/agency-b",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/agency-b",
+        "pass": true
+      },
+      {
+        "name": "employer-x/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/employer-x",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/employer-x",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/employer-x",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/employer-x",
+        "pass": true
+      },
+      {
+        "name": "employer-y/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/employer-y",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/employer-y",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/employer-y",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/employer-y",
+        "pass": true
+      },
+      {
+        "name": "agency-a/badstate",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "STATE_OR_ATTEMPT_INVALID"
+      },
+      {
+        "name": "agency-a/badnonce",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "NONCE_OR_KEY_INVALID"
+      },
+      {
+        "name": "agency-a/badverifier",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "TOKEN_EXCHANGE_REJECTED"
+      },
+      {
+        "name": "agency-a/badissuer",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidIssuerError"
+      },
+      {
+        "name": "agency-a/badaudience",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidAudienceError"
+      },
+      {
+        "name": "agency-a/badsignature",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidSignatureError"
+      },
+      {
+        "name": "agency-a/expired",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "ExpiredSignatureError",
+        "suite_elapsed_at_response_seconds": 39
+      },
+      {
+        "name": "agency-a/badredirect",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "agency-a/nopkce",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "PROVIDER_PKCE_REQUIRED"
+      },
+      {
+        "name": "unregistered/normal",
+        "pass": true,
+        "http_status": 403,
+        "rejection_code": "MEMBERSHIP_REJECTED"
+      }
+    ],
+    "all_passed": true
+  },
+  "rls": {
+    "scope": "minimal M0 SQL harness; not production migrations or API",
+    "postgres": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "checks": [
+      {
+        "name": "runtime_not_superuser_or_bypass",
+        "pass_": true
+      },
+      {
+        "name": "non_owner_and_force_rls_all_probe_tables",
+        "pass_": true
+      },
+      {
+        "name": "no_context_no_rows",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_01",
+        "pass_": true,
+        "actual": [
+          1,
+          5,
+          6
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_01",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_02",
+        "pass_": true,
+        "actual": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_02",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_11",
+        "pass_": true,
+        "actual": [
+          0,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "employer_shared_refs_without_original_join",
+        "pass_": true
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_11",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_12",
+        "pass_": true,
+        "actual": [
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_12",
+        "pass_": true
+      },
+      {
+        "name": "agency_job_update_denied_by_rls",
+        "pass_": true
+      },
+      {
+        "name": "revoke_removes_shared_row",
+        "pass_": true
+      },
+      {
+        "name": "metadata_retained_after_revoke",
+        "pass_": true
+      },
+      {
+        "name": "agency_retains_shared_reference",
+        "pass_": true
+      },
+      {
+        "name": "close_second_transaction_waits",
+        "pass_": true
+      },
+      {
+        "name": "close_first_order",
+        "pass_": true,
+        "wait_seconds": 0.211
+      },
+      {
+        "name": "submit_second_transaction_waits",
+        "pass_": true
+      },
+      {
+        "name": "submit_first_order",
+        "pass_": true,
+        "wait_seconds": 0.228
+      },
+      {
+        "name": "advisory_timeout",
+        "pass_": true,
+        "seconds": 3.003
+      }
+    ],
+    "elapsed_seconds": 3.996,
+    "all_passed": true
+  },
+  "pdf_validation": {
+    "scope": "isolated M0 parser/policy harness; not production service",
+    "python": "3.12.3",
+    "pikepdf": "10.17.0",
+    "libqpdf": "12.4.2",
+    "fixtures": [
+      {
+        "fixture": "static.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "dc1b4f9bec433fd3f6020237ca18ecf382a65da3d1da398038c83c50dd5d1373",
+        "pass": true,
+        "seconds": 0.0542
+      },
+      {
+        "fixture": "tagged.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "f2fd4652879b542d67d5cae26e6fe42736ac63cdbec1a28ecf3f0304a0e187d2",
+        "pass": true,
+        "seconds": 0.0526
+      },
+      {
+        "fixture": "tagged-revision.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "d6ba17a29e227dc13cd1d7386a4c6adef78ce8df526bd92ddc4a04da0e042c20",
+        "pass": true,
+        "seconds": 0.0531
+      },
+      {
+        "fixture": "too-deep.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "DEPTH",
+        "pass": true,
+        "seconds": 0.0521
+      },
+      {
+        "fixture": "shared-action.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "UNSUPPORTED_A",
+        "pass": true,
+        "seconds": 0.0513
+      },
+      {
+        "fixture": "link.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0546
+      },
+      {
+        "fixture": "attribute-hidden-js.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0524
+      },
+      {
+        "fixture": "encrypted-empty.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "ENCRYPTED",
+        "pass": true,
+        "seconds": 0.0643
+      },
+      {
+        "fixture": "forged-struct.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "UNSUPPORTED_A",
+        "pass": true,
+        "seconds": 0.053
+      },
+      {
+        "fixture": "too-many-pages.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "PAGES",
+        "pass": true,
+        "seconds": 0.0513
+      },
+      {
+        "fixture": "too-many-objects.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "OBJECTS",
+        "pass": true,
+        "seconds": 0.0679
+      },
+      {
+        "fixture": "javascript.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0539
+      },
+      {
+        "fixture": "too-large.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "SIZE",
+        "pass": true,
+        "seconds": 0.053
+      },
+      {
+        "fixture": "broken.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "PARSER_OR_STRUCTURE",
+        "pass": true,
+        "seconds": 0.0532
+      },
+      {
+        "fixture": "attachment.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0541
+      },
+      {
+        "fixture": "form.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0528
+      },
+      {
+        "fixture": "unreferenced-js.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0546
+      },
+      {
+        "fixture": "escaped-js-key.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0536
+      }
+    ],
+    "controls": [
+      {
+        "name": "wall_timeout_5s",
+        "pass": true,
+        "seconds": 5.018
+      },
+      {
+        "name": "address_space_256MiB",
+        "pass": true,
+        "exit_code": 23
+      },
+      {
+        "name": "cpu_limit_5s",
+        "pass": true,
+        "exit_code": -9
+      },
+      {
+        "name": "non_root_and_no_capabilities",
+        "pass": true,
+        "uid": 1001
+      },
+      {
+        "name": "read_only_root",
+        "pass": true
+      },
+      {
+        "name": "no_network_egress",
+        "pass": true
+      }
+    ],
+    "all_passed": true
+  },
+  "pdf_generation": {
+    "scope": "M0 fixed-schema HTML rendering only; not app invoice endpoint",
+    "playwright": "1.62.1",
+    "chromium": "151.0.7922.34",
+    "sandbox_status": "Sandbox Status\nLayer 1 Sandbox\tNamespace\nPID namespaces\tYes\nNetwork namespaces\tYes\nSeccomp-BPF sandbox\tYes\nSeccomp-BPF sandbox supports TSYNC\tYes\nPtrace Protection with Yama LSM (Broker)\tYes\nPtrace Protection with Yama LSM (Non-broker)\tNo\n\nYou are adequately sandboxed.",
+    "elapsed_seconds": 0.756,
+    "blocked_requests": 0,
+    "checks": [
+      {
+        "name": "chromium_seccomp_sandbox",
+        "pass": true
+      },
+      {
+        "name": "chromium_namespace_sandbox",
+        "pass": true
+      },
+      {
+        "name": "invoice-normal_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      },
+      {
+        "name": "invoice-long_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      },
+      {
+        "name": "invoice-escaped_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      }
+    ],
+    "all_passed": true
+  },
+  "pdf_artifacts": [
+    {
+      "path": "output/pdf/m0-2026-10-15/invoice-normal.pdf",
+      "sha256": "d0988575b3ff5419e1e83ddb896d3f61096561eafe2ac5236cd3e4f9df95e2fc",
+      "pages": 1,
+      "page_size_points": [
+        594.95996,
+        841.91998
+      ],
+      "japanese_label": true,
+      "demo_warning": true,
+      "fixed_amount": true,
+      "visual_review": "reviewed normal, long and escaped names; no clipping, missing Japanese glyphs or overlap observed"
+    },
+    {
+      "path": "output/pdf/m0-2026-10-15/invoice-long.pdf",
+      "sha256": "3ff5d56a2c6a946fb35db6843a327f1ad8c0094d4c6c3ab3237be050a33defa3",
+      "pages": 1,
+      "page_size_points": [
+        594.95996,
+        841.91998
+      ],
+      "japanese_label": true,
+      "demo_warning": true,
+      "fixed_amount": true,
+      "visual_review": "reviewed normal, long and escaped names; no clipping, missing Japanese glyphs or overlap observed"
+    },
+    {
+      "path": "output/pdf/m0-2026-10-15/invoice-escaped.pdf",
+      "sha256": "ccc66e3b4191ef31467c5592e47a5b8cad2e21d19df29437fcbb6bd3797f18a4",
+      "pages": 1,
+      "page_size_points": [
+        594.95996,
+        841.91998
+      ],
+      "japanese_label": true,
+      "demo_warning": true,
+      "fixed_amount": true,
+      "visual_review": "reviewed normal, long and escaped names; no clipping, missing Japanese glyphs or overlap observed"
+    }
+  ],
+  "harness_source_sha256": {
+    "setup.py": "48bdb33ea0e9eebae692be353190ea04f75ef018ea3ce809dc02b42456b5d421",
+    "rls_probe.py": "38d9afee85ead3cbaff5ad08887cf70c6c73edc58e7e3666c8a46c2ddb9969bd",
+    "auth_probe.py": "a3a7044f11b46d36e7c0dc4ed27f35038b802b647cb7486aac5bfd29d48a5aeb",
+    "auth_browser.cjs": "a773f6652c56b4c9a5d8c30bdd6a3d53ad3ab3a8ed19aba3ed7b3b09b3ce5b69",
+    "validator.py": "6d8dd56728a477feae556a332bbf3912d10f017ca53abc3e7827603fe0bfc0ad",
+    "pdf_probe.mjs": "3630ee8de2a1827a5f9bf179cc11b3f75866fb0107150df95042b61546df08b5",
+    "Dockerfile.auth": "fe728714badefa8dc9c1ee57b251e5fb178533e02f98b5112c93a367cf99b479",
+    "Dockerfile.auth-final": "61bfd311c06c3c988f306d2797a4654bcde30fbceae9d32bb7485b141242c000",
+    "Dockerfile.pdf-deps": "ba7367bb87d9f05e5e7dc3043d5dfd3aa663b5a884eeb5bdb644a5c0025d93fe",
+    "Dockerfile.pdf-final": "b4e068f4f9657279d4635dd3b41b0e80039a1204fcf255068d0e14bb0b9427d7",
+    "seccomp_profile.json": "cc3e61cabda6bbc1e53e54d27ba4d55a9d3be829b6dd1a596f4a7b31b1cc7849"
+  },
+  "started_at": "2026-10-15T03:06:37.961242+00:00",
+  "evidence_collected_at": "2026-10-15T03:30:45.025164+00:00",
+  "harness_archive": {
+    "sha256": "12e17e341a3fd30ff3c5abea10443b3bdf380bc125ae1e2b106ae77851646904",
+    "contains": "probe sources, Dockerfiles, static fictional PDF fixtures; no credentials/config/env files"
+  },
+  "probe_dependency_freeze": {
+    "pdf_container": [
+      "charset-normalizer==3.5.2",
+      "lxml==6.1.3",
+      "packaging==26.3",
+      "pikepdf==10.17.0",
+      "pillow==12.3.0",
+      "pypdf==6.20.1",
+      "reportlab==5.0.1"
+    ],
+    "auth_container": [
+      "anyio==4.15.1",
+      "certifi==2026.7.22",
+      "cffi==2.1.1",
+      "cryptography==50.0.2",
+      "h11==0.16.0",
+      "httpcore==1.0.9",
+      "httpx==0.28.1",
+      "idna==3.20",
+      "pycparser==3.11",
+      "PyJWT==2.15.1",
+      "typing_extensions==4.16.0"
+    ]
+  },
+  "finished_at": "2026-10-15T03:32:11.255292+00:00",
+  "elapsed_minutes_including_setup_waits_and_report": 25.55,
+  "cleanup": {
+    "dedicated_profile": "recruitment-m0",
+    "state": "stopped",
+    "existing_default_profile": "left stopped and unchanged",
+    "containers": "stopped; data/volumes retained",
+    "deleted_files_or_volumes": false
+  }
+}

@@ -1,0 +1,5 @@
+pikepdf==10.17.0
+reportlab==5.0.1
+pypdf==6.20.1
+psycopg[binary]==3.3.6
+httpx==0.28.1

@@ -22,6 +22,8 @@ flowchart TB
 
 Composeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラーを起動する。ブラウザに公開するのは入口とOIDCのログイン先だけ。DB、保存ファイル、PDFレンダラーは外部ポートを公開しない。OIDCの管理コンソールはローカルに限定する。
 
+M0で確認したローカルissuerの経路は、ブラウザ側の*.localhostと、コンテナ側の同名network aliasを組み合わせる。ブラウザ向けとAPI向けで別issuerへ読み替えない。PDF serviceは非root、必要なSYS_CHROOTのみ、公式seccomp profile、tmpfs内HOME/XDGでChromium sandboxを維持する。M0検証用コードはvalidation/m0に置き、製品の認証・保存・文書サービスへそのまま流用しない。
+
 将来のクイックスタートは設定作成→ローカル秘密値生成→build/up→migration→架空データ投入→ログインの順序。実装後に動作確認したコマンドだけREADMEへ掲載する。初期データ投入は冪等にし、ユーザーのデータを初期化し直さない。データリセットは別コマンドで対象と不可逆性を示し、明示確認が必要。
 
 ## 責務

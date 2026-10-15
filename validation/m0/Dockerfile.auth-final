@@ -1,0 +1,4 @@
+FROM recruitment-m0-auth:20261015
+COPY auth_probe.py /probe/auth_probe.py
+COPY auth-config.json /probe/config.json
+CMD ["python", "-B", "/probe/auth_probe.py"]

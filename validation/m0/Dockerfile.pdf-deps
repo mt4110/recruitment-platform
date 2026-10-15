@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-noto-cjk poppler-utils python3-venv
+RUN python3 -m venv /opt/probe-venv && /opt/probe-venv/bin/pip install --no-cache-dir pikepdf==10.17.0 reportlab==5.0.1 pypdf==6.20.1
+WORKDIR /opt/probe
+RUN npm install --ignore-scripts --save-exact playwright@1.62.1

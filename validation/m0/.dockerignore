@@ -1,0 +1,8 @@
+*
+!Dockerfile*
+!auth_probe.py
+!auth-config.json
+!validator.py
+!pdf_probe.mjs
+!fixtures/
+!fixtures/**

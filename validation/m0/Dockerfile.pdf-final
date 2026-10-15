@@ -1,0 +1,8 @@
+FROM recruitment-m0-pdf-deps:20261015
+COPY validator.py pdf_probe.mjs /opt/probe/
+COPY fixtures/ /opt/probe/fixtures/
+RUN mkdir /out && chown pwuser:pwuser /out
+USER pwuser
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV HOME=/tmp/m0-home XDG_CONFIG_HOME=/tmp/m0-config XDG_CACHE_HOME=/tmp/m0-cache
+CMD ["sh", "-c", "/opt/probe-venv/bin/python /opt/probe/validator.py && node /opt/probe/pdf_probe.mjs; exec tail -f /dev/null"]
