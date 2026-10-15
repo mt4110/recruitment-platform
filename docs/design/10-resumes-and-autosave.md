@@ -1,6 +1,6 @@
 # レジュメ受付・ウイルス検査・全フォームの自動保存
 
-設計 v0.4 R0追補 / 2026-10-15（レビュー5件と再レビュー残件P2を設計へ反映）。**追加要件の製品実装は未着手。R0の独立方式確認は[追補記録](../validation/2026-10-15-r0-followup-report.md)を参照。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
+設計 v0.4 R0追補 / 2026-10-15（レビュー5件と再レビュー残件P2を設計へ反映）。**R1の形式検査・DB/API・配信拒否を実装。AVはR2未着手のため新規文書はpending・配信不可。R0の独立方式確認は[追補記録](../validation/2026-10-15-r0-followup-report.md)を参照。** M4までの実行結果は変更しない。実装・migration実行・依存導入・クラウド変更は別途の着手判断とする。本書を追加要件の詳細契約とし、01〜09の関連箇所と合わせて読む。レビュー5件の変更は[反映記録](../reviews/2026-10-15-v04-revisions.md)を参照。
 
 ## 1. 対象と境界
 
@@ -40,6 +40,8 @@
 - Content typeは`application/vnd.ms-excel.person+xml`のOverrideがこのpartへ一つ。参照はworkbook relationshipsから`http://schemas.microsoft.com/office/2017/10/relationships/person`が一つだけ、Target=`persons/person.xml`、TargetMode省略またはInternal。part/関係の重複、不正path、別source、外部Target、persons自身のrelationshipsは拒否する。ZIP全体の重複・参照整合検査も維持する。
 - 投稿者データ、threaded comments/comment partsは初期対応外。空metadataは削除せず、原本bytesを保持して検査する。Microsoftの[Persons仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/1a170d26-42a2-46f0-b2b6-0ff1dec1c344)と[personList仕様](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/9f1b6e0e-79cd-4ae2-b3a7-6dea649c57f6)を参照した限定対応。
 - Sheetsは実在partのない`odttf`用Default（`application/vnd.openxmlformats-officedocument.obfuscatedFont`）も宣言する。この特定の未使用宣言だけを許可する。実font part・同拡張子のentry、他の未知宣言、重複/矛盾は拒否し、埋込fontを許可する意味にしない。
+
+Sheets実出力にある未使用namespace宣言も、[`xlsx_validator.py`](../../services/pdf-renderer/xlsx_validator.py)の`UNUSED_NS`に列挙した13 URIに限り許可する。これらを使う要素・属性・part/relationshipは許可せず、未知の宣言自体も拒否する。[XML namespace仕様](https://www.w3.org/TR/xml-names/#ns-decl)の名前識別と、構造を実際に利用することを区別する。数式は最大4,096文字/2,048 token/深さ64とし、Print_Titlesの行/列範囲も内部参照だけを許可する。
 
 R1は既存Python serviceの標準`zipfile`＋`xml.parsers.expat`で、実展開量/比率、深さ/要素数を逐次制限し、DOCTYPE/外部entityをparser handlerでも拒否する方針。XMLは初期対応をUTF-8に限定。内部式は専用の小さな構文解析で上記文法を実装し、evalや数式計算は行わない。新しいOffice描画libraryは追加しない。[Python XMLの注意事項](https://docs.python.org/3.13/library/xml.html#xml-vulnerabilities)に従い、採用runtimeの`pyexpat.EXPAT_VERSION`を記録して2.7.2以上を必要条件とする。子process制限と悪性ZIP/XML/式の完全な受入はR1/R6に残り、R0の空metadata実験をその代替にしない。
 
@@ -191,3 +193,13 @@ arm64ローカルとLinux/amd64 CIで同じsource/fixtureを使い、追加ケ�
 - [Microsoft SpreadsheetML構造](https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/structure-of-a-spreadsheetml-document)：workbook/sheet/relationshipを持つZIP packageの構造。
 - [ClamAV scanning](https://docs.clamav.net/manual/Usage/Scanning.html)、[signature management](https://docs.clamav.net/manual/Usage/SignatureManagement.html)、[clamd設定の公式source](https://github.com/Cisco-Talos/clamav/blob/main/etc/clamd.conf.sample)：INSTREAM、socketの境界、上限による検査skip、定義更新。
 - [MDN beforeunload](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event)、[storage quotas](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria)、[Web Crypto encrypt](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)：終了イベント/端末永続化の限界、AES-GCMのIV管理。
+
+## R1実装時点の境界
+
+- 追加migrationは0006のみ。旧0001〜0005は保持する。旧PDFはpdf/other、共有参照も同じmetadataを補完し、状態・原本・提出内容を変えない。
+- 新規uploadは必須document_kindと拡張子/MIME/構造を照合し、形式合格は202/pending・available=falseとする。形式検査済みの私有ファイルを保存しても配信・推薦には使えない。R2のAV応答を偽造するmockや設定flagは製品へ入れない。
+- document_checksは追加済みだが、R1のapp_runtimeはSELECTのみ。新しいreadyには対応policyのclean記録が必要で、blockedがあれば原本・既存共有・提出を拒否する。企業のchecks SELECTはE_SHAREDからだけ。実AVの認証済みwriterと再検査job/leaseはR2で追加する。
+- /documents/:id/recheckは認証/Origin/CSRF/元登録者とblockedを確認し、R1では未検査なら503 SCANNER_UNAVAILABLE。既存cleanの現在結果照合以外の検査処理は実装しない。
+- upload outcomeは本人scope・7日照合・expired tombstoneを実装。期限後のPOSTは原本受信前と冪等lock内で再確認する。旧terminal期限は旧24h期限へ6日を加え、移行時刻から再延長しない。期限切れの結果詳細は返さない。
+- R0旧fixtureのPNG CRC不正は画像検査を追加したR1で検出した。旧fixtureは変更せず拒否試料として保存し、正常PNGで作り直してSheetsから実出力した新しい2点をe2e/fixturesへ置く。R0の限定検証を画像内部まで確認済みだったとは扱わない。
+- 型・画像・式の検査は対応subsetの静的判定。Officeの全schema互換、未知の脆弱性の不存在、AVの有効性を認定するものではない。全フォーム自動保存・複数書類選択UX・AV serviceは後続段階。

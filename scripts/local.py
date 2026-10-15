@@ -21,7 +21,8 @@ os.umask(0o077)
 def run(args,**kw):return subprocess.run(args,check=True,**kw)
 def compose(*args,**kw):
     executable=['docker','compose'] if subprocess.run(['docker','compose','version'],capture_output=True).returncode==0 else ['docker-compose']
-    return run([*executable,'--project-directory',str(ROOT),'--env-file',str(ENV),'-f',str(ROOT/'infra/local/compose.yaml'),*args],**kw)
+    overrides=['-f',str(LOCAL/'e2e-networks.json')] if INSTANCE.startswith('e2e-') and (LOCAL/'e2e-networks.json').is_file() else []
+    return run([*executable,'--project-directory',str(ROOT),'--env-file',str(ENV),'-f',str(ROOT/'infra/local/compose.yaml'),*overrides,*args],**kw)
 def setup():
     LOCAL.mkdir(mode=0o700,parents=True,exist_ok=True)
     if ENV.exists():
@@ -48,7 +49,10 @@ def migrate():
     prefix=f"\\set ON_ERROR_STOP on\n\\set oidc_issuer 'http://idp.recruitment.localhost:{idp_port}/realms/recruitment'\nSET ROLE app_migrator;\n"
     # Serialize migration runners, record hashes, and fail on changed applied SQL.
     body=prefix+"BEGIN;\nSELECT pg_advisory_xact_lock(72176301);\nCREATE TABLE IF NOT EXISTS schema_migrations(version text PRIMARY KEY, sha256 text NOT NULL);\n"
+    cutoff=os.environ.get('RP_TEST_MIGRATIONS_THROUGH')
+    if cutoff and (not INSTANCE.startswith('e2e-') or cutoff!='0005_snapshot_validation'):raise SystemExit('Migration staging is limited to isolated E2E instances.')
     for p in sorted((ROOT/'migrations').glob('*.sql')):
+        if cutoff and p.stem>cutoff:continue
         digest=hashlib.sha256(p.read_bytes()).hexdigest();v=p.stem
         body+=f"DO $$ BEGIN IF EXISTS(SELECT 1 FROM schema_migrations WHERE version='{v}' AND sha256<>'{digest}') THEN RAISE EXCEPTION 'migration checksum changed'; END IF; END $$;\n"
         body+=f"SELECT NOT EXISTS(SELECT 1 FROM schema_migrations WHERE version='{v}') AS apply_migration \\gset\n\\if :apply_migration\n"+p.read_text()+f"\nINSERT INTO schema_migrations VALUES('{v}','{digest}');\n\\endif\n"

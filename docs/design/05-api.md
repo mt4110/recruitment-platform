@@ -153,3 +153,11 @@ POSTの完了キーは現在の読取り認可で現在DTOを返す。企業の�
 下書き作成では非公開/存在しない求人を404、提出時に閉じた求人は409 JOB_NOT_OPEN。提出に使うdocument_idsは非空・重複UUIDなしで、同候補者の自社ready文書だけを受け付ける。候補者または求人の版が変わっていれば409、snapshot・共有参照・event・通知・冪等記録を残さずrollbackする。
 
 画面は一覧と詳細を2秒間隔およびfocus/再表示時に再取得し、共有失効を確認したら企業の候補者本文・PDFリンクを除く。下書きの他者更新は入力を自動で上書きせず、明示的な再読込みを求める。認証失効時は未保存の推薦理由だけを無効なtextareaで保持し、所属・候補者・PDFを隠す。ログアウトは機密状態を破棄する。
+
+## R1の実装差分
+
+文書uploadにはfileより前に`fictional_confirmed=true`と`document_kind=resume|career_history|other`が必須。PDF/XLSXの対応MIMEと拡張子を照合し、octet-streamは構造一致時だけ許可する。正常な形式検査の完了は202/pendingで、R2前はAV待ち。DTOはfile_format/media_type/document_kind/format_checked/inspection_state/availableを持ち、保存先や検査hashは返さない。
+
+原本・共有のcontentと推薦提出は、statusだけでなくdocument_checksの対応policy cleanとblockedなしを要求する。共有snapshotの形式を使ってresume.pdf/resume.xlsxのattachmentを返し、企業には原本SELECTを与えない。旧ready PDFもAV記録なしなら404で配信拒否。
+
+`GET /candidates/:id/document-upload-outcome?key=`の本人7日照合と期限後409を実装。`POST /documents/:id/recheck`はR1では認可/blocked確認までで、実AV未提供なら503。その他draft系と実再検査jobは後続段階。詳細は[最新契約](10-resumes-and-autosave.md)を参照する。

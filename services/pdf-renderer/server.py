@@ -14,20 +14,23 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200 if self.path=='/live' else 404,{})
     def do_POST(self):
         self.connection.settimeout(6)
-        if self.path!='/internal/pdf/check':return self.reply(404,{})
+        if self.path not in ('/internal/pdf/check','/internal/document/check'):return self.reply(404,{})
         if not hmac.compare_digest(self.headers.get('X-PDF-Key','').encode('utf-8'),KEY.encode('utf-8')):return self.reply(403,{})
         try:length=int(self.headers.get('Content-Length','0'))
         except ValueError:return self.reply(400,{})
         if not 1<=length<=LIMIT:return self.reply(413,{})
-        if self.headers.get('Content-Type')!='application/pdf':return self.reply(415,{})
+        media=self.headers.get('Content-Type')
+        if media not in ('application/pdf','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') or (self.path=='/internal/pdf/check' and media!='application/pdf'):return self.reply(415,{})
+        policy='static-resume-v1' if media=='application/pdf' else 'xlsx-resume-v1'
+        worker_path='/app/validator.py' if media=='application/pdf' else '/app/xlsx_validator.py'
         if not SLOT.acquire(blocking=False):return self.reply(503,{})
         try:
             raw=self.rfile.read(length)
             if len(raw)!=length:return self.reply(400,{})
-            worker=subprocess.run([sys.executable,'/app/validator.py'],input=raw,capture_output=True,timeout=5,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'})
+            worker=subprocess.run([sys.executable,worker_path],input=raw,capture_output=True,timeout=5,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'})
             if worker.returncode:return self.reply(503,{})
             result=json.loads(worker.stdout)
-            self.reply(200,{'ok':result['accepted'],'policy':'static-resume-v1','sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':None if result['accepted'] else result['reason']})
+            self.reply(200,{'ok':result['accepted'],'policy':policy,'sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':None if result['accepted'] else result['reason']})
         except (OSError,ValueError,subprocess.TimeoutExpired):self.reply(503,{})
         finally:SLOT.release()
     def log_message(self,*args):pass

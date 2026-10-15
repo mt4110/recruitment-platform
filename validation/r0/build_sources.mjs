@@ -24,7 +24,7 @@ for (const [name,title] of [['resume','履歴書'],['career-history','職務経�
   sheet.getRange('A9:F12').format.wrapText=true;
   sheet.getRange('A14:B15').values=[['期間','所属・役割'],['2020年〜2026年','架空株式会社 開発担当']];
   sheet.getRange('A14:B14').format.fill='#E7EDF4';
-  sheet.images.add({dataUrl:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l1sAAAAASUVORK5CYII=',anchor:{from:{row:3,col:4},extent:{widthPx:90,heightPx:110}}});
+  sheet.images.add({dataUrl:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC',anchor:{from:{row:3,col:4},extent:{widthPx:90,heightPx:110}}});
   detail.getRange('A2:B4').values=[['項目','内容'],['利用データ','すべて架空。実在する求職者情報なし。'],['言語','日本語']];
   detail.getRange('B2:B4').format.columnWidth=44;
   wb.recalculate();

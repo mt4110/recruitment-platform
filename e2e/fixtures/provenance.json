@@ -1,0 +1,23 @@
+{
+  "scope": "fictional native Sheets output; no real candidate data",
+  "export_date": "2026-10-15",
+  "source_builder": "validation/r0/build_sources.mjs; corrected PNG CRC before native import",
+  "native_exports": [
+    {
+      "file": "sheets-career-history.xlsx",
+      "sha256": "dd8a2c9b637b306395c55318cfd32a952d561ca8d0c7d3154c66d7cbbcc3cbcd",
+      "bytes": 14355
+    },
+    {
+      "file": "sheets-resume.xlsx",
+      "sha256": "b27b31bf905d7d56170fa80670d9127a4dfdd1c5cf628228fd3452414868fc34",
+      "bytes": 14344
+    }
+  ],
+  "native_readback": {
+    "birth_date": "1994-04-01",
+    "age": 32
+  },
+  "visual_check": "export reimport/render of both sheets in each workbook; not an Excel rendering claim",
+  "previous_R0_fixtures": "retained unchanged and used as image corruption negative cases"
+}

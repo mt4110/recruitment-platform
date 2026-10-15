@@ -50,3 +50,13 @@ PDF serviceのpause/unpause、APIのrestart、テスト専用DBのlease期限/CA
 workflow.spec.cjsはM3の後に実行し、自分の架空求人・候補者・PDF・推薦を作成する。下書き秘匿、提出時snapshotの不変性、選択PDFのみの共有、全選考状態、共有失効、B/Yの拒否、runtime RLS/列権限、version/冪等、求人終了と提出の同じjob lock、同時選考/撤回、応答喪失・入力保持・認証失効を確認する。通知はDB上の未送信記録だけを検証する。
 
 開発中は `python3 scripts/e2e.py --test-file workflow.spec.cjs` でM4だけを実行できる。run.jsonのtest_selectionに対象を記録し、部分実行を全件成功とは扱わない。最終確認とCIは引数なしでM1〜M4をすべて実行する。
+
+## R1
+
+Browser plugin not available: use the existing Playwright suite. Flow: candidate detail → choose document kind and XLSX → format inspection completes → AV pending is visible and download/recommendation stays unavailable. Desktop1280×900/mobile390×844 and console/page errors are checked.
+
+The runner stages an isolated new DB through0005, seeds a fictional ready PDF and active shared snapshot, then applies0006 and verifies unchanged bytes/status/snapshot and terminal expiry. `RP_TEST_MIGRATIONS_THROUGH` is rejected outside isolated e2e instances. Test networks use unoccupied small subnets; retained past resources are not pruned.
+
+R1 has no AV writer. Positive delivery/M4 workflow regression uses the explicitly named `synthetic_av.cjs` helper to insert TEST_ONLY_SYNTHETIC_NO_AV records via test DB control, then calls the normal retry API. This is not evidence of real scanning. Unmodified raw upload endpoints are tested to remain pending and deny delivery. No product mock, environment bypass or relaxed authorization is added.
+
+The real bounded XLSX worker is exercised by `check_xlsx.py` (native Sheets exports plus adversarial mutations). Fixtures in validation/r0 remain unchanged; their malformed test PNG is now an expected rejection. e2e/fixtures contains corrected PNGs imported into Sheets and exported natively, not just library-built ZIP/XML.

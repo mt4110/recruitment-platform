@@ -81,6 +81,8 @@ struct Cursor {
 }
 #[derive(FromRow)]
 struct SharedFile {
+    file_format_snapshot: String,
+    media_type_snapshot: String,
     storage_key_snapshot: String,
     size_bytes_snapshot: i64,
     sha256_snapshot: String,
@@ -182,7 +184,7 @@ async fn read(tx: &mut PgConnection, id: Uuid, u: &Identity) -> Result<Value, Ap
         if let Some(snapshot) = snapshot {
             out["candidate_snapshot"] = snapshot;
         }
-        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
+        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot,'file_format',file_format_snapshot,'document_kind',document_kind_snapshot,'available',document_usable(document_id,sha256_snapshot,file_format_snapshot)) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
         out["documents"] = json!(docs);
     }
     let mut events:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'event_type',event_type,'from_status',from_status,'to_status',to_status,'reason',reason,'created_at',created_at) FROM selection_events WHERE application_id=$1 ORDER BY created_at,id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
@@ -561,7 +563,7 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
                 .collect::<Result<Vec<_>, _>>()?;
             ids.sort();
             for doc in ids {
-                let n=sqlx::query("INSERT INTO application_documents(application_id,document_id,agency_org_id,storage_key_snapshot,original_name_snapshot,size_bytes_snapshot,sha256_snapshot) SELECT $1,id,agency_org_id,storage_key,original_name,size_bytes,sha256 FROM documents WHERE id=$2 AND candidate_id=$3 AND status='ready'").bind(resource).bind(doc).bind(candidate).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+                let n=sqlx::query("INSERT INTO application_documents(application_id,document_id,agency_org_id,storage_key_snapshot,original_name_snapshot,size_bytes_snapshot,sha256_snapshot,file_format_snapshot,media_type_snapshot,document_kind_snapshot) SELECT $1,id,agency_org_id,storage_key,original_name,size_bytes,sha256,file_format,media_type,document_kind FROM documents WHERE id=$2 AND candidate_id=$3 AND status='ready' AND document_usable(id,sha256,file_format)").bind(resource).bind(doc).bind(candidate).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
                 if n != 1 {
                     return Err(invalid());
                 }
@@ -660,7 +662,7 @@ async fn shared_content(
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let document = Uuid::parse_str(&doc).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
-    let file:SharedFile=sqlx::query_as("SELECT storage_key_snapshot,size_bytes_snapshot,sha256_snapshot FROM application_documents WHERE application_id=$1 AND document_id=$2").bind(id).bind(document).fetch_optional(&mut *tx).await.map_err(db_error)?.ok_or_else(missing)?;
+    let file:SharedFile=sqlx::query_as("SELECT storage_key_snapshot,size_bytes_snapshot,sha256_snapshot,file_format_snapshot,media_type_snapshot FROM application_documents WHERE application_id=$1 AND document_id=$2 AND document_usable(document_id,sha256_snapshot,file_format_snapshot)").bind(id).bind(document).fetch_optional(&mut *tx).await.map_err(db_error)?.ok_or_else(missing)?;
     tx.commit().await.map_err(db_error)?;
     let data = crate::documents::verified_bytes(
         &file.storage_key_snapshot,
@@ -678,8 +680,15 @@ async fn shared_content(
     tracing::info!(event="shared_document_download",application_id=%id,document_id=%document,request_id=%Uuid::new_v4());
     Ok((
         [
-            ("content-type", "application/pdf"),
-            ("content-disposition", "attachment; filename=\"resume.pdf\""),
+            ("content-type", file.media_type_snapshot.as_str()),
+            (
+                "content-disposition",
+                if file.file_format_snapshot == "pdf" {
+                    "attachment; filename=\"resume.pdf\""
+                } else {
+                    "attachment; filename=\"resume.xlsx\""
+                },
+            ),
         ],
         data,
     )

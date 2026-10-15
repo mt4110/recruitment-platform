@@ -3,7 +3,7 @@ use crate::auth::{self, ApiError, App, Identity};
 use crate::business::{Tx, begin, db_error, error, invalid, lock, lock_key, missing};
 use axum::{
     Json, Router,
-    extract::{DefaultBodyLimit, FromRequest, Multipart, Path, Request, State},
+    extract::{DefaultBodyLimit, FromRequest, Multipart, Path, Query, Request, State},
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -20,10 +20,28 @@ const MAX: usize = 10 * 1024 * 1024;
 fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
 }
-const POLICY: &str = "static-resume-v1";
+const XLSX_MEDIA: &str = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+fn format_policy(d: &Document) -> &'static str {
+    if d.file_format == "pdf" {
+        "static-resume-v1"
+    } else {
+        "xlsx-resume-v1"
+    }
+}
+fn full_policy(d: &Document) -> &'static str {
+    if d.file_format == "pdf" {
+        "static-resume-v2"
+    } else {
+        "xlsx-resume-v1"
+    }
+}
 #[derive(FromRow)]
 struct Document {
     id: Uuid,
+    file_format: String,
+    media_type: String,
+    document_kind: String,
+    legacy_document: bool,
     candidate_id: Uuid,
     created_by: Uuid,
     storage_key: String,
@@ -47,6 +65,7 @@ struct Lease {
     error_code: Option<String>,
     lease_token: Option<Uuid>,
     lease_expires_at: Option<DateTime<Utc>>,
+    expires_at: Option<DateTime<Utc>>,
 }
 pub fn routes() -> Router<Arc<App>> {
     Router::new()
@@ -54,6 +73,11 @@ pub fn routes() -> Router<Arc<App>> {
             "/api/v1/candidates/{id}/documents",
             post(upload).layer(DefaultBodyLimit::max(MAX + 65536)),
         )
+        .route(
+            "/api/v1/candidates/{id}/document-upload-outcome",
+            get(outcome),
+        )
+        .route("/api/v1/documents/{id}/recheck", post(recheck))
         .route("/api/v1/documents/{id}", get(status))
         .route("/api/v1/documents/{id}/retry", post(retry))
         .route("/api/v1/documents/{id}/content", get(content))
@@ -70,6 +94,9 @@ fn rejection(code: &str, status: StatusCode) -> ApiError {
         "CANDIDATE_ARCHIVED" => "CANDIDATE_ARCHIVED",
         "UPLOAD_INTERRUPTED" => "UPLOAD_INTERRUPTED",
         "ENCRYPTED" => "ENCRYPTED",
+        "UNSUPPORTED_STRUCTURE" => "UNSUPPORTED_STRUCTURE",
+        "UNSUPPORTED_FORMULA" => "UNSUPPORTED_FORMULA",
+        "STRUCTURE_LIMIT" => "STRUCTURE_LIMIT",
         "PAGES" => "PAGES",
         "SIZE" => "SIZE",
         "UNSUPPORTED_A" | "ATTRIBUTE_TYPE" | "STRUCTURE_PARENT" | "STRUCTURE_CYCLE" => {
@@ -86,6 +113,12 @@ fn rejection(code: &str, status: StatusCode) -> ApiError {
             "PDF_STRUCTURE_UNSUPPORTED" => {
                 "このPDFの構造には対応していません。添付のサンプルPDFでお試しください。"
             }
+            "UNSUPPORTED_STRUCTURE" | "UNSUPPORTED_FORMULA" => {
+                "未対応のXLSX構造または数式です。外部リンクを外して保存するか、PDFへ書き出してください。"
+            }
+            "STRUCTURE_LIMIT" => {
+                "XLSXの展開量や構造が上限を超えています。内容を減らして保存してください。"
+            }
             "PAGES" => "PDFは1〜20ページにしてください。",
             "ENCRYPTED" => "暗号化せずにPDFを書き出してください。",
             _ => "静的なPDFだけ登録できます。リンクやフォームを含めずPDFを書き出してください。",
@@ -97,7 +130,7 @@ fn path(key: &str) -> Result<PathBuf, ApiError> {
     let (id, ext) = key
         .rsplit_once('.')
         .ok_or_else(|| unavailable("STORAGE_CONFLICT"))?;
-    if Uuid::parse_str(id).is_err() || !["part", "pdf", "json"].contains(&ext) {
+    if Uuid::parse_str(id).is_err() || !["part", "pdf", "xlsx", "json"].contains(&ext) {
         return Err(unavailable("STORAGE_CONFLICT"));
     }
     Ok(PathBuf::from("/data/resumes").join(key))
@@ -116,8 +149,16 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
     } else {
         None
     };
+    let available: bool = sqlx::query_scalar("SELECT $3 AND document_usable($1,$2,$4)")
+        .bind(d.id)
+        .bind(&d.sha256)
+        .bind(d.status == "ready")
+        .bind(&d.file_format)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
     Ok(
-        json!({"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
+        json!({"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
     )
 }
 pub(crate) async fn list(tx: &mut PgConnection, candidate: Uuid) -> Result<Value, ApiError> {
@@ -171,11 +212,12 @@ async fn status(
 async fn receive(
     app: Arc<App>,
     request: Request,
-) -> Result<(String, String, i64, String), ApiError> {
+) -> Result<(String, String, i64, String, String, String, String), ApiError> {
     let mut multipart = Multipart::from_request(request, &app)
         .await
         .map_err(|_| invalid())?;
     let mut confirmed = false;
+    let mut kind: Option<String> = None;
     let mut file = None;
     while let Some(mut field) = multipart.next_field().await.map_err(|_| invalid())? {
         match field.name() {
@@ -185,7 +227,14 @@ async fn receive(
                 }
                 confirmed = true;
             }
-            Some("file") if file.is_none() && confirmed => {
+            Some("document_kind") if kind.is_none() && file.is_none() => {
+                let value = field.text().await.map_err(|_| invalid())?;
+                if !["resume", "career_history", "other"].contains(&value.as_str()) {
+                    return Err(invalid());
+                }
+                kind = Some(value);
+            }
+            Some("file") if file.is_none() && confirmed && kind.is_some() => {
                 let name = field.file_name().ok_or_else(invalid)?.to_owned();
                 let name = name
                     .rsplit(['/', '\\'])
@@ -196,7 +245,23 @@ async fn receive(
                 if name.is_empty()
                     || name.chars().count() > 255
                     || name.chars().any(char::is_control)
-                    || field.content_type() != Some("application/pdf")
+                {
+                    return Err(invalid());
+                }
+                let format = if name.to_ascii_lowercase().ends_with(".pdf") {
+                    "pdf"
+                } else if name.to_ascii_lowercase().ends_with(".xlsx") {
+                    "xlsx"
+                } else {
+                    return Err(invalid());
+                };
+                let media = if format == "pdf" {
+                    "application/pdf"
+                } else {
+                    XLSX_MEDIA
+                };
+                if field.content_type() != Some(media)
+                    && field.content_type() != Some("application/octet-stream")
                 {
                     return Err(invalid());
                 }
@@ -238,7 +303,7 @@ async fn receive(
                         error(
                             StatusCode::PAYLOAD_TOO_LARGE,
                             "PAYLOAD_TOO_LARGE",
-                            "PDFは10MiB以内にしてください。",
+                            "PDF／XLSXは10MiB以内にしてください。",
                         )
                     } else {
                         invalid()
@@ -249,7 +314,7 @@ async fn receive(
                         return Err(error(
                             StatusCode::PAYLOAD_TOO_LARGE,
                             "PAYLOAD_TOO_LARGE",
-                            "PDFは10MiB以内にしてください。",
+                            "PDF／XLSXは10MiB以内にしてください。",
                         ));
                     }
                     hash.update(&chunk);
@@ -266,7 +331,15 @@ async fn receive(
                 if size == 0 {
                     return Err(invalid());
                 }
-                file = Some((key, name, size as i64, hex(&hash.finalize())));
+                file = Some((
+                    key,
+                    name,
+                    size as i64,
+                    hex(&hash.finalize()),
+                    format.to_owned(),
+                    media.to_owned(),
+                    kind.clone().unwrap(),
+                ));
             }
             _ => return Err(invalid()),
         }
@@ -294,12 +367,13 @@ async fn upload(
     let mut tx = begin(&app, &u).await?;
     owner(&mut tx, candidate).await?;
     tx.commit().await.map_err(db_error)?;
+    preflight(&app, &u, candidate, key).await?;
     let _slot = app
         .uploads
         .clone()
         .try_acquire_owned()
         .map_err(|_| unavailable("RETRYABLE_BUSY"))?;
-    let (staging, name, size, sha) =
+    let (staging, name, size, sha, format, media, kind) =
         tokio::time::timeout(Duration::from_secs(30), receive(app.clone(), request))
             .await
             .map_err(|_| {
@@ -309,7 +383,7 @@ async fn upload(
                     "30秒以内に登録できませんでした。",
                 )
             })??;
-    let hash=Sha256::digest(serde_json::to_vec(&json!({"candidate_id":candidate,"original_name":name,"sha256":sha,"fictional_confirmed":true})).map_err(|_|invalid())?).to_vec();
+    let hash=Sha256::digest(serde_json::to_vec(&json!({"candidate_id":candidate,"original_name":name,"sha256":sha,"file_format":format,"document_kind":kind,"fictional_confirmed":true})).map_err(|_|invalid())?).to_vec();
     let normalized = format!("/api/v1/candidates/{candidate}/documents");
     let mut tx = begin(&app, &u).await?;
     owner(&mut tx, candidate).await?;
@@ -327,11 +401,23 @@ async fn upload(
         ),
     )
     .await?;
-    let existing:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(&normalized).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
+    let existing:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(&normalized).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
     let token = Uuid::new_v4();
     let id;
     if let Some(previous) = existing {
-        if previous.request_hash != hash {
+        if expired(&previous) {
+            mark_expired(&mut tx, previous.resource_id).await?;
+            tx.commit().await.map_err(db_error)?;
+            return Err(result_expired());
+        }
+        let legacy_hash = Sha256::digest(serde_json::to_vec(&json!({"candidate_id":candidate,"original_name":name,"sha256":sha,"fictional_confirmed":true})).map_err(|_|invalid())?).to_vec();
+        let old_document = doc(&mut tx, previous.resource_id).await?;
+        if previous.request_hash != hash
+            && !(old_document.legacy_document
+                && format == "pdf"
+                && kind == "other"
+                && previous.request_hash == legacy_hash)
+        {
             return Err(error(
                 StatusCode::CONFLICT,
                 "IDEMPOTENCY_MISMATCH",
@@ -368,8 +454,8 @@ async fn upload(
             return Err(rejection("CANDIDATE_ARCHIVED", StatusCode::CONFLICT));
         }
         id = Uuid::new_v4();
-        sqlx::query("INSERT INTO documents(id,agency_org_id,candidate_id,created_by,storage_key,staging_key,original_name,size_bytes,sha256,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending')").bind(id).bind(u.organization_id).bind(candidate).bind(u.user_id).bind(format!("{id}.pdf")).bind(staging).bind(name).bind(size).bind(sha).execute(&mut *tx).await.map_err(db_error)?;
-        sqlx::query("INSERT INTO idempotency_records(org_id,user_id,http_method,normalized_path,key,request_hash,resource_id,state,lease_token,lease_expires_at) VALUES($1,$2,'POST',$3,$4,$5,$6,'processing',$7,now()+interval '60 seconds')").bind(u.organization_id).bind(u.user_id).bind(normalized).bind(key).bind(hash).bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?;
+        sqlx::query("INSERT INTO documents(id,agency_org_id,candidate_id,created_by,storage_key,staging_key,original_name,size_bytes,sha256,status,file_format,media_type,document_kind) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending',$10,$11,$12)").bind(id).bind(u.organization_id).bind(candidate).bind(u.user_id).bind(format!("{id}.{format}")).bind(staging).bind(name).bind(size).bind(sha).bind(format).bind(media).bind(kind).execute(&mut *tx).await.map_err(db_error)?;
+        sqlx::query("INSERT INTO idempotency_records(org_id,user_id,http_method,normalized_path,key,request_hash,resource_id,state,lease_token,lease_expires_at) VALUES($1,$2,'POST',$3,$4,$5,$6,'processing',$7,now()+interval '120 seconds')").bind(u.organization_id).bind(u.user_id).bind(normalized).bind(key).bind(hash).bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?;
     }
     tx.commit().await.map_err(db_error)?;
     process(&app, &u, id, token, StatusCode::CREATED).await
@@ -386,7 +472,7 @@ async fn claim(
     old: Option<Uuid>,
     token: Uuid,
 ) -> Result<(), ApiError> {
-    let n=sqlx::query("UPDATE idempotency_records SET lease_token=$2,lease_expires_at=now()+interval '60 seconds' WHERE resource_id=$1 AND state='processing' AND lease_token IS NOT DISTINCT FROM $3 AND lease_expires_at<=now()").bind(id).bind(token).bind(old).execute(tx).await.map_err(db_error)?.rows_affected();
+    let n=sqlx::query("UPDATE idempotency_records SET lease_token=$2,lease_expires_at=now()+interval '120 seconds' WHERE resource_id=$1 AND state='processing' AND lease_token IS NOT DISTINCT FROM $3 AND lease_expires_at<=now()").bind(id).bind(token).bind(old).execute(tx).await.map_err(db_error)?.rows_affected();
     if n != 1 {
         return Err(unavailable("RETRYABLE_BUSY"));
     }
@@ -416,7 +502,7 @@ async fn retry(
             "拒否済みです。新しい操作で登録してください。",
         ));
     }
-    let lease:Lease=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at FROM idempotency_records WHERE resource_id=$1 AND state='processing'").bind(id).fetch_optional(&mut *tx).await.map_err(db_error)?.ok_or_else(missing)?;
+    let lease:Lease=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE resource_id=$1 AND state='processing'").bind(id).fetch_optional(&mut *tx).await.map_err(db_error)?.ok_or_else(missing)?;
     if lease.lease_expires_at.is_some_and(|v| v > Utc::now()) {
         return pending(tx, id, &u).await;
     }
@@ -475,7 +561,7 @@ async fn process(
     tx.commit().await.map_err(db_error)?;
     let final_bytes = bytes(&d.storage_key, &d).await?;
     if final_bytes.is_some() {
-        if d.validation_policy.as_deref() != Some(POLICY) || d.validated_at.is_none() {
+        if d.validation_policy.as_deref() != Some(format_policy(&d)) || d.validated_at.is_none() {
             return Err(unavailable("STORAGE_CONFLICT"));
         }
     } else {
@@ -497,10 +583,10 @@ async fn process(
         };
         let response = app
             .http
-            .post("http://pdf-renderer:8080/internal/pdf/check")
+            .post("http://pdf-renderer:8080/internal/document/check")
             .timeout(Duration::from_secs(7))
             .header("X-PDF-Key", &app.pdf_key)
-            .header("Content-Type", "application/pdf")
+            .header("Content-Type", &d.media_type)
             .body(data)
             .send()
             .await
@@ -515,7 +601,7 @@ async fn process(
                 .map_err(|_| unavailable("PDF_UNAVAILABLE"))?,
         )
         .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
-        if checked.sha256 != d.sha256 || checked.policy != POLICY {
+        if checked.sha256 != d.sha256 || checked.policy != format_policy(&d) {
             return Err(unavailable("PDF_UNAVAILABLE"));
         }
         if !checked.ok {
@@ -533,7 +619,7 @@ async fn process(
             .await;
         }
         let mut tx = begin(app, u).await?;
-        let n=sqlx::query("UPDATE documents SET validation_policy='static-resume-v1',validated_at=now(),updated_at=now() WHERE id=$1 AND status='pending' AND EXISTS(SELECT 1 FROM idempotency_records WHERE resource_id=$1 AND state='processing' AND lease_token=$2 AND lease_expires_at>now())").bind(id).bind(token).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+        let n=sqlx::query("UPDATE documents SET validation_policy=$3,validated_at=now(),updated_at=now() WHERE id=$1 AND status='pending' AND EXISTS(SELECT 1 FROM idempotency_records WHERE resource_id=$1 AND state='processing' AND lease_token=$2 AND lease_expires_at>now())").bind(id).bind(token).bind(format_policy(&d)).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
         if n != 1 {
             return Err(unavailable("RETRYABLE_BUSY"));
         }
@@ -592,23 +678,41 @@ async fn finish(
         return Err(unavailable("RETRYABLE_BUSY"));
     }
     if refused.is_none()
-        && (current.validation_policy.as_deref() != Some(POLICY) || current.validated_at.is_none())
+        && (current.validation_policy.as_deref() != Some(format_policy(&current))
+            || current.validated_at.is_none())
     {
         return Err(unavailable("PDF_UNAVAILABLE"));
+    }
+    let usable: bool = sqlx::query_scalar("SELECT document_usable($1,$2,$3)")
+        .bind(d.id)
+        .bind(&d.sha256)
+        .bind(&d.file_format)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if refused.is_none() && !usable {
+        let n=sqlx::query("UPDATE idempotency_records SET lease_expires_at=now() WHERE resource_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now()").bind(d.id).bind(token).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+        if n != 1 {
+            return Err(unavailable("RETRYABLE_BUSY"));
+        }
+        let out = dto(&mut tx, &current, Some(u.user_id)).await?;
+        tx.commit().await.map_err(db_error)?;
+        return Ok((StatusCode::ACCEPTED, Json(out)).into_response());
     }
     let (state, http, code) = if let Some((code, http)) = refused {
         ("failed", http, Some(code))
     } else {
         ("completed", StatusCode::CREATED, None)
     };
-    let n=sqlx::query("UPDATE idempotency_records SET state=$3,result_status=$4,error_code=$5,expires_at=now()+interval '24 hours' WHERE resource_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now()").bind(d.id).bind(token).bind(state).bind(http.as_u16()as i32).bind(code).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
+    let n=sqlx::query("UPDATE idempotency_records SET state=$3,result_status=$4,error_code=$5,expires_at=now()+interval '7 days' WHERE resource_id=$1 AND lease_token=$2 AND state='processing' AND lease_expires_at>now()").bind(d.id).bind(token).bind(state).bind(http.as_u16()as i32).bind(code).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
     if n != 1 {
         return Err(unavailable("RETRYABLE_BUSY"));
     }
-    sqlx::query("UPDATE documents SET status=$2,rejection_code=$3,updated_at=now() WHERE id=$1")
+    sqlx::query("UPDATE documents SET status=$2,rejection_code=$3,validation_policy=CASE WHEN $2='ready' THEN $4 ELSE validation_policy END,updated_at=now() WHERE id=$1")
         .bind(d.id)
         .bind(if code.is_some() { "rejected" } else { "ready" })
         .bind(code)
+        .bind(full_policy(d))
         .execute(&mut *tx)
         .await
         .map_err(db_error)?;
@@ -643,7 +747,14 @@ async fn content(
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     let d = doc(&mut tx, id).await?;
-    if d.status != "ready" {
+    let usable: bool = sqlx::query_scalar("SELECT document_usable($1,$2,$3)")
+        .bind(d.id)
+        .bind(&d.sha256)
+        .bind(&d.file_format)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if d.status != "ready" || !usable {
         return Err(missing());
     }
     tx.commit().await.map_err(db_error)?;
@@ -653,11 +764,121 @@ async fn content(
     tracing::info!(event="document_download",resource_id=%id,request_id=%Uuid::new_v4());
     Ok((
         [
-            ("content-type", "application/pdf"),
-            ("content-disposition", "attachment; filename=\"resume.pdf\""),
+            ("content-type", d.media_type.as_str()),
+            (
+                "content-disposition",
+                if d.file_format == "pdf" {
+                    "attachment; filename=\"resume.pdf\""
+                } else {
+                    "attachment; filename=\"resume.xlsx\""
+                },
+            ),
             ("x-content-type-options", "nosniff"),
         ],
         data,
     )
         .into_response())
+}
+
+fn expired(l: &Lease) -> bool {
+    l.state == "expired" || l.expires_at.is_some_and(|t| t <= Utc::now())
+}
+fn result_expired() -> ApiError {
+    error(
+        StatusCode::CONFLICT,
+        "OPERATION_RESULT_EXPIRED",
+        "この操作の結果照合期限を過ぎました。文書一覧を確認してください。",
+    )
+}
+async fn mark_expired(tx: &mut PgConnection, id: Uuid) -> Result<(), ApiError> {
+    sqlx::query("UPDATE idempotency_records SET state='expired',result_status=NULL,error_code=NULL,lease_token=NULL,lease_expires_at=NULL WHERE resource_id=$1 AND state IN ('completed','failed') AND expires_at<=now()").bind(id).execute(tx).await.map_err(db_error)?;
+    Ok(())
+}
+async fn preflight(app: &App, u: &Identity, candidate: Uuid, key: Uuid) -> Result<(), ApiError> {
+    let mut tx = begin(app, u).await?;
+    let found:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(format!("/api/v1/candidates/{candidate}/documents")).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
+    if let Some(l) = found {
+        if expired(&l) {
+            mark_expired(&mut tx, l.resource_id).await?;
+            tx.commit().await.map_err(db_error)?;
+            return Err(result_expired());
+        }
+    }
+    tx.commit().await.map_err(db_error)?;
+    Ok(())
+}
+#[derive(Deserialize)]
+struct OutcomeQuery {
+    key: Uuid,
+}
+async fn outcome(
+    State(app): State<Arc<App>>,
+    Path(raw): Path<String>,
+    Query(query): Query<OutcomeQuery>,
+    headers: HeaderMap,
+) -> Result<Response, ApiError> {
+    let u = checked(&app, &headers, false).await?;
+    let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
+    let mut tx = begin(&app, &u).await?;
+    owner(&mut tx, id).await?;
+    let record:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(format!("/api/v1/candidates/{id}/documents")).bind(query.key).fetch_optional(&mut *tx).await.map_err(db_error)?;
+    let value = if let Some(l) = record {
+        if expired(&l) {
+            mark_expired(&mut tx, l.resource_id).await?;
+            tx.commit().await.map_err(db_error)?;
+            return Err(result_expired());
+        }
+        json!({"state":l.state,"document_id":l.resource_id,"status_url":format!("/api/v1/documents/{}",l.resource_id),"result_status":l.result_status,"rejection_code":l.error_code,"result_expires_at":l.expires_at})
+    } else {
+        json!({"state":"not_recorded"})
+    };
+    tx.commit().await.map_err(db_error)?;
+    Ok(Json(value).into_response())
+}
+async fn recheck(
+    State(app): State<Arc<App>>,
+    Path(raw): Path<String>,
+    headers: HeaderMap,
+) -> Result<Response, ApiError> {
+    let u = checked(&app, &headers, true).await?;
+    let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
+    Uuid::parse_str(
+        headers
+            .get("idempotency-key")
+            .and_then(|v| v.to_str().ok())
+            .ok_or_else(invalid)?,
+    )
+    .map_err(|_| invalid())?;
+    let mut tx = begin(&app, &u).await?;
+    let d = doc(&mut tx, id).await?;
+    if d.created_by != u.user_id {
+        return Err(missing());
+    }
+    let blocked: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM document_checks WHERE document_id=$1 AND verdict='blocked')",
+    )
+    .bind(id)
+    .fetch_one(&mut *tx)
+    .await
+    .map_err(db_error)?;
+    if blocked {
+        return Err(error(
+            StatusCode::CONFLICT,
+            "DOCUMENT_BLOCKED",
+            "利用禁止の書類です。",
+        ));
+    }
+    let usable: bool = sqlx::query_scalar("SELECT document_usable($1,$2,$3)")
+        .bind(id)
+        .bind(&d.sha256)
+        .bind(&d.file_format)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if usable && d.status == "ready" {
+        let value = dto(&mut tx, &d, Some(u.user_id)).await?;
+        tx.commit().await.map_err(db_error)?;
+        return Ok(Json(value).into_response());
+    }
+    Err(unavailable("SCANNER_UNAVAILABLE"))
 }
