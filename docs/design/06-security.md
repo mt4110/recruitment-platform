@@ -1,44 +1,66 @@
 # 認証・権限・ファイル保護
 
-## 認証方式
+## 認証と組織
 
-OIDC Authorization Code + PKCEをAPI側で処理する。issuer、audience、署名、nonce、state、有効期限、固定redirect URIを検証し、callbackのauth attemptを一度だけ消費する。OIDCの外部issuer URLとコンテナ間アクセスURLは一致を検証し、検証省略でローカル接続問題を解決しない。
+OIDC Authorization Code + PKCEをAPIで処理し、issuer/audience/署名/nonce/state/期限/固定redirect URIを検証する。auth attemptは5分・単回消費。ブラウザとコンテナから同じissuerを解決できるネットワーク設定にし、ローカル環境でも検証を省略しない。
 
-ユーザーのキーは(issuer,subject)。メールドメインから所属を推定せず、デモ投入済みのmembershipsを参照する。認証成功後は256bit以上のランダムな不透明セッションを発行し、DBにはhashを保存する。プロトタイプの期限は8時間、active org変更でtokenをrotate。CSRF tokenはセッション原文と専用secretからHMACで導出し、/meで返してconstant-time比較する。生セッションはJSONへ返さない。
+userのキーは(issuer,subject)、所属はusers.organization_idの1件。メールから所属を推定しない。未登録/無効user、無効組織はログイン不可。所属変更・切替は初期版にない。通常要求では毎回userと組織の有効性を確認する。
 
-ログアウトでアプリセッションを破棄する。デモの利用者交代はOIDCのprompt=loginで毎回認証画面を出し、前のSSOセッションによる自動ログインを避ける。IdP側のログアウト連携は対応する仕様とredirect先を検証して追加する。
+認証後は256bit以上の不透明sessionを発行し、DBにhashだけを保存、有効期限は8時間。CSRF tokenはsession原文と専用secretからHMACで導出して/meで返す。状態変更ではconstant-time比較とOrigin検査を行う。cookieはHttpOnly/SameSite=Lax/Path=/、HTTPSではSecure/Host限定。HTTP例外はloopback開発だけ。CORSは同一オリジンのみ。
 
-cookieはHttpOnly、SameSite=Lax、Path=/。HTTPS環境ではSecure、Host限定にする。HTTPのローカル例外はloopbackの開発環境だけ。状態変更にはCSRF tokenとOrigin検査。CORSは同一オリジンのみ。変更APIはGETで呼ばない。
+ログアウトでアプリsessionを失効、画面の機密状態を破棄する。デモの利用者交代は別browser contextを推奨。同じbrowserではlogout後prompt=loginを付けて再認証し、Keycloakで別のデモアカウントを入力できることを受入で確認する。prompt=login自体がアカウント選択を保証するとは扱わない。401後はフォームを遷移前まで保持し、OIDCから戻った後は再入力と案内する。PIIをlocalStorageへ保存しない。
 
-## 認可の順序
+## 認可と共有の失効（R1/R2/R4）
 
-1. 有効sessionとuserを取得。
-2. active orgのmembershipとorganization.activeを再確認。
-3. 操作できる組織種別を確認。
-4. 所有またはapplicationでの共有関係を確認。
-5. 状態とversion、share_revoked_atを確認。
-6. 同じ認可条件をDB transaction/RLSと出力DTOへ適用。
+認証→組織種別→所有/案件関係→共有状態→許可操作の順に確認する。新規処理ではその後versionを検査するが、同一キーの完了処理は[冪等性契約](05-api.md)に従う。org IDはuserから取得し、bodyの値を権限根拠にしない。
 
-API bodyのorganization_idやemployer_org_idを権限根拠にしない。企業はcandidate原本を参照できない。UI上の組織変更後は前組織の画面状態とキャッシュを破棄する。ログアウトでも機密画面を消し、ブラウザの戻る操作で共有キャッシュから再表示しないようにする。
+企業の候補者snapshotと共有PDFは **E_SHARED**、agencyは **A_OWNER** を使う。定義とtable別RLSは[データモデル](04-data-model.md)を正本にする。辞退はwithdrawnとshare_revoked_atを同時更新する。進行中の共有撤回も辞退、rejected/hiredの撤回は元状態を維持。再共有しない。
 
-## PDFアップロード
+企業のファイル取得はapplication_documentsの不変参照だけを読む。documents原本へアクセスできる特権ロールや公開static URLを使わない。企業が共有失効後も読める案件metadataには候補者本文・共有ファイル一覧・自由記入reasonを含めない。無関係な組織や共有失効後の候補者/PDF取得は404。
 
-最大10MiB、PDFの拡張子とmagicだけでなく構造を検証する。暗号化PDF、壊れたPDF、JavaScript・添付ファイル・起動アクションを含むPDFを拒否する。検査ツールは隔離環境・時間制限5秒で実行し、ツールの終了状態を確認する。検査済みでも実運用の安全性を保証しない。
+認可クエリ時点で開始済みのstreamと、取得済みファイルの回収は保証できない。撤回commit後の新しい取得を拒否する。v0.1で署名URLを配布しない。no-storeとUIの状態破棄を組み合わせ、ブラウザのキャッシュから再共有しない。
 
-まずランダムkeyの一時領域にstream保存し、検査成功後readyへ遷移する。DBはpendingから開始し、失敗したレコードはrejected。一時ファイルの整理処理は対象を限定して設計する。readyになるまで推薦に選べない。ストレージキーを推測可能な氏名・メール・候補者IDにしない。
+## PDF検査の方式と対応範囲（R6）
 
-ファイルはAPI認可後にstreamし、公開bucketや汎用static配信を使わない。Content-Type:application/pdf、X-Content-Type-Options:nosniff、no-storeを付ける。cloud例でも初期版は署名URLを直接利用者へ渡さず、API経由とする。後で署名URLを採用するなら、短い期限と撤回後の残存アクセスを別途評価する。
+**pikepdf/libqpdfによる構文検査と全オブジェクトの禁止要素検査**を採用する設計とする。元PDFは改変せず、検査合格したbytesだけを保管する。qpdf系の構文検査合格だけでactive contentがないとは判定しない。具体的なversion/ライセンスと下記fixtureの実動作はM0で確認して固定する。
 
-## 請求プレビュー
+許可するのは架空レジュメの静的PDF、最大10MiB、1〜20ページ。暗号化（空passwordでも暗号化されたものを含む）、構文の例外/警告、注釈/フォーム/添付/起動時動作を拒否する。リンク注釈を含むPDFも初期版では拒否し、利用者には「リンクやフォームを含めずPDFを書き出してください」と具体的に案内する。
 
-レンダラーは固定schemaの入力に限定し、ユーザー提供のHTML・URL・任意のファイルパスを受け付けない。文字列はHTMLエスケープ、外部ネットワークアクセス禁止、非root、プロセスとメモリ・同時実行を制限する。共有鍵は環境のsecretで渡し、Gitへ保存しない。
+検査はattempt_recovery=Falseで開き、is_encrypted、check_pdf_syntaxの結果、get_warningsを確認。pdf.objectsの全間接オブジェクト、各dictionary/array/stream dictionary内の直接オブジェクトを循環検出付きで走査し、名前をparserで解釈した上で、次のkeyがあれば拒否する：/Annots、/AcroForm、/XFA、/OpenAction、/AA、/A、/JS、/JavaScript、/EmbeddedFiles、/EF、/Launch、/RichMedia、/Collection。dictionaryの/Type=/Action、および/Sが/JavaScript・/Launch・/URI・/GoToR・/GoToE・/SubmitForm・/ImportData・/Renditionのいずれかでも拒否する。keyだけでなく解釈済みname値を判定する。構造数の上限は10,000 objects、直接構造の深さ64。上限超過や解釈不能も拒否し、単純なbytes検索では代替しない。
+
+これは対応するPDFを限定した受付policyであり、既知/未知の悪性PDFをすべて検出する保証ではない。メディア型はapplication/pdf、検査後もAPI経由・認可付きで配信する。共用公開デモでは任意ファイルのアップロードを公開しない。
+
+## 検査の隔離
+
+既存の内部PDF service内で、検査は1要求ごとのPython子processとして実行する。APIのファイルvolume・DB認証情報をserviceへ渡さず、PDF bytesだけを送る。入力10MiB、子processのメモリ256MiB/CPU時間5秒/wall time5秒、同時検査1件、tmpfsを用いる。非root、read-only root filesystem、不要capabilityなし、外向き通信なし。制限値は初期設計値で、実測した性能や安全性の認定ではない。
+
+内部endpointはPOST /internal/pdf/check（bytes→ok/sha256/policy/rejection_code）とPOST /internal/pdf/render-invoice（固定schema→PDF）。内部共有鍵とネットワーク制限を両方使う。待ち過多/検査サービス障害/timeoutは503で受付を保留し、検査不合格の422と区別する。失敗を検査合格に変換しない。
+
+## アップロードと復旧の順序（R5/R6）
+
+1. APIが認証/CSRF・架空データ確認と、短いorg context付き参照transactionで候補者の所有/非アーカイブを検証。multipartをAPI専用の管理stagingへstreamし、30秒/10MiB上限を適用。ランダムattempt IDの一時名を使い、SHA-256を計算する。この時点のファイルはどの閲覧APIからも見えない。
+2. org contextと冪等lockを設定した短いtransactionで実bytesのhashを照合する。新規ならdocument ID、staging_key、確定先storage_key、size/hashを保存しpending、冪等記録はprocessingにする。lease tokenを発行し60秒のleaseを設定してcommitする。
+3. 同一キーがcompleted/failedなら現在の認可でその結果を返す。processingで有効leaseがあれば202と既存document IDを返す。重複要求が作ったstagingはその要求の管理対象として整理する。lease切れはCASで新lease tokenを取得して既存データから復旧し、別documentを作らない。
+4. DB transactionの外で内部PDF serviceへ検査を依頼する。不合格なら同じlease tokenを条件にdocumentをrejected、冪等記録をfailed、422のerror_codeを保存する。インフラ障害ならpendingを維持して503、再試行可能とする。生の検査診断をログへ流さない。
+5. 合格ならpolicy名static-resume-v1、検査日時、hashをpending行へ保存する。stagingと確定先は同一filesystemに置き、完全なファイルをcreate-onlyでatomicに配置する。既存の確定ファイルを上書きしない。同じ保存先があればexpected hashとの一致を確認し、異なれば503 STORAGE_CONFLICTで停止する。
+6. candidate→documentの行順で再取得し、現在の所有/有効性、policy/hash、lease tokenを確認してreadyへ更新する。冪等記録もcompleted/201としcommitする。候補者がアーカイブ済みに変わっていた場合はrejected/CANDIDATE_ARCHIVEDとし、冪等記録はfailed/409を保存する。leaseを失った旧processはreadyへ変更できない。readyのbytes/keyは以後不変。
+
+冪等記録のprocessingは期限だけで消さない。完了/拒否確定後から24時間保持する。422の同じキーは同じ拒否結果を返し、修正した別ファイルは新キーで登録する。request hash不一致は409。
+
+API再起動後も、同じupload要求の再試行またはPOST /documents/:id/retryで、lease切れpendingを復旧できる。retryは元の登録者かつ自社agencyだけを許可し、元の冪等記録のleaseをCAS取得して同じdocumentを処理する。readyは200、lease有効なpendingは202、rejectedなら409 DOCUMENT_REJECTEDを返して新規登録へ案内する。元のupload keyでの再要求は保存した拒否status/codeを返す。確定ファイルがあり保存済み検査policy/hashと一致すればreadyを完了する。stagingだけなら再検査から再開。両方なければrejected/UPLOAD_INTERRUPTEDとし、新キーで再登録する。hash不一致は自動置換せず管理上の障害として止める。UIは状態確認で期限切れpendingを検知したら元の登録者に再試行ボタンを出す。自動の組織横断recoveryロールや常駐workerは初期版に作らない。
+
+失敗後の一時/拒否ファイルは、管理manifest・DB参照・leaseを照合して整理する。受信中のrequestはmanifestを更新し、処理中/ready/参照中のファイルを消さない。管理下の孤立stagingは最終更新から24時間後を整理候補とし、候補一覧と結果を記録する。未知の保存先やready領域の一括削除はしない。今回、この整理処理やファイル削除を実行することはない。
+
+## 請求プレビュー・配信
+
+請求PDFは固定schemaの文字列をHTML escapeして固定1ページのテンプレートへ配置する。任意HTML/URL/pathを受け付けず、rendererの外向き通信を止める。フォントを同梱し、page count=1を検証する。Chromiumは非rootでsandboxが有効な設定を検証し、起動のためにsandboxを無効化しない。
+
+ファイルはAPIの認可後にstreamし、Content-Type:application/pdf、X-Content-Type-Options:nosniff、no-storeを付ける。原本取得はattachment、請求PDFはinline。readyの文書は送信前に保存時sizeとhashの整合を確認し、破損なら503で止める。
 
 ## ログ・秘密・運用
 
-OIDC client secret、session cookie、PDF本文、候補者氏名・経歴、未加工の入力bodyをログへ出さない。監査はactor、組織、resource ID、操作、結果、時刻を記録する。環境変数の全出力を診断手順にしない。
+OIDC client secret、session cookie、候補者/レジュメ本文、未加工の入力body、内部共有鍵はGit/logへ出さない。監査はactor/org/resource ID/操作/結果/時刻/request IDのみ。拒否記録は業務rollbackで消えない独立security logへ出す。
 
-DB認証情報とrenderer鍵はローカルでも生成する。デモログイン用の架空アカウントはREADMEに説明してよいが、クラウドで同じ固定パスワードを公開しない。初期化済み管理者認証情報をイメージへ埋め込まない。
+ローカルでも秘密を生成する。架空ログインの説明をREADMEに置く場合も、クラウドへ固定の公開passwordを持ち込まない。本番の保持/削除・復旧・脆弱性対応・法的整理は運用前ガイドで扱う。
 
-本番のバックアップ、保存期間、本人同意の証跡、権限剥奪、脆弱性対応、漏えい時の連絡と法的整理は運用前ガイドで扱う。OSSの認証・認可を機能削減のために省略しない。
-
-参照：[OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html)、[PostgreSQL RLS](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)。セッション期限・ファイル上限などは本プロトタイプの設計値で、法定基準や性能測定値ではない。
+参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)。検査policyと処理順は本設計の判断で、実装検証は未実施。

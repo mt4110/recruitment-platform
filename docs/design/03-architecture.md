@@ -2,9 +2,9 @@
 
 ## 選ぶ構成
 
-Next.js / TypeScriptでWeb画面、Rust / Axum / SQLxで業務API、PostgreSQLで永続化する単一サービス構成。業務ロジックはRustの同じプロセス内のモジュールに置く。初期版はDocker Composeでローカル起動できることを優先する。
+Web画面はNext.js / TypeScript、業務APIはRust / Axum / SQLx、永続化はPostgreSQLを使う。業務ロジックはRustの1プロセス内のモジュールにまとめる。初期版はDocker Composeでローカル起動できることを優先する。
 
-認証はOIDC、ローカルの認証基盤はKeycloak。レジュメはAPIだけが読み書きする専用ディレクトリに保存し、クラウド例ではオブジェクトストレージへ置き換える。PDFプレビューは日本語の固定HTMLテンプレートをPlaywright/ChromiumでPDF化する内部サービスを使う。
+認証はOIDC、ローカルの認証基盤はKeycloak。レジュメはAPIだけが読み書きする専用ディレクトリに保存し、クラウド例ではオブジェクトストレージへ置き換える。内部PDF serviceは、pikepdf/libqpdfでのレジュメ検査と、Playwright/Chromiumでの固定1ページの請求PDF生成を担当する。両処理を1サービスへまとめ、DBと保管volumeは渡さない。
 
 ```mermaid
 flowchart TB
@@ -15,7 +15,7 @@ flowchart TB
     A --> I
     A --> D[(PostgreSQL)]
     A --> F[(PDFレジュメ保管)]
-    A --> P[内部PDFレンダラー]
+    A --> P[内部PDF service]
 ```
 
 ## ローカル起動の契約
@@ -32,13 +32,13 @@ Composeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラ�
 | API | OIDC、セッション、認可、DBトランザクション、ファイル取得、PDF生成依頼 |
 | DB | 組織分離RLS、参照整合性、一意制約、推薦履歴、通知モック |
 | BlobStore | 保存・取得・整合確認。初期実装はLocalBlobStoreのみ。後続のcloud adaptersをこの契約へ閉じる |
-| PDF renderer | 許可されたJSONから固定テンプレートをPDF化。任意HTML・URLを受け付けない |
+| PDF service | bytesの制限付き検査と、固定schemaの請求PDF生成。任意HTML・URLを受け付けない |
 
 APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ場合は必要なセッションcookieを明示的に引き継ぎ、応答を共有キャッシュへ置かない。ブラウザにOIDCトークンを保管させない。
 
 ## PDFと非同期処理
 
-請求プレビューはAPIが認可済みデータを内部レンダラーへ渡し、PDF bytesを返す。内部共有鍵と内部ネットワークで制限する。レンダラーは固定テンプレートをHTMLエスケープし、外部通信を止め、日本語フォントを同梱する。10秒で失敗を返し、利用者が再試行できるようにする。同時実行は初期2件、上限超過は503とする。
+請求プレビューはAPIが認可済みデータを内部レンダラーへ渡し、PDF bytesを返す。内部共有鍵と内部ネットワークで制限する。レンダラーは固定テンプレートをHTMLエスケープし、外部通信を止め、日本語フォントを同梱する。10秒で失敗を返し、利用者が再試行できるようにする。請求生成の同時実行は初期2件、検査は1件、上限超過は503とする。検査とアップロードの復旧契約は[安全性設計](06-security.md)に従い、PDF serviceは保存先を直接操作しない。
 
 通知モックは推薦変更と同一トランザクションでDBへ追加する。外部送信ジョブは存在しない。クラウドの常駐バックグラウンド処理に依存せず一巡できる。
 
@@ -49,7 +49,7 @@ APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ�
 ```text
 apps/web/                  Next.js UI
 services/api/              Rust API、domain、認可、DBアクセス
-services/pdf-renderer/     固定テンプレート、Chromium、日本語フォント
+services/pdf-renderer/     内部PDF service（検査子process、Chromium、固定テンプレート、日本語フォント）
 migrations/                SQL、RLS、制約
 fixtures/                  架空データ、サンプルPDF
 infra/local/               Compose、入口、OIDC初期設定
@@ -61,6 +61,6 @@ docs/                      設計、使い方、ガイド
 
 ## 依存の確定方法
 
-実装開始時にサポート対象のNode、Next.js、Rust、Axum、SQLx、PostgreSQL、Keycloak、Playwrightを一次資料で確認し、バージョンとlockfileを固定する。latestタグを配布手順に使わない。DB migration用の権限と通常API用の権限を分ける。依存とフォントのライセンスを一覧にし、配布するイメージの脆弱性を確認する。
+実装開始時にサポート対象のNode、Next.js、Rust、Axum、SQLx、PostgreSQL、Keycloak、Playwright、Python、pikepdf/libqpdfを一次資料で確認し、バージョンとlockfileを固定する。latestタグを配布手順に使わない。DB migration用の権限と通常API用の権限を分ける。依存とフォントのライセンスを一覧にし、配布するイメージの脆弱性を確認する。
 
 参照：[Axum](https://docs.rs/axum/latest/axum/)、[Next.js self-hosting](https://nextjs.org/docs/app/guides/self-hosting)、[Keycloak container](https://www.keycloak.org/server/containers)、[Playwright PDF](https://playwright.dev/docs/api/class-page#page-pdf)。これらを用いた上記構成は本プロジェクトの設計判断であり、動作検証済みではない。

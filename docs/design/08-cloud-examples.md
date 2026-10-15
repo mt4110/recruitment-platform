@@ -8,9 +8,11 @@
 
 インターネットへ公開するのはHTTPSの入口と選択したOIDCのログイン先。Webと /auth・/api を同一オリジンに置く。アプリDB、ファイル、PDF rendererは直接公開しない。runtime identityとデプロイ権限を分け、objectアクセスは特定bucket/containerに限定する。
 
+PDF serviceには検査用pikepdf/libqpdfと生成用Chromiumを含める。クラウド実装時も検査/生成の子process制限と外向き通信制限を維持し、サービス名がPDFでも文書volumeやDB認証を付与しない。
+
 OIDC issuer/clientの登録は運用者の前提作業とする。クラウド例でKeycloakの本番運用一式を新設することは含めない。ローカルではKeycloak、クラウドでは同じOIDC契約を満たす設定済みissuerを入力する。
 
-クラウド例を実装する際は、対応するS3/GCS/Azure BlobのBlobStore adapterと、内部renderer接続方式も実装・検証する必要がある。GCP例ではAPIからrendererへのID token認証を内部共有鍵に加えて使用する。Terraformだけでローカル版が全クラウド対応になるとは扱わず、これらはローカル40〜100時間の範囲とは別に積算する。
+クラウド例を実装する際は、対応するS3/GCS/Azure BlobのBlobStore adapterと、内部renderer接続方式も実装・検証する必要がある。GCP例ではAPIからrendererへのID token認証を内部共有鍵に加えて使用する。Terraformだけでローカル版が全クラウド対応になるとは扱わず、これらはローカル80〜140時間の仮積算範囲とは別に積算する。
 
 ## サービス対応と経路
 
