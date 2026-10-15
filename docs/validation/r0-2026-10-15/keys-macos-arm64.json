@@ -1,0 +1,18 @@
+{
+  "scope": "browser crypto and IndexedDB, fixture key service only; not product auth/RLS",
+  "node": "v25.9.0",
+  "arch": "arm64",
+  "chromium": "151.0.7922.34",
+  "checks": {
+    "restored": true,
+    "reencrypted": true,
+    "badAad": true,
+    "tamper": true,
+    "webStorageEmpty": true,
+    "oldKeyAfterRestart": true,
+    "signedOutDenied": true,
+    "revokedDenied": true,
+    "unknownVersionDenied": true
+  },
+  "keyMaterialLogged": false
+}

@@ -1,0 +1,169 @@
+{
+  "image": "clamav/clamav@sha256:96b28b83eb72fb497c2400a94229844226e5fe4da9061fad1988092d9fcd88f3",
+  "platform": "linux/amd64",
+  "native_host": "arm64",
+  "started_at": "2026-10-15T10:28:12.699786+00:00",
+  "containers": [
+    "recruitment-r0-102812-025f-update-0",
+    "recruitment-r0-102812-025f-update-1",
+    "recruitment-r0-102812-025f-scanner",
+    "recruitment-r0-102812-025f-missing-db"
+  ],
+  "checks": {
+    "update_0": {
+      "exit": 0,
+      "elapsed_seconds": 79.783,
+      "up_to_date": false
+    },
+    "update_1": {
+      "exit": 0,
+      "elapsed_seconds": 0.589,
+      "up_to_date": true
+    },
+    "load_2g": {
+      "ready": true,
+      "seconds": 79.568
+    },
+    "clean": {
+      "exit": 0,
+      "seconds": 0.137,
+      "clean": true,
+      "detected": false,
+      "limit": false,
+      "output": "stream: OK\n\n----------- SCAN SUMMARY -----------\nInfected files: 0\nTime: 0.069 sec (0 m 0 s)\nStart Date: 2026:10:15 10:30:52\nEnd Date:   2026:10:15 10:30:53\n"
+    },
+    "eicar": {
+      "exit": 1,
+      "seconds": 0.079,
+      "clean": false,
+      "detected": true,
+      "limit": false,
+      "output": "stream: Eicar-Test-Signature FOUND\n\n----------- SCAN SUMMARY -----------\nInfected files: 1\nTime: 0.015 sec (0 m 0 s)\nStart Date: 2026:10:15 10:30:53\nEnd Date:   2026:10:15 10:30:53\n"
+    },
+    "stream_over_10m": {
+      "exit": 0,
+      "seconds": 4.006,
+      "clean": true,
+      "detected": false,
+      "limit": false,
+      "output": "stream: OK\n\n----------- SCAN SUMMARY -----------\nInfected files: 0\nTime: 3.939 sec (0 m 3 s)\nStart Date: 2026:10:15 10:30:53\nEnd Date:   2026:10:15 10:30:57\n"
+    },
+    "raw_instream": {
+      "clean": {
+        "exit": 0,
+        "response": "stream: OK",
+        "clean": true,
+        "detected": false,
+        "limit": false
+      },
+      "eicar": {
+        "exit": 0,
+        "response": "stream: Eicar-Test-Signature FOUND",
+        "clean": false,
+        "detected": true,
+        "limit": false
+      },
+      "stream_over_10m": {
+        "exit": 1,
+        "response": "INSTREAM size limit exceeded. ERROR",
+        "clean": false,
+        "detected": false,
+        "limit": true
+      }
+    },
+    "sheets-career-history.xlsx": {
+      "exit": 0,
+      "clean": true
+    },
+    "sheets-career-history.xlsx-eicar-copy": {
+      "exit": 1,
+      "detected": true
+    },
+    "sheets-resume.xlsx": {
+      "exit": 0,
+      "clean": true
+    },
+    "sheets-resume.xlsx-eicar-copy": {
+      "exit": 1,
+      "detected": true
+    },
+    "same_generation_manifest_after_load": true,
+    "missing_db_refused": {
+      "exit": 1,
+      "refused": true
+    }
+  },
+  "signature_manifest": {
+    "bytecode.cvd": "6d4aa01f219e988060fc419f495d07f27e0cdf1a2cccc065971da922c76f7ffb",
+    "daily.cvd": "af003f6eb87905bc3044e90e489d5f79e4897f57c1930b8854672e649e72f3c3",
+    "main.cvd": "0b2182d229f46981ec8f535382222f7c9dfdd656b250ad47988b910a8d302365"
+  },
+  "scanner_state": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 801921,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-15T10:29:33.214826607Z",
+    "FinishedAt": "0001-01-01T00:00:00Z",
+    "Health": {
+      "Status": "starting",
+      "FailingStreak": 0,
+      "Log": [
+        {
+          "Start": "2026-10-15T19:30:29.097072638+09:00",
+          "End": "2026-10-15T19:30:29.179206124+09:00",
+          "ExitCode": 1,
+          "Output": "ERROR: Unable to contact server\n"
+        },
+        {
+          "Start": "2026-10-15T19:30:34.180460507+09:00",
+          "End": "2026-10-15T19:30:34.229533662+09:00",
+          "ExitCode": 1,
+          "Output": "ERROR: Unable to contact server\n"
+        },
+        {
+          "Start": "2026-10-15T19:30:39.233000773+09:00",
+          "End": "2026-10-15T19:30:39.296543112+09:00",
+          "ExitCode": 1,
+          "Output": "ERROR: Unable to contact server\n"
+        },
+        {
+          "Start": "2026-10-15T19:30:44.298594998+09:00",
+          "End": "2026-10-15T19:30:44.386818496+09:00",
+          "ExitCode": 1,
+          "Output": "ERROR: Unable to contact server\n"
+        },
+        {
+          "Start": "2026-10-15T19:30:49.387532701+09:00",
+          "End": "2026-10-15T19:30:49.474185015+09:00",
+          "ExitCode": 1,
+          "Output": "ERROR: Unable to contact server\n"
+        }
+      ]
+    }
+  },
+  "loaded_version": "ClamAV 1.5.4/28154/Thu Oct 15 06:24:22 2026",
+  "peak_memory_bytes": "1184931840",
+  "memory_limit": "2147483648",
+  "pids_limit": "32",
+  "isolation": {
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Memory": 2147483648,
+    "PidsLimit": 32,
+    "NetworkMode": "none",
+    "PortBindings": {}
+  },
+  "result": "partial",
+  "finished_at": "2026-10-15T10:31:00.823969+00:00"
+}

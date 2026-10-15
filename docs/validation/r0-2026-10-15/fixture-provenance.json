@@ -1,0 +1,35 @@
+{
+  "fixtures": [
+    {
+      "name": "sheets-career-history.xlsx",
+      "producer": "Google Sheets native export after native numeric date repair",
+      "export_date": "2026-10-15",
+      "sha256": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+      "size_bytes": 14352,
+      "fictional_data_only": true,
+      "native_excel_output": false
+    },
+    {
+      "name": "sheets-resume.xlsx",
+      "producer": "Google Sheets native export after native numeric date repair",
+      "export_date": "2026-10-15",
+      "sha256": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9",
+      "size_bytes": 14343,
+      "fictional_data_only": true,
+      "native_excel_output": false
+    }
+  ],
+  "excel_fixture_count": 0,
+  "sheets_fixture_count": 2,
+  "source_generation": "artifact-tool input; Google conversion and native export, not direct library output",
+  "native_readback": {
+    "date_serial": 34425,
+    "formatted_date": "1994-04-01",
+    "formula_result": 32
+  },
+  "notes": [
+    "ISO date input dropped during initial Sheets import; repaired in native Sheets and builder now uses numeric date",
+    "Cua screenshot unavailable; Google XLSX export imported and rendered for visual verification",
+    "Actual source products do not establish validator acceptance"
+  ]
+}

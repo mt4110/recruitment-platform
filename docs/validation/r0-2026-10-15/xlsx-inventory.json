@@ -1,0 +1,182 @@
+[
+  {
+    "file": "sheets-career-history.xlsx",
+    "sha256": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+    "size_bytes": 14352,
+    "uncompressed_bytes": 103435,
+    "parts": [
+      "xl/drawings/drawing1.xml",
+      "xl/drawings/_rels/drawing1.xml.rels",
+      "xl/drawings/drawing2.xml",
+      "xl/worksheets/sheet1.xml",
+      "xl/worksheets/_rels/sheet1.xml.rels",
+      "xl/worksheets/sheet2.xml",
+      "xl/worksheets/_rels/sheet2.xml.rels",
+      "xl/theme/theme1.xml",
+      "xl/sharedStrings.xml",
+      "xl/styles.xml",
+      "xl/persons/person.xml",
+      "xl/workbook.xml",
+      "xl/_rels/workbook.xml.rels",
+      "_rels/.rels",
+      "xl/media/image1.png",
+      "[Content_Types].xml"
+    ],
+    "namespaces": [
+      "http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments",
+      "http://schemas.openxmlformats.org/drawingml/2006/main",
+      "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
+      "http://schemas.openxmlformats.org/package/2006/content-types",
+      "http://schemas.openxmlformats.org/package/2006/relationships",
+      "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    ],
+    "relationship_types": [
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.microsoft.com/office/2017/10/relationships/person",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+        "mode": "Internal"
+      }
+    ],
+    "sheet_names": [
+      "職務経歴書",
+      "補足"
+    ],
+    "formulas": [
+      "YEAR(DATE(2026,10,15))-YEAR(B5)"
+    ],
+    "merged_ranges": 2,
+    "image_parts": 1,
+    "B5_type": "numeric",
+    "person_entries_present": false,
+    "v04_unlisted_parts": [
+      "xl/persons/person.xml"
+    ],
+    "v04_current_allowlist_compatibility": "not_established",
+    "scope": "inventory only; no formula grammar/full OOXML or malware qualification"
+  },
+  {
+    "file": "sheets-resume.xlsx",
+    "sha256": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9",
+    "size_bytes": 14343,
+    "uncompressed_bytes": 103423,
+    "parts": [
+      "xl/drawings/drawing1.xml",
+      "xl/drawings/_rels/drawing1.xml.rels",
+      "xl/drawings/drawing2.xml",
+      "xl/worksheets/sheet1.xml",
+      "xl/worksheets/_rels/sheet1.xml.rels",
+      "xl/worksheets/sheet2.xml",
+      "xl/worksheets/_rels/sheet2.xml.rels",
+      "xl/theme/theme1.xml",
+      "xl/sharedStrings.xml",
+      "xl/styles.xml",
+      "xl/persons/person.xml",
+      "xl/workbook.xml",
+      "xl/_rels/workbook.xml.rels",
+      "_rels/.rels",
+      "xl/media/image1.png",
+      "[Content_Types].xml"
+    ],
+    "namespaces": [
+      "http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments",
+      "http://schemas.openxmlformats.org/drawingml/2006/main",
+      "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
+      "http://schemas.openxmlformats.org/package/2006/content-types",
+      "http://schemas.openxmlformats.org/package/2006/relationships",
+      "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    ],
+    "relationship_types": [
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.microsoft.com/office/2017/10/relationships/person",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+        "mode": "Internal"
+      },
+      {
+        "type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+        "mode": "Internal"
+      }
+    ],
+    "sheet_names": [
+      "履歴書",
+      "補足"
+    ],
+    "formulas": [
+      "YEAR(DATE(2026,10,15))-YEAR(B5)"
+    ],
+    "merged_ranges": 2,
+    "image_parts": 1,
+    "B5_type": "numeric",
+    "person_entries_present": false,
+    "v04_unlisted_parts": [
+      "xl/persons/person.xml"
+    ],
+    "v04_current_allowlist_compatibility": "not_established",
+    "scope": "inventory only; no formula grammar/full OOXML or malware qualification"
+  }
+]

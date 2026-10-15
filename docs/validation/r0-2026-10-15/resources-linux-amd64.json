@@ -1,0 +1,24 @@
+{
+  "memory": {
+    "exit": 42,
+    "bounded": true,
+    "seconds": 0.022,
+    "stderr": ""
+  },
+  "cpu": {
+    "exit": -9,
+    "bounded": true,
+    "seconds": 1.001,
+    "stderr": ""
+  },
+  "wall": {
+    "timeout": true,
+    "bounded": true,
+    "seconds": 2.004
+  },
+  "scope": "POSIX child-process limits only; not future XLSX parser performance",
+  "platform": {
+    "system": "Linux",
+    "machine": "x86_64"
+  }
+}

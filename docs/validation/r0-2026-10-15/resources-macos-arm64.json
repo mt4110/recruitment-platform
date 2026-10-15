@@ -1,0 +1,24 @@
+{
+  "memory": {
+    "exit": 1,
+    "bounded": false,
+    "seconds": 0.045,
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import resource;resource.setrlimit(resource.RLIMIT_AS,(128*1024*1024,)*2)\n                    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: current limit exceeds maximum limit\n"
+  },
+  "cpu": {
+    "exit": -24,
+    "bounded": true,
+    "seconds": 1.023,
+    "stderr": ""
+  },
+  "wall": {
+    "timeout": true,
+    "bounded": true,
+    "seconds": 2.025
+  },
+  "scope": "POSIX child-process limits only; not future XLSX parser performance",
+  "platform": {
+    "system": "Darwin",
+    "machine": "arm64"
+  }
+}
