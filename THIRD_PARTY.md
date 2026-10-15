@@ -32,3 +32,5 @@ M3でAxumのmultipart featureを有効化し、multer 3.1.0（MIT）、encoding_
 PDFのPython依存はservices/pdf-renderer/requirements.txtで固定し、PyPI公開wheelのSHA-256を検証して導入する。pikepdf 10.17.0（MPL-2.0）、Pillow 12.3.0（MIT-CMU）、lxml 6.1.3（BSD-3-Clause）、packaging 26.3（Apache-2.0 OR BSD-2-Clause）。[pikepdf](https://pypi.org/project/pikepdf/10.17.0/)、[Pillow](https://pypi.org/project/pillow/12.3.0/)、[lxml](https://pypi.org/project/lxml/6.1.3/)、[packaging](https://pypi.org/project/packaging/26.3/)の固定版metadataでライセンスと必要依存を確認した。wheel同梱の第三者ライブラリにも各ライセンスがある。Pythonパッケージ4件を2026-10-15のOSV queryで照合し既知指摘0件、RustSecは既知1件を維持。これをOS/imageや同梱native library全体の監査とは扱わない。
 
 multipart仕様は[Axum 0.8.9の実装](https://github.com/tokio-rs/axum/blob/axum-v0.8.9/axum/src/extract/multipart.rs)、PDF APIは[pikepdf 10.17.0の一次資料](https://pikepdf.readthedocs.io/en/stable/api/main.html)を確認した。
+
+M4は既存SQLx 0.9.0のjson featureを有効化し、既存serde_jsonでPostgreSQL JSONをdecodeする。Cargo.lockのpackage/versionは変更していない。RustSecの既知1件を引き続き記録し、新しい本体依存を追加していない。

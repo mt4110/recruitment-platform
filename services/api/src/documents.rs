@@ -438,18 +438,25 @@ struct Check {
     rejection_code: Option<String>,
 }
 async fn bytes(key: &str, d: &Document) -> Result<Option<Vec<u8>>, ApiError> {
+    verified_bytes(key, d.size_bytes, &d.sha256).await
+}
+pub(crate) async fn verified_bytes(
+    key: &str,
+    size: i64,
+    sha: &str,
+) -> Result<Option<Vec<u8>>, ApiError> {
     let target = path(key)?;
     match fs::symlink_metadata(&target).await {
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
         Err(_) => Err(unavailable("STORAGE_UNAVAILABLE")),
         Ok(meta) => {
-            if !meta.is_file() || meta.len() != d.size_bytes as u64 {
+            if !meta.is_file() || meta.len() != size as u64 {
                 return Err(unavailable("STORAGE_CONFLICT"));
             }
             let data = fs::read(target)
                 .await
                 .map_err(|_| unavailable("STORAGE_UNAVAILABLE"))?;
-            if data.len() as i64 != d.size_bytes || hex(&Sha256::digest(&data)) != d.sha256 {
+            if data.len() as i64 != size || hex(&Sha256::digest(&data)) != sha {
                 return Err(unavailable("STORAGE_CONFLICT"));
             }
             Ok(Some(data))

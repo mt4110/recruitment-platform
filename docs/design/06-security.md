@@ -80,3 +80,10 @@ pikepdf 10.17.0とPython推移依存を版・wheel SHA-256で固定する。検�
 APIは管理stagingをcreate_newで作り、fsync後に同じvolumeの確定先へhard linkする。リンク先があればsize/hashを確認し、上書きしない。確定後はdirectoryもfsyncする。重複・拒否・孤立stagingと受信開始manifestを保持し、今回の処理には削除/自動GCを含めない。整理候補の判定にはDB参照・lease・受信中の状態の照合が別途必要。容量の増加を運用時の制約として記録する。
 
 検査policyはM0の構造検査を製品workerへ移し、直接objectも構造数の上限に数える。間接objectだけを訪問済みに記録し、直接objectのラッパーidentityの再利用で配下走査を省略しない。検査例外/時間超過/worker異常は503、PDFのpolicy拒否は422とする。
+
+
+## M4の共有境界（2026-10-15）
+
+共有PDFの取得は通常runtimeによるapplication_documentsのRLS判定と、保存済み参照のsize/hash検査を使う。企業の処理でdocuments原本へJOINしない。snapshot/共有参照の子policyだけがapplicationsを参照し、親policyは子を参照しない。RLSの定義とadvisory lockの動作は[PostgreSQL 17 RLS](https://www.postgresql.org/docs/17/ddl-rowsecurity.html)・[17のlock](https://www.postgresql.org/docs/17/explicit-locking.html#ADVISORY-LOCKS)を参照した。
+
+案件metadataとevent行は撤回後も企業へ返すが、候補者本文・PDFは行レベルで拒否し、推薦/履歴の自由記入reasonはDTOから省く。end userへDB接続を渡さない前提で、server runtimeが読めるevent行のreasonと、利用者へ返すJSONの範囲を区別する。再取得済みの画面は失効表示に更新するが、既に許可したstream/取得済みbytesの回収は保証しない。

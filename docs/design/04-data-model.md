@@ -21,7 +21,7 @@ IDはUUID、日時はUTCのtimestamptz、API上はISO 8601、画面はAsia/Tokyo
 | applications | id、agency_org_id、employer_org_id、candidate_id、job_id、status enum、reason varchar(2000)、version、submitted_at、share_revoked_at、job_title_snapshot、job_description_snapshot、job_location_snapshot、job_employment_type_snapshot、job_version_snapshot、agency_name_snapshot、employer_name_snapshot | composite FK candidate/agency、job/employer。所属・参照IDは不変。求人snapshot列は提出時に一度設定 |
 | application_snapshots | application_id PK/FK、name varchar(100)、summary text、consent_recorded_at、consent_recorded_by、consent_text_version | 候補者の提出時点を一度だけ保存 |
 | application_documents | application_id、document_id、agency_org_id、storage_key_snapshot、original_name_snapshot、size_bytes_snapshot、sha256_snapshot | PK(application_id,document_id)。提出時にready文書から複写。不変 |
-| selection_events | id、application_id、event_type、from_status、to_status、actor_user_id、actor_org_id、reason varchar(500)、created_at | 追記のみ。event_type=transition/sharing_revoked |
+| selection_events | id、application_id、event_type、from_status、to_status、application_version、actor_user_id、actor_org_id、reason varchar(500)、created_at | 追記のみ。event_type=transition/sharing_revoked |
 | placements | id、application_id UNIQUE、decided_at、demo_fee_yen bigint | hiredへの変更時に一度作成、デモ固定500000円 |
 | notification_previews | id、application_id、recipient_org_id、event_id、subject varchar(200)、body text、created_at | UNIQUE(event_id,recipient_org_id)。候補者本文を含めず常に未送信 |
 | audit_events | id、actor_user_id、actor_org_id、action、resource_type、resource_id、result、request_id、created_at | PII本文・生トークン・秘密は記録しない |
@@ -90,3 +90,10 @@ candidateは(agency_org_id,created_at,id)、jobは(status,created_at,id)と(empl
 v0.1は架空データ専用。readyの文書・提出済みsnapshot・業務履歴は自動削除しない。アーカイブと共有撤回を区別する。技術的な期限切れauth attempt/冪等記録とstagingの整理は別の保守処理で、参照中のpending/readyを消さない。データ全体のリセットは対象と復旧可否を示した確認が必要。既に利用者が取得したPDFは回収できない。
 
 参照：[PostgreSQL RLS](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)、[transaction-level advisory locks](https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)。方式・制限値は本設計の判断で、動作検証は実装段階で行う。
+
+## M4で確定した補足（2026-10-15）
+
+- documentsにUNIQUE(id,agency_org_id)を追加し、共有参照のcomposite FKで所有組織の一致を確認する。共有参照のINSERT triggerは候補者ID・ready・保存先/表示名/size/hashの一致を検査する。
+- selection_eventsはapplication_versionを保存し、UNIQUE(application_id,application_version)で同じ業務版への二重イベントを拒否する。snapshotの内容とeventのactor/状態・版もINSERT triggerで検査する。業務runtimeへこれらのUPDATE/DELETEを与えない。
+- applicationsの非draftにはjob_version_snapshotの非NULLを、ready documentには検査policyの非NULLを明示的に要求する。SQL CHECKがNULLを成功として扱う抜けを防ぐ。適用済みmigrationは変更せず0004/0005を追加する。
+- M4は状態変更と同時に相手組織宛ての未送信通知を1件保存する。本文は固定のデモ文で候補者本文を含めない。通知のAPI/画面と請求PDFはM5に残す。

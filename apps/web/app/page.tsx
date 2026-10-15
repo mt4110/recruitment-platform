@@ -1,9 +1,12 @@
 'use client';
+import {usePathname} from 'next/navigation';
+import Applications from './applications';
 import Business from './business';
 import { useCallback, useEffect, useRef, useState } from 'react';
 type Me = { user: { id: string; display_name: string }; organization: { id: string; name: string; kind: 'agency' | 'employer' }; expires_at: string; csrf_token: string };
 type View = { phase: 'loading' | 'anonymous' | 'error' } | { phase: 'signed-in'; me: Me };
 export default function Home() {
+  const pathname=usePathname();
   const [view, setView] = useState<View>({ phase: 'loading' });
   const [businessMe, setBusinessMe] = useState<Me | null>(null);
   const [busy, setBusy] = useState(false);
@@ -88,6 +91,6 @@ export default function Home() {
         {view.phase === 'error' && <div role="alert"><p>ログイン状態を確認できませんでした。</p><button onClick={() => { setView({ phase: 'loading' }); void refresh(); }}>再読み込み</button></div>}
         {view.phase === 'signed-in' && <><dl><div><dt>所属組織</dt><dd>{view.me.organization.name}</dd></div><div><dt>利用区分</dt><dd>{view.me.organization.kind === 'agency' ? '紹介会社' : '求人企業'}</dd></div><div><dt>利用者</dt><dd>{view.me.user.display_name}</dd></div></dl><button onClick={logout} disabled={busy}>{busy ? 'ログアウト中…' : 'ログアウト'}</button></>}
         <p className="message" role="status" aria-live="polite">{message}</p>
-      </section>{businessMe && <Business key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/>}<aside><h2>現在できること</h2><p>求人の登録・公開・検索・保存、架空候補者の登録・更新・アーカイブ、架空PDFの登録・検査・ダウンロードができます。推薦は、次の開発段階で追加します。</p><p>実在する求職者の情報は入力しないでください。</p></aside>
+      </section>{businessMe && (pathname.startsWith('/applications') ? <Applications key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/> : <Business key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/>)}<aside><h2>現在できること</h2><p>求人の登録・公開・検索・保存、架空候補者の登録・更新・アーカイブ、架空PDFの登録・検査・ダウンロード、推薦・選考・共有取消ができます。通知画面と請求プレビューは、次の開発段階で追加します。</p><p>実在する求職者の情報は入力しないでください。</p></aside>
     </main><footer>recruitment-platform · ローカルプロトタイプ</footer></>;
 }

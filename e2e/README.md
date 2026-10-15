@@ -1,6 +1,6 @@
-# M1/M2/M3 ブラウザE2E
+# M1/M2/M3/M4 ブラウザE2E
 
-対象はM1の認証基盤とM2の求人・保存・候補者。実Keycloakの4アカウント、固定所属、session/CSRF、求人の公開/終了、候補者の更新/アーカイブ、組織間のID差替え・通常runtimeロールのRLS拒否、冪等性・version競合・job lock待ち上限、画面の入力保持を確認する。M3のPDF登録・隔離検査・lease復旧・配信も確認する。M4以降の推薦・選考は対象外。
+対象はM1の認証基盤とM2の求人・保存・候補者。実Keycloakの4アカウント、固定所属、session/CSRF、求人の公開/終了、候補者の更新/アーカイブ、組織間のID差替え・通常runtimeロールのRLS拒否、冪等性・version競合・job lock待ち上限、画面の入力保持を確認する。M3のPDF登録・隔離検査・lease復旧・配信も確認する。M4の推薦・選考・snapshot・共有失効も確認する。M5の通知画面・請求PDFは対象外。
 
 ## 実行
 
@@ -32,7 +32,7 @@ build/startの詳細は同runの私有`operations.log`に残る。外部共有�
 
 終了時は成功/失敗にかかわらず、作成したrunのサービスだけstopする。container、volume、設定、以前の証拠を削除しない。片付けは対象を確認した別操作とする。
 
-手動workflowは`M1/M2/M3 browser E2E`。M1/M2/M3の再現確認用であり、M6の業務全体のCIや本番適合性を完了扱いにしない。
+手動workflowは`M1/M2/M3/M4 browser E2E`。M1/M2/M3/M4の再現確認用であり、M6の業務全体のCIや本番適合性を完了扱いにしない。
 
 
 Browser pluginはこの環境にないため、リポジトリのPlaywrightを使用する（Browser plugin not available）。1280×900と390×844のChromiumで日本語の操作、URL/title、非空表示、overlay/console/runtime例外、画面の収まりを確認する。スクリーンショットには架空情報だけを含める。
@@ -43,3 +43,10 @@ Browser pluginはこの環境にないため、リポジトリのPlaywrightを�
 PDFのfixtureは固定サンプルからテスト専用PDF service内で生成し、exec経由の制限付きarchiveで取り出す。Dockerのtmpfsからのcompose cpはこのローカル環境で取得できなかった。fixture生成に実在する求職者情報は使わない。
 
 PDF serviceのpause/unpause、APIのrestart、テスト専用DBのlease期限/CAS tokenの制御で中断/復旧を確認する。実経過60秒待つ代わりに専用行のleaseだけを期限切れにする。通常デモにはこれらの制御を行わない。テストで新規作成したファイルとDB行を保持し、自動削除・上書き・volume resetを実行しない。
+
+
+## M4の対象
+
+workflow.spec.cjsはM3の後に実行し、自分の架空求人・候補者・PDF・推薦を作成する。下書き秘匿、提出時snapshotの不変性、選択PDFのみの共有、全選考状態、共有失効、B/Yの拒否、runtime RLS/列権限、version/冪等、求人終了と提出の同じjob lock、同時選考/撤回、応答喪失・入力保持・認証失効を確認する。通知はDB上の未送信記録だけを検証する。
+
+開発中は `python3 scripts/e2e.py --test-file workflow.spec.cjs` でM4だけを実行できる。run.jsonのtest_selectionに対象を記録し、部分実行を全件成功とは扱わない。最終確認とCIは引数なしでM1〜M4をすべて実行する。

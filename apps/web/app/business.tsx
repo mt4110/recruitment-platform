@@ -205,7 +205,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     if (!signedIn && !editing)
         return null;
     return <section className="workspace" aria-labelledby="workspace-title">
-    {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}</nav>}
+    {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}<a href="/applications">推薦</a></nav>}
     <div className="section-title"><h2 id="workspace-title">{editing ? (id ? '編集する' : jobs ? '求人を登録する' : '候補者を登録する') : detail ? (record?.title || record?.name || '詳細') : title}</h2>{!id && !editing && allowed && (!jobs || !agency) && <a className="button" href={base + '/new'}>{jobs ? '求人を登録する' : '候補者を登録する'}</a>}</div>
     {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => setReload(v => v + 1)}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
     {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}>
@@ -217,7 +217,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     </form> : detail && record ? <article className="detail">
       <div className="metadata"><span className="badge">{jobs ? labels[record.status || ''] : record.archived_at ? 'アーカイブ済み' : '登録済み'}</span><span>更新版 {record.version}</span></div>
       {jobs ? <><p>{record.employer_name}</p><dl><div><dt>勤務地</dt><dd>{record.location}</dd></div><div><dt>雇用形態</dt><dd>{labels[record.employment_type || '']}</dd></div></dl><h3>仕事内容</h3><p className="prose">{record.description}</p></> : <><h3>経歴の概要</h3><p className="prose">{record.summary}</p><Documents candidate={record.id} initial={record.documents || []} archived={!!record.archived_at} me={me} signedIn={signedIn} onUnauthorized={onUnauthorized}/></>}
-      <div className="actions">{(jobs && !agency && record.status !== 'closed' || !jobs && !record.archived_at) && <a className="button secondary" href={base + '/' + id + '/edit'}>編集する</a>}
+      <div className="actions">{jobs && agency && <a className="button" href={'/applications/new?job_id='+record.id}>この求人に推薦する</a>}{(jobs && !agency && record.status !== 'closed' || !jobs && !record.archived_at) && <a className="button secondary" href={base + '/' + id + '/edit'}>編集する</a>}
       {jobs && !agency && record.status !== 'closed' && <button disabled={busy || expired} onClick={() => { if (record.status === 'published' && !window.confirm('募集を終了します。公開求人から非表示になり、再公開はできません。'))
             return; void change(base + '/' + id + '/status', 'POST', { version: record.version, status: record.status === 'draft' ? 'published' : 'closed' }); }}>{record.status === 'draft' ? '公開する' : '募集を終了する'}</button>}
       {jobs && agency && <button disabled={busy || expired} onClick={() => void change(base + '/' + id + '/favorite', record.favorited ? 'DELETE' : 'PUT')}>{record.favorited ? '保存を解除する' : '求人を保存する'}</button>}

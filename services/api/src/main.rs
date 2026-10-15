@@ -1,3 +1,4 @@
+mod applications;
 mod auth;
 mod business;
 mod documents;
@@ -74,6 +75,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/auth/logout", post(auth::logout))
         .route("/api/v1/me", get(auth::me))
         .merge(business::routes())
+        .merge(applications::routes())
         .merge(documents::routes())
         .fallback(|| async {
             ApiError::new(
@@ -98,7 +100,7 @@ async fn ready(State(app): State<Arc<App>>) -> Response {
     )
     .fetch_one(&app.db)
     .await;
-    let business = sqlx::query_scalar::<_,bool>("SELECT to_regclass('documents') IS NOT NULL AND to_regclass('jobs') IS NOT NULL AND to_regclass('candidates') IS NOT NULL AND to_regclass('idempotency_records') IS NOT NULL").fetch_one(&app.runtime).await;
+    let business = sqlx::query_scalar::<_,bool>("SELECT to_regclass('applications') IS NOT NULL AND to_regclass('documents') IS NOT NULL AND to_regclass('jobs') IS NOT NULL AND to_regclass('candidates') IS NOT NULL AND to_regclass('idempotency_records') IS NOT NULL").fetch_one(&app.runtime).await;
     let pdf = app.http.get("http://pdf-renderer:8080/live").send().await;
     if matches!(db, Ok(true))
         && matches!(business, Ok(true))

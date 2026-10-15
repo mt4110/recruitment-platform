@@ -48,7 +48,7 @@ APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ�
 
 ## 実装予定の配置
 
-以下は全体の配置図。M1は認証に必要なapps/web、services/api、migrations、fixtures、infra/local、scriptsを実装済み。M2で求人・候補者、M3でPDF登録・検査・復旧・原本配信を追加する。請求PDF生成とクラウド例は後続段階。
+以下は全体の配置図。M1は認証に必要なapps/web、services/api、migrations、fixtures、infra/local、scriptsを実装済み。M2で求人・候補者、M3でPDF登録・検査・復旧・原本配信、M4で推薦・選考・snapshot/共有失効を追加する。請求PDF生成とクラウド例は後続段階。
 
 ```text
 apps/web/                  Next.js UI

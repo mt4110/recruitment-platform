@@ -99,14 +99,14 @@ pub(crate) async fn lock(tx: &mut PgConnection, key: i64) -> Result<(), ApiError
 async fn job_lock(tx: &mut PgConnection, id: Uuid) -> Result<(), ApiError> {
     lock(tx, lock_key("job", &[id.to_string()])).await
 }
-fn text(v: &Value, key: &str, max: usize) -> Result<String, ApiError> {
+pub(crate) fn text(v: &Value, key: &str, max: usize) -> Result<String, ApiError> {
     let s = v.get(key).and_then(Value::as_str).ok_or_else(invalid)?;
     if s.trim().is_empty() || s.chars().count() > max || s.contains('\0') {
         return Err(invalid());
     }
     Ok(s.to_owned())
 }
-fn fields(v: &Value, allowed: &[&str], required: &[&str]) -> Result<(), ApiError> {
+pub(crate) fn fields(v: &Value, allowed: &[&str], required: &[&str]) -> Result<(), ApiError> {
     let object = v.as_object().ok_or_else(invalid)?;
     if object.keys().any(|k| !allowed.contains(&k.as_str()))
         || required.iter().any(|k| !object.contains_key(*k))
@@ -115,7 +115,7 @@ fn fields(v: &Value, allowed: &[&str], required: &[&str]) -> Result<(), ApiError
     }
     Ok(())
 }
-fn version(v: &Value) -> Result<i32, ApiError> {
+pub(crate) fn version(v: &Value) -> Result<i32, ApiError> {
     v.get("version")
         .and_then(Value::as_i64)
         .and_then(|v| i32::try_from(v).ok())
