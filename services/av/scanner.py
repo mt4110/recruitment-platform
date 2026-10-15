@@ -53,14 +53,19 @@ def ensure():
     deadline=time.monotonic()+90
     while time.monotonic()<deadline:
         if worker.poll() is not None:raise ValueError('load failure')
-        try:
-            version=command(b'zVERSION\0',2).decode()
-            if not version.startswith('ClamAV 1.5.4/') or f'/{m["databases"]["daily"]["version"]}/' not in version:raise ValueError('version mismatch')
-            if database_manifest(directory)!=m['databases']:raise ValueError('load hash mismatch')
-            if identity(read_manifest())!=identity(m):raise ValueError('generation changed')
-            engine='1.5.4';loaded=m
-            return m
-        except (OSError,ValueError):time.sleep(.3)
+        current=read_manifest()
+        if identity(current)!=identity(m) or not fresh(current):raise ValueError('generation changed during load')
+        try:version=command(b'zVERSION\0',2).decode()
+        except OSError:
+            time.sleep(.3);continue
+        # A live engine with wrong metadata is a definitive failure, not a
+        # transient socket startup. Cancel superseded loads immediately.
+        if not version.startswith('ClamAV 1.5.4/') or f'/{m["databases"]["daily"]["version"]}/' not in version:raise ValueError('version mismatch')
+        if database_manifest(directory)!=m['databases']:raise ValueError('load hash mismatch')
+        current=read_manifest()
+        if identity(current)!=identity(m) or not fresh(current):raise ValueError('generation changed')
+        engine='1.5.4';loaded=m
+        return m
     raise ValueError('load timeout')
 
 def watch():
