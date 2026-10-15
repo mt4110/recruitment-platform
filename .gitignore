@@ -17,3 +17,4 @@ validation/m0/*.json
 validation/m0/import/
 validation/m0/fixtures/
 validation/m0/collected/
+**/*.tsbuildinfo

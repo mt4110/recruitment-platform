@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+psql --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" --set ON_ERROR_STOP=1 <<'SQL'
+\getenv auth_password AUTH_DB_PASSWORD
+\getenv migration_password MIGRATION_DB_PASSWORD
+\getenv runtime_password RUNTIME_DB_PASSWORD
+CREATE ROLE app_migrator LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS PASSWORD :'migration_password';
+CREATE ROLE app_auth LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS PASSWORD :'auth_password';
+CREATE ROLE app_runtime LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS PASSWORD :'runtime_password';
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+GRANT USAGE,CREATE ON SCHEMA public TO app_migrator;
+GRANT USAGE ON SCHEMA public TO app_auth,app_runtime;
+ALTER ROLE app_auth SET statement_timeout='5s';
+ALTER ROLE app_auth SET lock_timeout='3s';
+SQL

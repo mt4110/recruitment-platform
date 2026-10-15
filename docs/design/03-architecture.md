@@ -24,7 +24,7 @@ Composeは入口、Web、API、アプリDB、OIDC、OIDC用DB、PDFレンダラ�
 
 M0で確認したローカルissuerの経路は、ブラウザ側の*.localhostと、コンテナ側の同名network aliasを組み合わせる。ブラウザ向けとAPI向けで別issuerへ読み替えない。PDF serviceは非root、必要なSYS_CHROOTのみ、公式seccomp profile、tmpfs内HOME/XDGでChromium sandboxを維持する。M0検証用コードはvalidation/m0に置き、製品の認証・保存・文書サービスへそのまま流用しない。
 
-将来のクイックスタートは設定作成→ローカル秘密値生成→build/up→migration→架空データ投入→ログインの順序。実装後に動作確認したコマンドだけREADMEへ掲載する。初期データ投入は冪等にし、ユーザーのデータを初期化し直さない。データリセットは別コマンドで対象と不可逆性を示し、明示確認が必要。
+M1の起動は設定作成→ローカル秘密値生成→基礎service起動→migration/架空データ投入→API/Web build/up→ログインの順序。確認済みコマンドはREADMEへ掲載する。初期データ投入は冪等にし、ユーザーのデータを初期化し直さない。データリセットは別コマンドで対象と不可逆性を示し、明示確認が必要。
 
 ## 責務
 
@@ -46,7 +46,7 @@ APIは同一オリジンに配置する。Webがサーバー側でAPIを呼ぶ�
 
 ## 実装予定の配置
 
-以下は予定図。今回はディレクトリ内の実装ファイルを作らない。
+以下は全体の配置図。M1は認証に必要なapps/web、services/api、migrations、fixtures、infra/local、scriptsを実装済み。PDF serviceはhealthのみで、業務機能とクラウド例は後続段階。
 
 ```text
 apps/web/                  Next.js UI
@@ -65,4 +65,4 @@ docs/                      設計、使い方、ガイド
 
 実装開始時にサポート対象のNode、Next.js、Rust、Axum、SQLx、PostgreSQL、Keycloak、Playwright、Python、pikepdf/libqpdfを一次資料で確認し、バージョンとlockfileを固定する。latestタグを配布手順に使わない。DB migration用の権限と通常API用の権限を分ける。依存とフォントのライセンスを一覧にし、配布するイメージの脆弱性を確認する。
 
-参照：[Axum](https://docs.rs/axum/latest/axum/)、[Next.js self-hosting](https://nextjs.org/docs/app/guides/self-hosting)、[Keycloak container](https://www.keycloak.org/server/containers)、[Playwright PDF](https://playwright.dev/docs/api/class-page#page-pdf)。これらを用いた上記構成は本プロジェクトの設計判断であり、動作検証済みではない。
+参照：[Axum](https://docs.rs/axum/latest/axum/)、[Next.js self-hosting](https://nextjs.org/docs/app/guides/self-hosting)、[Keycloak container](https://www.keycloak.org/server/containers)、[Playwright PDF](https://playwright.dev/docs/api/class-page#page-pdf)。これらを用いた上記構成は本プロジェクトの設計判断であり、M1の実装範囲と実行結果は[確認記録](../validation/2026-10-15-m1-report.md)を参照。未実装部分の成立を保証しない。

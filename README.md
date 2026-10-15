@@ -1,10 +1,35 @@
 # recruitment-platform
 
-人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプの設計です。
+人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプです。
 
-**現在は設計のみです。アプリケーション、起動コマンド、Terraformはまだ実装されていません。**
+**M0の技術確認とM1のローカル認証基盤まで実装済みです。求人・候補者・推薦などの業務機能はまだ操作できません。**
 
-設計フェーズは2026-10-15にv0.3で完了しました。[最終レビュー記録](docs/reviews/2026-10-15-design-final-review.md)で残件3件の設計上の解消を確認しています。本実装は未着手です。[M0の技術確認結果](docs/validation/2026-10-15-m0-report.md)では、macOS上のLinux/arm64コンテナで4項目の成立を確認しました。[Linux/amd64実機CIも成功](docs/validation/2026-10-15-m0-completion.md)し、M0の対象2環境を確認しました。
+設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の実装結果・未確認事項・残工数](docs/validation/2026-10-15-m1-report.md)を記録し、ここで作業を止めています。
+
+## ローカルで認証を試す
+
+必要環境は稼働中のDocker Engine/Desktop（Compose pluginまたはdocker-compose）とPython 3.11以上。Node/Rustのホストへのインストールは不要です。loopbackの3000/18080が空いていることを確認してください。
+
+```sh
+python3 scripts/local.py setup
+python3 scripts/local.py up
+python3 scripts/local.py status
+```
+
+[http://localhost:3000](http://localhost:3000)を開き、ログインします。アカウントはagency-a / agency-b / employer-x / employer-y。生成したパスワードはGit管理外の`.local/demo-accounts.json`で確認してください。固定の公開パスワードはありません。
+
+同じブラウザで利用者を交代するときは、アプリからlogoutし、再度loginします。Keycloakが前の利用者を表示した場合は、標準のログインやり直し操作から別のユーザー名を入力してください。アプリlogoutはKeycloak全体のSSO sessionを終了しません。
+
+停止と再起動：
+
+```sh
+python3 scripts/local.py stop
+python3 scripts/local.py up
+```
+
+初期化を再実行しても既存データや資格情報をリセットしません。`.local`内の設定とCompose volumeはセットで保全してください。全削除/resetコマンドは設けていません。秘密値を含む`.local`、env、cookie、OIDC tokenを共有・commitしないでください。
+
+今回確認したApple Silicon環境では専用Colima profileを使いました。環境を選ぶ場合は各コマンドの先頭に`DOCKER_CONTEXT=colima-recruitment-m1`を付けます。Buildxがない今回の環境では`DOCKER_BUILDKIT=0`も指定して、通常のDocker buildで確認しています。既存のdefault contextを切り替える必要はありません。
 
 完成後は、架空データを使って「求人登録 → 候補者登録・PDFレジュメ添付 → 推薦 → 選考 → 採用決定 → 請求書PDFプレビュー」を試せる構成を目指します。データ移行は別の作業として扱います。
 
@@ -28,4 +53,4 @@
 
 初期範囲は1ユーザー1組織、請求PDFは固定1ページです。設計草案v0.3では、初回レビュー6件と再レビューの残件3件を設計に反映しています。[修正対応表](docs/reviews/2026-10-15-design-revisions.md)で変更内容と未実施の検証を、[実装計画](docs/design/07-delivery.md)で工数と受入条件を確認できます。
 
-技術方針は Next.js / TypeScript、Rust / Axum / SQLx、PostgreSQL。ローカル起動を最初の完成条件とし、クラウド構成は参考例として設計します。ソフトウェア公開時のライセンスはApache-2.0を候補に、依存物・フォントのライセンス確認後に確定します。現段階でライセンス付与済みとは扱いません。
+技術方針は Next.js / TypeScript、Rust / Axum / SQLx、PostgreSQL。ローカル起動を最初の完成条件とし、クラウド構成は参考例として設計します。本体は[Apache-2.0](LICENSE)です。[第三者依存と監査範囲](THIRD_PARTY.md)を併せて確認してください。

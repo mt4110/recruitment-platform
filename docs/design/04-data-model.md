@@ -13,7 +13,7 @@ IDはUUID、日時はUTCのtimestamptz、API上はISO 8601、画面はAsia/Tokyo
 | organizations | id UUID PK、kind enum agency/employer、name varchar(200)、active bool | デモ初期化で作成。kindは不変 |
 | users | id UUID PK、organization_id FK、active bool、oidc_issuer text、oidc_subject text、display_name varchar(100) | UNIQUE(oidc_issuer,oidc_subject)。organization_idは不変 |
 | sessions | token_hash PK、user_id FK、expires_at | cookie原文は保存しない。組織はuserから取得 |
-| auth_attempts | state_hash PK、nonce、encrypted_pkce_verifier、expires_at | 単回消費・5分有効、短期cookieと関連付ける |
+| auth_attempts | state_hash PK、browser_binding_hash、nonce、encrypted_pkce_verifier、expires_at | 単回消費・5分有効、短期cookieと関連付ける |
 | jobs | id、employer_org_id、employer_name varchar(200)、title varchar(200)、description text、location varchar(200)、employment_type enum、status enum、version | UNIQUE(id,employer_org_id)、draft/published/closed |
 | job_favorites | agency_org_id、job_id、created_by、created_at | PK(agency_org_id,job_id)、自社共有 |
 | candidates | id、agency_org_id、name varchar(100)、summary text、archived_at、version | UNIQUE(id,agency_org_id) |

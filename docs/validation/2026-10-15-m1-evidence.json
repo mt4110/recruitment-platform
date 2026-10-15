@@ -1,0 +1,404 @@
+{
+  "scope": "M1 local arm64 implementation smoke verification; no business workflows",
+  "browser_plugin": "Browser plugin not available; used existing Playwright 1.62.1",
+  "browser": "151.0.7922.34",
+  "origin": "http://localhost:3000",
+  "viewports": [
+    [
+      1280,
+      900
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "checks": [
+    {
+      "name": "page_identity",
+      "pass": true
+    },
+    {
+      "name": "meaningful_initial_screen",
+      "pass": true
+    },
+    {
+      "name": "keyboard_login_focus",
+      "pass": true
+    },
+    {
+      "name": "keyboard_login_navigation",
+      "pass": true
+    },
+    {
+      "name": "agency-a/callback",
+      "pass": true
+    },
+    {
+      "name": "agency-a/fixed_org",
+      "pass": true
+    },
+    {
+      "name": "agency-a/me",
+      "pass": true
+    },
+    {
+      "name": "agency-a/cookie",
+      "pass": true
+    },
+    {
+      "name": "agency-a/csrf_required",
+      "pass": true
+    },
+    {
+      "name": "agency-a/origin_required",
+      "pass": true
+    },
+    {
+      "name": "mobile_no_horizontal_overflow",
+      "pass": true
+    },
+    {
+      "name": "session_survives_api_restart",
+      "pass": true
+    },
+    {
+      "name": "disabled_user_existing_session",
+      "pass": true
+    },
+    {
+      "name": "disabled_org_existing_session",
+      "pass": true
+    },
+    {
+      "name": "agency-a/logout",
+      "pass": true
+    },
+    {
+      "name": "agency-b/callback",
+      "pass": true
+    },
+    {
+      "name": "agency-b/fixed_org",
+      "pass": true
+    },
+    {
+      "name": "agency-b/me",
+      "pass": true
+    },
+    {
+      "name": "agency-b/cookie",
+      "pass": true
+    },
+    {
+      "name": "agency-b/csrf_required",
+      "pass": true
+    },
+    {
+      "name": "agency-b/origin_required",
+      "pass": true
+    },
+    {
+      "name": "agency-b/logout",
+      "pass": true
+    },
+    {
+      "name": "employer-x/callback",
+      "pass": true
+    },
+    {
+      "name": "employer-x/fixed_org",
+      "pass": true
+    },
+    {
+      "name": "employer-x/me",
+      "pass": true
+    },
+    {
+      "name": "employer-x/cookie",
+      "pass": true
+    },
+    {
+      "name": "employer-x/csrf_required",
+      "pass": true
+    },
+    {
+      "name": "employer-x/origin_required",
+      "pass": true
+    },
+    {
+      "name": "employer-x/logout",
+      "pass": true
+    },
+    {
+      "name": "employer-y/callback",
+      "pass": true
+    },
+    {
+      "name": "employer-y/fixed_org",
+      "pass": true
+    },
+    {
+      "name": "employer-y/me",
+      "pass": true
+    },
+    {
+      "name": "employer-y/cookie",
+      "pass": true
+    },
+    {
+      "name": "employer-y/csrf_required",
+      "pass": true
+    },
+    {
+      "name": "employer-y/origin_required",
+      "pass": true
+    },
+    {
+      "name": "employer-y/logout",
+      "pass": true
+    },
+    {
+      "name": "rejection_36",
+      "pass": true,
+      "status": 403,
+      "case": "unregistered"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "rejection_38",
+      "pass": true,
+      "status": 403,
+      "case": "disabled_user"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "rejection_40",
+      "pass": true,
+      "status": 403,
+      "case": "disabled_org"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "rejection_42",
+      "pass": true,
+      "status": 400,
+      "case": "nonce"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "rejection_44",
+      "pass": true,
+      "status": 400,
+      "case": "expired_attempt"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "rejection_46",
+      "pass": true,
+      "status": 400,
+      "case": "missing_browser_binding"
+    },
+    {
+      "name": "rejected_login_no_session",
+      "pass": true
+    },
+    {
+      "name": "state_rejected",
+      "pass": true
+    },
+    {
+      "name": "attempt_replay_rejected",
+      "pass": true
+    },
+    {
+      "name": "expired_session_rejected",
+      "pass": true
+    },
+    {
+      "name": "auth_db_role_least_privilege",
+      "pass": true
+    },
+    {
+      "name": "membership_immutable",
+      "pass": true
+    },
+    {
+      "name": "sessions_store_hash_only",
+      "pass": true
+    },
+    {
+      "name": "no_framework_errors",
+      "pass": true
+    },
+    {
+      "name": "console_health",
+      "pass": true,
+      "unexpected": []
+    }
+  ],
+  "all_passed": true,
+  "actual_expiry_wait": false,
+  "runtime": {
+    "python_host": "3.14.4",
+    "host": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "docker": "6.8.0-117-generic / Docker 29.5.2 / aarch64",
+    "web_node": "v24.18.1",
+    "services": [
+      {
+        "service": "gateway",
+        "image_id": "sha256:c819f83c54b0361f5557601bf5eb4943d09360e7a7fdf426afc466570f45874d",
+        "state": "running",
+        "health": "healthy",
+        "user": "1001:1001",
+        "read_only_root": true,
+        "published_ports": {
+          "8080/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "3000"
+            }
+          ]
+        }
+      },
+      {
+        "service": "web",
+        "image_id": "sha256:42daed6879927b470520848ea43b35360ed1bab1b0d7fd999f8a64e722a58852",
+        "state": "running",
+        "health": "healthy",
+        "user": "1001:1001",
+        "read_only_root": true,
+        "published_ports": {}
+      },
+      {
+        "service": "api",
+        "image_id": "sha256:668d363274ddd671c6e381c28a0a7f5d3ff431b1dbedf399fc9dade34fa7f764",
+        "state": "running",
+        "health": "healthy",
+        "user": "1001:1001",
+        "read_only_root": true,
+        "published_ports": {}
+      },
+      {
+        "service": "db",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "state": "running",
+        "health": "healthy",
+        "user": "",
+        "read_only_root": false,
+        "published_ports": {}
+      },
+      {
+        "service": "idp",
+        "image_id": "sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244",
+        "state": "running",
+        "health": "healthy",
+        "user": "1000",
+        "read_only_root": false,
+        "published_ports": {
+          "18080/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "18080"
+            }
+          ]
+        }
+      },
+      {
+        "service": "idp-db",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "state": "running",
+        "health": "healthy",
+        "user": "",
+        "read_only_root": false,
+        "published_ports": {}
+      },
+      {
+        "service": "pdf-renderer",
+        "image_id": "sha256:91fa24fd585cb7cfd3acd548ec4e9bca9d270856007ad295b1263f5ee528ea0a",
+        "state": "running",
+        "health": "healthy",
+        "user": "1001:1001",
+        "read_only_root": true,
+        "published_ports": {}
+      }
+    ]
+  },
+  "source_sha256": {
+    "apps/web/Dockerfile": "d10dae4058ced3a44d47beaa5f6ebc447430bd50614ea32554f2d7cc2faf6504",
+    "apps/web/next-env.d.ts": "879741880b6ab48da99dcc06dcc674d381c9826137b0496bf7bb368f302de9fc",
+    "apps/web/.dockerignore": "ea89693f743bcdc76321d56d859c8ec36f87a7ed99603d6f073ffbf8518cec1e",
+    "apps/web/package-lock.json": "3a5f015decd9b2a3d236e855c3c3ff394e4b4f9220c7a80bc3254b2710ba395e",
+    "apps/web/package.json": "7759bb99af82bc58fef4b3c35825f37731b4ef89bd8f2d950547e8bd18377076",
+    "apps/web/tsconfig.json": "ef6d70f5add22ec09753a8f6ea989a4a1f83a610fddb5cd96c4911ff5df11d49",
+    "apps/web/next.config.ts": "91bcf4b984f78ef36ac09ebb45cbf12a94f3e4e92456650cf6f7a8b8948d06a3",
+    "apps/web/app/icon.svg": "5493d33c01164d524b52107ca1c5e93a11d36a08682778fafa43e24520b69162",
+    "apps/web/app/layout.tsx": "76629e59ff2a05f6beb370722c6281d7edf41c86e7c7e0433f01479de41a9261",
+    "apps/web/app/style.css": "28a5140013d731de390991d019904829b6cca29c866883ffe797d0f166bf5714",
+    "apps/web/app/page.tsx": "6988c0107f97038ff8c7e45b5e7a9c6f65fd110e5b138ce659e742cf4947e43c",
+    "apps/web/app/login/page.tsx": "779fb1568e832468a4dcb06136fa3dfc9adea3e78c91ca1d88a9da50127a1e68",
+    "apps/web/app/api/health/route.ts": "a63940a9457ad3f8797904b056ed2ff6615ac74413e529b455c4d5034595a414",
+    "services/pdf-renderer/server.py": "d6237b9b69b28d564f60ae41de6881c4bca60d44580f0b3082f08818648ab325",
+    "services/pdf-renderer/Dockerfile": "18c4e3cc664ff8ca8effcbd72a69920803d9e0dd362154a13ecac13bcbc6f473",
+    "services/pdf-renderer/.dockerignore": "0307018c06d0243ea5150f61bd0d0115bba4dea43854f8279098bade3835e1e5",
+    "services/api/Cargo.toml": "670c7ee1d280ba7608fa5fca2ea76da5f77d9b13fa45b62245f604b9c9b9da8c",
+    "services/api/Dockerfile": "5c3997ff3338cddcc32d14d132d2cdbb8889b0655c5879fc4661cd12c59a61c5",
+    "services/api/Cargo.lock": "61ca1052c01fe8ab58f71162510a46ca251c215830d6239e8875a1936782a794",
+    "services/api/.dockerignore": "5999c1b55c0e789196772bc812ca50b9d59a97edba5811f313463a9be5d76b5f",
+    "services/api/src/auth.rs": "d7b7146dc6de59ad89974813e6e6bc9667493cdab61534d010da6b725ff5cf87",
+    "services/api/src/main.rs": "eb00aea9e69a43de9cc92683ebe159e61e7c61c5972fff32f889dd6f746dd4ea",
+    "migrations/0001_auth.sql": "e266b163eb1980214210808efef61590444539edbd6018363a70cd8876fbafb5",
+    "fixtures/0001_auth.sql": "50ff45dcde12d315a21cd4f75e13c2adfdd96e71f1dcf36587b811ca7f68dfb0",
+    "infra/local/db-init.sh": "0995f83755372b02b213ccea8fac9265264dbedafb7a1791208257a63e5221c2",
+    "infra/local/compose.yaml": "7cd332a56d7efb6b2bff975c86959e44cd51f08ae149d13e98331c84d5f86c6b",
+    "infra/local/nginx.conf": "78ce5d9b4d0b4c76cbd85e0effccb99e69f67e62f62edf0ef1e6b6b857544cb1",
+    "infra/local/idp-health.sh": "2f073da8baa1524a8a579304846e4101aa21ca90150a61805fda46a9f5962c39",
+    "scripts/local.py": "438174f5bce7d3d4e69beb0ba598298756e4084bdbe2561648f700a91c2c8379"
+  },
+  "audit": {
+    "npm_vulnerabilities": 0,
+    "rustsec_database": {
+      "advisory-count": 1329,
+      "last-commit": "edb58f5974b83eb8302332821cb6d389777aa351",
+      "last-updated": "2026-10-14T22:18:32+02:00"
+    },
+    "rustsec_findings": [
+      {
+        "id": "RUSTSEC-2023-0071",
+        "package": "rsa",
+        "version": "0.9.10",
+        "title": "Marvin Attack: potential key recovery through timing sidechannels"
+      }
+    ],
+    "suppressed": false,
+    "image_os_scan": "not performed; M6/M7 remaining"
+  },
+  "fixture_rerun": "same checksummed migration reapplied without reset; 4 orgs / 4 mapped users retained",
+  "log_scan": {
+    "api": {
+      "generated_secret_or_token_pattern_found": false
+    },
+    "gateway": {
+      "generated_secret_or_token_pattern_found": false
+    }
+  },
+  "fixture_counts": {
+    "organizations": 4,
+    "mapped_users": 4
+  }
+}

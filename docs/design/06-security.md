@@ -2,7 +2,7 @@
 
 ## 認証と組織
 
-OIDC Authorization Code + PKCEをAPIで処理し、issuer/audience/署名/nonce/state/期限/固定redirect URIを検証する。auth attemptは5分・単回消費。ブラウザとコンテナから同じissuerを解決できるネットワーク設定にし、ローカル環境でも検証を省略しない。
+OIDC Authorization Code + PKCEをAPIで処理し、issuer/audience/署名/nonce/state/期限/固定redirect URIを検証する。auth attemptは5分・単回消費。M1ではstate hashと短期cookieのbinding hashをDBで照合して原子的に消費し、PKCE verifierはAES-256-GCMで暗号化する。stateとcookie原文をAADへ関連付ける。ブラウザとコンテナから同じissuerを解決できるネットワーク設定にし、ローカル環境でも検証を省略しない。
 
 userのキーは(issuer,subject)、所属はusers.organization_idの1件。メールから所属を推定しない。未登録/無効user、無効組織はログイン不可。所属変更・切替は初期版にない。通常要求では毎回userと組織の有効性を確認する。
 
