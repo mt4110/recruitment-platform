@@ -1,0 +1,572 @@
+{
+  "rls-result": {
+    "scope": "minimal M0 SQL harness; not production migrations or API",
+    "postgres": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "checks": [
+      {
+        "name": "runtime_not_superuser_or_bypass",
+        "pass_": true
+      },
+      {
+        "name": "non_owner_and_force_rls_all_probe_tables",
+        "pass_": true
+      },
+      {
+        "name": "no_context_no_rows",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_01",
+        "pass_": true,
+        "actual": [
+          1,
+          5,
+          6
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_01",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_02",
+        "pass_": true,
+        "actual": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_02",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_11",
+        "pass_": true,
+        "actual": [
+          0,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "employer_shared_refs_without_original_join",
+        "pass_": true
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_11",
+        "pass_": true
+      },
+      {
+        "name": "tenant_matrix_12",
+        "pass_": true,
+        "actual": [
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "context_cleared_on_connection_reuse_12",
+        "pass_": true
+      },
+      {
+        "name": "agency_job_update_denied_by_rls",
+        "pass_": true
+      },
+      {
+        "name": "revoke_removes_shared_row",
+        "pass_": true
+      },
+      {
+        "name": "metadata_retained_after_revoke",
+        "pass_": true
+      },
+      {
+        "name": "agency_retains_shared_reference",
+        "pass_": true
+      },
+      {
+        "name": "close_second_transaction_waits",
+        "pass_": true
+      },
+      {
+        "name": "close_first_order",
+        "pass_": true,
+        "wait_seconds": 0.201
+      },
+      {
+        "name": "submit_second_transaction_waits",
+        "pass_": true
+      },
+      {
+        "name": "submit_first_order",
+        "pass_": true,
+        "wait_seconds": 0.201
+      },
+      {
+        "name": "advisory_timeout",
+        "pass_": true,
+        "seconds": 3.001
+      }
+    ],
+    "elapsed_seconds": 3.608,
+    "all_passed": true
+  },
+  "summary": {
+    "host_os": "Linux",
+    "host_arch": "x86_64",
+    "started_at_epoch": 1792036595.3438246,
+    "scope": "M0 only",
+    "pdf_artifacts": [
+      {
+        "file": "invoice-escaped.pdf",
+        "pages": 1,
+        "sha256": "c5f65e5dfa7f8c601e6bc035d17129d31d6fa8d303407ce9f7e10a502ed8e54b"
+      },
+      {
+        "file": "invoice-long.pdf",
+        "pages": 1,
+        "sha256": "3f6c3e7fd18486b3c0bd04a0e14128b08aef6e774436b2ce1dbf9fe24d169e65"
+      },
+      {
+        "file": "invoice-normal.pdf",
+        "pages": 1,
+        "sha256": "d08c0fb0001973f4a13a3cb03dc2cb9159ffbe9f1a4ca304d37383739ba0eaa0"
+      }
+    ],
+    "components": {
+      "authentication": true,
+      "rls": true,
+      "pdf_validation": true,
+      "pdf_generation": true
+    },
+    "all_passed": true,
+    "server": "28.0.4 amd64",
+    "elapsed_seconds": 164.418
+  },
+  "pdf-validation-result": {
+    "scope": "isolated M0 parser/policy harness; not production service",
+    "python": "3.12.3",
+    "pikepdf": "10.17.0",
+    "libqpdf": "12.4.2",
+    "fixtures": [
+      {
+        "fixture": "static.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "594d767b9cf3f1b033f034576847546e73d0f5d856bde1bfb3e2b81c791120fc",
+        "pass": true,
+        "seconds": 0.0948
+      },
+      {
+        "fixture": "tagged.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "3a53f67f881b40a4db3d29f3d2911f9f7ee2a56a2abfcfd8fdb7301e53a0922a",
+        "pass": true,
+        "seconds": 0.0919
+      },
+      {
+        "fixture": "tagged-revision.pdf",
+        "expected_accept": true,
+        "accepted": true,
+        "policy": "static-resume-v1",
+        "sha256": "3ac23408d8518a12205ccd7b25b30a8239f4da244e2d0050fe2ee940b2b29d1b",
+        "pass": true,
+        "seconds": 0.0906
+      },
+      {
+        "fixture": "attachment.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.092
+      },
+      {
+        "fixture": "attribute-hidden-js.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0906
+      },
+      {
+        "fixture": "broken.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "PARSER_OR_STRUCTURE",
+        "pass": true,
+        "seconds": 0.0907
+      },
+      {
+        "fixture": "encrypted-empty.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "ENCRYPTED",
+        "pass": true,
+        "seconds": 0.1046
+      },
+      {
+        "fixture": "escaped-js-key.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0919
+      },
+      {
+        "fixture": "forged-struct.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "UNSUPPORTED_A",
+        "pass": true,
+        "seconds": 0.0908
+      },
+      {
+        "fixture": "form.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0885
+      },
+      {
+        "fixture": "javascript.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0899
+      },
+      {
+        "fixture": "link.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0995
+      },
+      {
+        "fixture": "shared-action.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "UNSUPPORTED_A",
+        "pass": true,
+        "seconds": 0.0928
+      },
+      {
+        "fixture": "too-deep.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "DEPTH",
+        "pass": true,
+        "seconds": 0.0903
+      },
+      {
+        "fixture": "too-large.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "SIZE",
+        "pass": true,
+        "seconds": 0.0878
+      },
+      {
+        "fixture": "too-many-objects.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "OBJECTS",
+        "pass": true,
+        "seconds": 0.1175
+      },
+      {
+        "fixture": "too-many-pages.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "PAGES",
+        "pass": true,
+        "seconds": 0.0871
+      },
+      {
+        "fixture": "unreferenced-js.pdf",
+        "expected_accept": false,
+        "accepted": false,
+        "reason": "FORBIDDEN_KEY",
+        "pass": true,
+        "seconds": 0.0917
+      }
+    ],
+    "controls": [
+      {
+        "name": "wall_timeout_5s",
+        "pass": true,
+        "seconds": 5.007
+      },
+      {
+        "name": "address_space_256MiB",
+        "pass": true,
+        "exit_code": 23
+      },
+      {
+        "name": "cpu_limit_5s",
+        "pass": true,
+        "exit_code": -9
+      },
+      {
+        "name": "non_root_and_no_capabilities",
+        "pass": true,
+        "uid": 1001
+      },
+      {
+        "name": "read_only_root",
+        "pass": true
+      },
+      {
+        "name": "no_network_egress",
+        "pass": true
+      }
+    ],
+    "all_passed": true
+  },
+  "auth-result": {
+    "scope": "real Keycloak + disposable Python OIDC relying party; not Rust API",
+    "harness_sha256": "d9afaa9241485839cb9ff48a60a3b6abdc9c0bed1ee03c7587fa2ad825ebfc12",
+    "elapsed_seconds": 42.437,
+    "checks": [
+      {
+        "name": "agency-a/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/agency-a",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/agency-a",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/agency-a",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/agency-a",
+        "pass": true
+      },
+      {
+        "name": "agency-b/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/agency-b",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/agency-b",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/agency-b",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/agency-b",
+        "pass": true
+      },
+      {
+        "name": "employer-x/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/employer-x",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/employer-x",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/employer-x",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/employer-x",
+        "pass": true
+      },
+      {
+        "name": "employer-y/normal",
+        "pass": true,
+        "http_status": 200
+      },
+      {
+        "name": "single_use_attempt/employer-y",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "cookie_flags/employer-y",
+        "pass": true
+      },
+      {
+        "name": "logout_csrf_rejected/employer-y",
+        "pass": true
+      },
+      {
+        "name": "logout_invalidates_local_session/employer-y",
+        "pass": true
+      },
+      {
+        "name": "agency-a/badstate",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "STATE_OR_ATTEMPT_INVALID"
+      },
+      {
+        "name": "agency-a/badnonce",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "NONCE_OR_KEY_INVALID"
+      },
+      {
+        "name": "agency-a/badverifier",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "TOKEN_EXCHANGE_REJECTED"
+      },
+      {
+        "name": "agency-a/badissuer",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidIssuerError"
+      },
+      {
+        "name": "agency-a/badaudience",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidAudienceError"
+      },
+      {
+        "name": "agency-a/badsignature",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "InvalidSignatureError"
+      },
+      {
+        "name": "agency-a/expired",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "ExpiredSignatureError",
+        "suite_elapsed_at_response_seconds": 42
+      },
+      {
+        "name": "agency-a/badredirect",
+        "pass": true,
+        "http_status": 400
+      },
+      {
+        "name": "agency-a/nopkce",
+        "pass": true,
+        "http_status": 400,
+        "rejection_code": "PROVIDER_PKCE_REQUIRED"
+      },
+      {
+        "name": "unregistered/normal",
+        "pass": true,
+        "http_status": 403,
+        "rejection_code": "MEMBERSHIP_REJECTED"
+      }
+    ],
+    "all_passed": true
+  },
+  "pdf-generation-result": {
+    "scope": "M0 fixed-schema HTML rendering only; not app invoice endpoint",
+    "playwright": "1.62.1",
+    "chromium": "151.0.7922.34",
+    "sandbox_status": "Sandbox Status\nLayer 1 Sandbox\tNamespace\nPID namespaces\tYes\nNetwork namespaces\tYes\nSeccomp-BPF sandbox\tYes\nSeccomp-BPF sandbox supports TSYNC\tYes\nPtrace Protection with Yama LSM (Broker)\tYes\nPtrace Protection with Yama LSM (Non-broker)\tNo\n\nYou are adequately sandboxed.",
+    "elapsed_seconds": 1.308,
+    "blocked_requests": 0,
+    "checks": [
+      {
+        "name": "chromium_seccomp_sandbox",
+        "pass": true
+      },
+      {
+        "name": "chromium_namespace_sandbox",
+        "pass": true
+      },
+      {
+        "name": "invoice-normal_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      },
+      {
+        "name": "invoice-long_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      },
+      {
+        "name": "invoice-escaped_layout",
+        "pass": true,
+        "layout": {
+          "names": [
+            {
+              "height": 44,
+              "overflow": false
+            },
+            {
+              "height": 44,
+              "overflow": false
+            }
+          ],
+          "unsafeElements": 0,
+          "footerInside": true,
+          "bodyWidth": 1280
+        }
+      }
+    ],
+    "all_passed": true
+  },
+  "run": {
+    "url": "https://github.com/mt4110/recruitment-platform/actions/runs/38678810711",
+    "commit": "c9de3bc",
+    "native": true
+  }
+}

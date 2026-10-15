@@ -38,7 +38,7 @@ M0の許可fixtureには通常の静的PDFと、上記/Aを持つ静的なタグ
 
 既存の内部PDF service内で、検査は1要求ごとのPython子processとして実行する。APIのファイルvolume・DB認証情報をserviceへ渡さず、PDF bytesだけを送る。入力10MiB、子processのメモリ256MiB/CPU時間5秒/wall time5秒、同時検査1件、tmpfsを用いる。非root、read-only root filesystem、不要capabilityなし、外向き通信なし。制限値は初期設計値で、実測した性能や安全性の認定ではない。
 
-M0のarm64確認では、drop ALLにSYS_CHROOTだけを追加し、no-new-privilegesと[Playwright公式seccomp profile](../../validation/m0/seccomp_profile.json)を維持する構成でsandboxが起動した。SYS_ADMIN/privileged/--no-sandboxは使わない。HOME/XDG_CONFIG_HOME/XDG_CACHE_HOMEはtmpfs内の専用ディレクトリへ置く。Playwrightと同梱Chromiumは対応する版を同時に固定し、namespaceとSeccomp-BPFの有効性を実行環境ごとに確認する。Linux/amd64はM0用の手動CIで再現確認し、結果を[技術確認記録](../validation/2026-10-15-m0-report.md)とは別に保存する。
+M0のarm64/amd64確認では、drop ALLにSYS_CHROOTだけを追加し、no-new-privilegesと[Playwright公式seccomp profile](../../validation/m0/seccomp_profile.json)を維持する構成でsandboxが起動した。SYS_ADMIN/privileged/--no-sandboxは使わない。HOME/XDG_CONFIG_HOME/XDG_CACHE_HOMEはtmpfs内の専用ディレクトリへ置く。Playwrightと同梱Chromiumは対応する版を同時に固定し、namespaceとSeccomp-BPFの有効性を実行環境ごとに確認する。Linux/amd64の再現結果は[完了記録](../validation/2026-10-15-m0-completion.md)へ保存した。
 
 内部endpointはPOST /internal/pdf/check（bytes→ok/sha256/policy/rejection_code）とPOST /internal/pdf/render-invoice（固定schema→PDF）。内部共有鍵とネットワーク制限を両方使う。待ち過多/検査サービス障害/timeoutは503で受付を保留し、検査不合格の422と区別する。失敗を検査合格に変換しない。
 
@@ -71,4 +71,4 @@ OIDC client secret、session cookie、候補者/レジュメ本文、未加工�
 
 ローカルでも秘密を生成する。架空ログインの説明をREADMEに置く場合も、クラウドへ固定の公開passwordを持ち込まない。本番の保持/削除・復旧・脆弱性対応・法的整理は運用前ガイドで扱う。
 
-参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)、[PDFBoxの構造要素属性/Aの説明](https://pdfbox.apache.org/docs/2.0.10/javadocs/org/apache/pdfbox/pdmodel/documentinterchange/logicalstructure/PDStructureElement.html)。PDFBoxはPDFの用語・構造の参照資料であり、新しい実装依存ではない。検査policyと処理順は本設計の判断で、実装検証は未実施。
+参照：[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html)、[pikepdfの検査/open/objects API](https://pikepdf.readthedocs.io/en/stable/api/main.html)、[qpdfの構文検査](https://qpdf.readthedocs.io/en/stable/cli.html#option-check)、[PDFBoxの構造要素属性/Aの説明](https://pdfbox.apache.org/docs/2.0.10/javadocs/org/apache/pdfbox/pdmodel/documentinterchange/logicalstructure/PDStructureElement.html)。PDFBoxはPDFの用語・構造の参照資料であり、新しい実装依存ではない。検査policyと処理順は本設計の判断で、M0で最小fixtureによる方式確認を実施済み。製品実装での統合検証は後続段階。
