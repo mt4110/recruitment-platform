@@ -1,0 +1,265 @@
+{
+  "run": {
+    "scope": "M1 + M2; stop before M3",
+    "instance": "e2e-20261015-052348-4fc33e",
+    "app_port": 3001,
+    "idp_port": 18082,
+    "phase": "complete",
+    "status": "passed",
+    "source_sha256": {
+      "apps/web/Dockerfile": "d10dae4058ced3a44d47beaa5f6ebc447430bd50614ea32554f2d7cc2faf6504",
+      "apps/web/app/api/health/route.ts": "a63940a9457ad3f8797904b056ed2ff6615ac74413e529b455c4d5034595a414",
+      "apps/web/app/business.tsx": "f2d1d2e04f42b3b0b8e867c51b9acb4e3efad5df6f387702deb6b944dc9930a3",
+      "apps/web/app/candidates/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+      "apps/web/app/icon.svg": "5493d33c01164d524b52107ca1c5e93a11d36a08682778fafa43e24520b69162",
+      "apps/web/app/jobs/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+      "apps/web/app/layout.tsx": "76629e59ff2a05f6beb370722c6281d7edf41c86e7c7e0433f01479de41a9261",
+      "apps/web/app/login/page.tsx": "779fb1568e832468a4dcb06136fa3dfc9adea3e78c91ca1d88a9da50127a1e68",
+      "apps/web/app/page.tsx": "f5f818b491921efe1b1332efbe0647d5a976c4faa0b421ff1c640d1edc4fe416",
+      "apps/web/app/style.css": "dc1e4d0d5d80e5a72eef92e55af0f19ff5fe17f4257fbe8c0085510808e9cfb6",
+      "apps/web/next-env.d.ts": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b",
+      "apps/web/package-lock.json": "3a5f015decd9b2a3d236e855c3c3ff394e4b4f9220c7a80bc3254b2710ba395e",
+      "apps/web/package.json": "7759bb99af82bc58fef4b3c35825f37731b4ef89bd8f2d950547e8bd18377076",
+      "apps/web/tsconfig.json": "5f13aa76dff2e63afa46e3ecdb80369b94d5007a15ff9edc91b4eecf6c609435",
+      "e2e/README.md": "c11cc9e9b5b2be860ff75d5e26de4e235242673b79af626ebd33075fd4d5a1f6",
+      "e2e/auth.spec.cjs": "b42d62a93e9134977f157965b7a56b830cfbe25d37ffc3036aa1927789a5ef98",
+      "e2e/business.spec.cjs": "34891bc5425a0655f8eeae325e25d5169305f21956884fd322d45d18c680770d",
+      "e2e/helpers.cjs": "c87f05eff849936eb5f963ed6f7184acb1e62eec59c056072a45fa806b476119",
+      "e2e/package-lock.json": "3bd6ead6c5bd2ebc808f8c643218afc30b6782b0a3ce6f7ad7f65882c2d1c626",
+      "e2e/package.json": "fb2f035421df1c0248735aa4d0191e0871725b517dffab5bcc245cd7e683a802",
+      "e2e/playwright.config.cjs": "85a79059ec5040784427bf9d850a231893e030c9ff64833894ae703cc1fd9270",
+      "e2e/reporter.cjs": "a412f8a81d6835e1b23aadc184e50b1378b7617f5a5dbed82c30b4bbf2e78b42",
+      "fixtures/0001_auth.sql": "f47ee02c67efa5897e092f4f8663894750c199a50e181d41255784bad430bdd0",
+      "fixtures/0002_jobs_candidates.sql": "ed5c18eecd8eb86f5d46a970ce2c233ea68524fca507c56e460485ed952c3568",
+      "infra/local/compose.yaml": "45a1c17e92a23f76432d76711daa7adaf6151eeee8b8da39ea2801e920905bea",
+      "infra/local/db-init.sh": "0995f83755372b02b213ccea8fac9265264dbedafb7a1791208257a63e5221c2",
+      "infra/local/nginx.conf": "020c69a61f8efbbc5aa40004764e19355f3335e2f3715bd0e744003a9defe677",
+      "migrations/0001_auth.sql": "e266b163eb1980214210808efef61590444539edbd6018363a70cd8876fbafb5",
+      "migrations/0002_jobs_candidates.sql": "6856bff59f8e25045b834629dcde2b895a12c265dccf632d5aa130020734200c",
+      "scripts/e2e.py": "2f88bfc61289afec6b72a7f922a911b29e034f5ac8d2c1c9ebc4e5bc79a6a31c",
+      "scripts/local.py": "875e7bbf48f02002decd4c1c345c50c8fbfa0f24b0e583944c9018a7347d980d",
+      "services/api/Cargo.lock": "61ca1052c01fe8ab58f71162510a46ca251c215830d6239e8875a1936782a794",
+      "services/api/Cargo.toml": "670c7ee1d280ba7608fa5fca2ea76da5f77d9b13fa45b62245f604b9c9b9da8c",
+      "services/api/Dockerfile": "004a8962b7afa73dde8aab2449651d312603cace19cdfdbf6eb06653ae72f723",
+      "services/api/src/auth.rs": "f6f042a602d47fdb4b649da1a6d6c79cbfa3ec9be32b6fc5430c6bc73bf9b24f",
+      "services/api/src/business.rs": "9b7ff28fc8a5f4e921cda0e8506811f73fe43b24ef96b2ff926df92122ff80f3",
+      "services/api/src/main.rs": "8a6bfe20ad7d4a0bd89ce7e718700f8e045c13b3fc404f66424d53fe4d9e21e7"
+    },
+    "source_commit": "7ffda477e37513beaf9bfa9ad82d6dc266d96eda",
+    "source_dirty": false,
+    "source_unchanged_during_run": true,
+    "docker": "29.5.2 / aarch64",
+    "log_scan": {
+      "gateway": {
+        "secret_pattern_found": false
+      },
+      "web": {
+        "secret_pattern_found": false
+      },
+      "api": {
+        "secret_pattern_found": false
+      },
+      "db": {
+        "secret_pattern_found": false
+      },
+      "idp": {
+        "secret_pattern_found": false
+      },
+      "idp-db": {
+        "secret_pattern_found": false
+      },
+      "pdf-renderer": {
+        "secret_pattern_found": false
+      }
+    },
+    "services_stopped": true,
+    "elapsed_seconds": 173.684
+  },
+  "suite": {
+    "scope": "M1/M2 browser E2E",
+    "status": "passed",
+    "tests": [
+      {
+        "name": "seven services are healthy; DB roles and immutable identity are enforced",
+        "status": "passed",
+        "duration_ms": 1323,
+        "errors": []
+      },
+      {
+        "name": "agency-a: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 1576,
+        "errors": []
+      },
+      {
+        "name": "agency-b: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 818,
+        "errors": []
+      },
+      {
+        "name": "employer-x: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 753,
+        "errors": []
+      },
+      {
+        "name": "employer-y: real OIDC login, fixed organization, protected logout",
+        "status": "passed",
+        "duration_ms": 769,
+        "errors": []
+      },
+      {
+        "name": "same browser changes agency A to B after logout",
+        "status": "passed",
+        "duration_ms": 815,
+        "errors": []
+      },
+      {
+        "name": "unregistered user sees a recoverable HTML error and no new session",
+        "status": "passed",
+        "duration_ms": 400,
+        "errors": []
+      },
+      {
+        "name": "disabled user invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 876,
+        "errors": []
+      },
+      {
+        "name": "disabled organization invalidates a session and refuses login",
+        "status": "passed",
+        "duration_ms": 916,
+        "errors": []
+      },
+      {
+        "name": "nonce mismatch refuses authentication",
+        "status": "passed",
+        "duration_ms": 367,
+        "errors": []
+      },
+      {
+        "name": "expired attempt refuses authentication",
+        "status": "passed",
+        "duration_ms": 6402,
+        "errors": []
+      },
+      {
+        "name": "tampered encrypted verifier refuses authentication",
+        "status": "passed",
+        "duration_ms": 6408,
+        "errors": []
+      },
+      {
+        "name": "missing or foreign browser binding refuses authentication",
+        "status": "passed",
+        "duration_ms": 6290,
+        "errors": []
+      },
+      {
+        "name": "wrong state and malformed query are rejected without consuming a valid attempt",
+        "status": "passed",
+        "duration_ms": 6309,
+        "errors": []
+      },
+      {
+        "name": "callback reuse is rejected and cannot switch the existing identity",
+        "status": "passed",
+        "duration_ms": 6316,
+        "errors": []
+      },
+      {
+        "name": "expired session clears stale UI on focus and offers login",
+        "status": "passed",
+        "duration_ms": 6492,
+        "errors": []
+      },
+      {
+        "name": "logout clears the other tab and discards a delayed identity response",
+        "status": "passed",
+        "duration_ms": 6558,
+        "errors": []
+      },
+      {
+        "name": "API restart preserves the database session",
+        "status": "passed",
+        "duration_ms": 16748,
+        "errors": []
+      },
+      {
+        "name": "identity and logout network errors are visible and recoverable",
+        "status": "passed",
+        "duration_ms": 581,
+        "errors": []
+      },
+      {
+        "name": "mobile layout, keyboard login and logout work",
+        "status": "passed",
+        "duration_ms": 6607,
+        "errors": []
+      },
+      {
+        "name": "M2 RLS fails closed without context and filters actual runtime queries",
+        "status": "passed",
+        "duration_ms": 1997,
+        "errors": []
+      },
+      {
+        "name": "M2 direct IDs, role changes and missing sessions cannot disclose other organizations",
+        "status": "passed",
+        "duration_ms": 75,
+        "errors": []
+      },
+      {
+        "name": "M2 input bounds, CSRF, UUID, unknown fields and mutation key are enforced",
+        "status": "passed",
+        "duration_ms": 59,
+        "errors": []
+      },
+      {
+        "name": "M2 job lifecycle, canonical idempotency, concurrent versions and cursor filtering",
+        "status": "passed",
+        "duration_ms": 678,
+        "errors": []
+      },
+      {
+        "name": "M2 candidate update/archive is immutable, scoped and replay-safe",
+        "status": "passed",
+        "duration_ms": 171,
+        "errors": []
+      },
+      {
+        "name": "M2 browser job registration, publication, search/save and forbidden detail",
+        "status": "passed",
+        "duration_ms": 680,
+        "errors": []
+      },
+      {
+        "name": "M2 browser candidate form, conflict preserves input, archive and mobile keyboard",
+        "status": "passed",
+        "duration_ms": 595,
+        "errors": []
+      },
+      {
+        "name": "M2 job advisory lock times out safely and leaves the version unchanged",
+        "status": "passed",
+        "duration_ms": 5153,
+        "errors": []
+      },
+      {
+        "name": "M2 browser retries a lost creation response with the same key and no duplicate",
+        "status": "passed",
+        "duration_ms": 354,
+        "errors": []
+      },
+      {
+        "name": "M2 expired browser session retains only the unsaved form and refuses writes",
+        "status": "passed",
+        "duration_ms": 200,
+        "errors": []
+      }
+    ],
+    "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+  }
+}

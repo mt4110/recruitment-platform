@@ -2,9 +2,9 @@
 
 人材紹介会社と求人企業が、求人・候補者・推薦・選考を一つの流れで扱うOSSプロトタイプです。
 
-**M2の求人・保存・候補者機能を追加しました。組織間のアクセス拒否を含む検証を進めています。PDF登録・推薦・選考は未実装です。**
+**M2の求人・保存・候補者機能まで実装・検証済みです。組織間のアクセス拒否を含め、arm64/amd64で各30件のE2Eを確認しました。PDF登録・推薦・選考は未実装です。**
 
-設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、今回はM2までを対象にしています。
+設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録し、M2で停止しています。
 
 ## ローカルで試す
 
@@ -45,7 +45,7 @@ npx --prefix e2e playwright install chromium --only-shell
 python3 scripts/e2e.py
 ```
 
-既定のテスト用portは3001/18082。実行ごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)、実行結果は[M1 E2E記録](docs/validation/2026-10-15-m1-e2e-report.md)を参照してください。
+既定のテスト用portは3001/18082。実行ごとに新しいCompose projectを作り、終了時にそのサービスだけ停止します。通常デモや既存データをresetしません。環境指定、検証範囲と秘密値の扱いは[E2E手順](e2e/README.md)、実行結果は[M2の最終記録](docs/validation/2026-10-15-m2-report.md)（認証20件＋M2の10件）を参照してください。
 
 ## 設計を読む
 
