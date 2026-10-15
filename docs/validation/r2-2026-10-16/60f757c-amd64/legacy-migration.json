@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "document_unchanged": true,
+    "snapshot_unchanged": true,
+    "defaults_pdf_other": true,
+    "original_terminal_expiry_plus_6_days": true,
+    "no_clean_evidence": true,
+    "bytes_unchanged": true
+  },
+  "document_id": "50000000-0000-0000-0000-00000000f001",
+  "application_id": "60000000-0000-0000-0000-00000000f001",
+  "operation_key": "70000000-0000-0000-0000-00000000f001",
+  "candidate_id": "40000000-0000-0000-0000-000000000001"
+}
