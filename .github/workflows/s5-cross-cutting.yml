@@ -1,0 +1,84 @@
+name: S5 encrypted pipeline cross-cutting verification
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Full regression or S5 development subset
+        type: choice
+        options: [full, s5]
+        default: full
+permissions:
+  contents: read
+jobs:
+  verification:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Install fixed E2E dependencies
+        run: |
+          npm ci --prefix e2e
+          npx --prefix e2e playwright install --with-deps chromium --only-shell
+      - name: Install fixed web dependencies and Rust checks
+        run: |
+          npm ci --prefix apps/web
+          rustup toolchain install 1.95.0 --profile minimal --component clippy,rustfmt
+          rustup override set 1.95.0
+          python3 scripts/check.py
+      - name: Verify S5 and existing product regression in an isolated project
+        env:
+          S5_CHECK_SCOPE: ${{ inputs.scope }}
+        run: |
+          if [ "$S5_CHECK_SCOPE" = s5 ]; then
+            python3 scripts/e2e.py --test-file s5.spec.ts
+          else
+            python3 scripts/e2e.py
+          fi
+      - name: Preserve redacted build failure diagnostics
+        if: failure()
+        run: |
+          python3 - <<'PYCODE'
+          import json, pathlib, re
+          for folder in pathlib.Path('.local').glob('e2e-*'):
+              report=folder/'artifacts/run.json'
+              if not report.exists(): continue
+              state=json.loads(report.read_text())
+              if state.get('phase') not in ('setup','build/start'): continue
+              log=folder/'operations.log'
+              if not log.exists(): continue
+              values=[]
+              env=folder/'local.env'
+              if env.exists(): values += [line.partition('=')[2] for line in env.read_text().splitlines() if '=' in line and len(line.partition('=')[2])>=8]
+              accounts=folder/'demo-accounts.json'
+              if accounts.exists(): values += list(json.loads(accounts.read_text()).values())
+              text='\n'.join(log.read_text(errors='replace').splitlines()[-100:])
+              for value in sorted(values,key=len,reverse=True): text=text.replace(value,'<redacted>')
+              forbidden=r'(?:eyJ[A-Za-z0-9_-]+\.eyJ|(?:[?&](?:code|access_token|id_token)=)|-----BEGIN .*PRIVATE KEY-----|github_pat_|ghp_)'
+              if re.search(forbidden,text): text='Diagnostics withheld: residual sensitive pattern.'
+              (folder/'artifacts/build-failure.json').write_text(json.dumps({'phase':state['phase'],'redacted_tail':text},indent=2)+'\n')
+          PYCODE
+      - name: Preserve sanitized results only
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: s5-browser-results-${{ matrix.arch }}
+          path: |
+            .local/e2e-*/artifacts/*.json
+            .local/e2e-*/artifacts/*.png
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14

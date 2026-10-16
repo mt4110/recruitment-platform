@@ -5,6 +5,10 @@ const credential=fs.readFileSync('/run/broker-auth');if(credential.length!==32)t
 const auth=c.createHmac('sha256',credential).update('document-worker-v1').digest('base64url');
 const scanKey=fs.readFileSync('/run/scan-auth','utf8');
 let job;
+// Fixed phase names and numeric durations only; never log document or key material.
+const phaseDurations={};
+async function measured(phase,work){const start=performance.now();try{return await work();}finally{phaseDurations[phase]=Math.round((performance.now()-start)*1000)/1000;}}
+function emitTimings(){console.log(JSON.stringify({event:'timings',milliseconds:phaseDurations}));}
 async function bounded(url,options={},limit=524288,ms=30000){
  const r=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(ms)});
  const n=Number(r.headers.get('content-length'));if(n>limit)throw Error('RESPONSE_LIMIT');
@@ -23,21 +27,22 @@ async function main(){
  job=await api('claim');if(!job||job.paused)return console.log(JSON.stringify({event:'no_job'}));
  const started=Date.now();
  await api('authorize');
- const raw=await api('ciphertext');
+ const raw=await measured('ciphertext_fetch',()=>api('ciphertext'));
  // Authorization is checked immediately before private-key use and before commit.
  await api('authorize');
- let original;try{const key=c.createPrivateKey(fs.readFileSync('/run/keys/'+job.envelope.key_version+'.pem'));if(key.asymmetricKeyDetails.modulusLength!==3072||c.createPublicKey(key).export({type:'spki',format:'der'}).toString('base64')!==job.original_public_spki)throw Error('KEY_UNAVAILABLE');original=unwrap(job,raw,key);}catch(e){if(['METADATA_REJECTED','CRYPTO_REJECTED'].includes(e.message))throw e;if(e.code?.startsWith('ERR_OSSL')||e.code==='ERR_CRYPTO_INVALID_AUTH_TAG'||/authenticate/.test(e.message))throw Error('CRYPTO_REJECTED');throw Error('KEY_UNAVAILABLE');}
+ let original;const decryptStart=performance.now();try{const key=c.createPrivateKey(fs.readFileSync('/run/keys/'+job.envelope.key_version+'.pem'));if(key.asymmetricKeyDetails.modulusLength!==3072||c.createPublicKey(key).export({type:'spki',format:'der'}).toString('base64')!==job.original_public_spki)throw Error('KEY_UNAVAILABLE');original=unwrap(job,raw,key);}catch(e){if(['METADATA_REJECTED','CRYPTO_REJECTED'].includes(e.message))throw e;if(e.code?.startsWith('ERR_OSSL')||e.code==='ERR_CRYPTO_INVALID_AUTH_TAG'||/authenticate/.test(e.message))throw Error('CRYPTO_REJECTED');throw Error('KEY_UNAVAILABLE');}
+ phaseDurations.decrypt=performance.now()-decryptStart;
  const hash=sha(original.bytes),nonce=c.randomUUID();
- const av=await bounded('http://scan:8080/internal/scan',{method:'POST',headers:{'X-Scan-Key':scanKey,'X-Scan-Nonce':nonce,'Content-Type':'application/octet-stream'},body:original.bytes},32768,23000);
+ const av=await measured('av',()=>bounded('http://scan:8080/internal/scan',{method:'POST',headers:{'X-Scan-Key':scanKey,'X-Scan-Nonce':nonce,'Content-Type':'application/octet-stream'},body:original.bytes},32768,23000));
  if(av.status!==200)throw Error('SCANNER_UNAVAILABLE');const scan=JSON.parse(av.bytes);validateScan(scan,nonce,hash);if(scan.verdict==='blocked')throw Error('AV_BLOCKED');
  await api('authorize');
- const result=await bounded('http://relay:8080/check',{method:'POST',headers:{'Content-Type':job.file_format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','X-Job-ID':job.generation},body:original.bytes},16384,30000);
+ const result=await measured('validation_and_conversion',()=>bounded('http://relay:8080/check',{method:'POST',headers:{'Content-Type':job.file_format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','X-Job-ID':job.generation},body:original.bytes},16384,30000));
  if(result.status!==200)throw Error('SANDBOX_UNAVAILABLE');const check=JSON.parse(result.bytes);
  if(Object.keys(check).sort().join(',')!=='ok,policy,rejection_code,sha256,view'||check.sha256!==hash||check.policy!==(job.file_format==='pdf'?'static-resume-v1':'xlsx-resume-v1')||typeof check.ok!=='boolean'||(check.ok?check.rejection_code!==null:!/^FORMAT_[A-Z0-9_]{1,64}$/.test(check.rejection_code)))throw Error('SANDBOX_UNAVAILABLE');
  if(!check.ok)throw Error('FORMAT_REJECTED');
  const view={format:job.file_format,pages:check.view?.pages,artifacts:[]};
  if(check.view?.format!==job.file_format||!Array.isArray(check.view.artifacts))throw Error('SANDBOX_UNAVAILABLE');
- let total=0;
+ const artifactStart=performance.now();let total=0;
  for(const item of check.view.artifacts){
   const output=await bounded('http://relay:8080/artifact/'+item.name,{},item.kind==='page'?8388608:1048576,5000);
   if(output.status!==200||output.bytes.length!==item.size||sha(output.bytes)!==item.sha256)throw Error('SANDBOX_UNAVAILABLE');
@@ -46,15 +51,16 @@ async function main(){
   await api('artifact',{...sealed,artifact_id:id,generation:job.generation,sha256:hash});
   view.artifacts.push({id,kind:item.kind,page:item.page,plaintext_hash:item.sha256,ciphertext_hash:sealed.artifact_hash});output.bytes.fill(0);
  }
+ phaseDurations.artifact_encryption_and_storage=performance.now()-artifactStart;
  const manifest=Buffer.from(JSON.stringify({schema:1,document_id:job.document_id,generation:job.generation,original_hash:hash,original_name:original.original_name,file_format:job.file_format,policy:'safe-view-v1',phase:'ready',scan_generation:scan.generation_id,view}));
  const sealed=seal(job,manifest,hash);
  original.bytes.fill(0);
  if(Date.now()-started>115000)throw Error('JOB_TIMEOUT');
  await api('commit',{original_name:original.original_name,sha256:hash,artifact_id:job.artifact_id,generation:job.generation,checks:{scan,format:{...check,view:undefined}},view,...sealed});
- console.log(JSON.stringify({event:'checked'}));
+ emitTimings();console.log(JSON.stringify({event:'checked'}));
 }
 main().catch(async e=>{
  const terminal=['CRYPTO_REJECTED','METADATA_REJECTED','AV_BLOCKED','FORMAT_REJECTED'].includes(e.message);
  if(job&&!job.paused)try{await api(terminal?'reject':'retry',{code:terminal?e.message:'WORKER_UNAVAILABLE'});}catch{}
- console.log(JSON.stringify({event:terminal?'rejected':'retryable'}));process.exitCode=1;
+ emitTimings();console.log(JSON.stringify({event:terminal?'rejected':'retryable'}));process.exitCode=1;
 });

@@ -50,12 +50,15 @@ with (folder/'operations.log').open('w') as log:
    time.sleep(.5)
   else:outcome['status']='timeout'
   raw=subprocess.check_output(['docker','logs',job+'-broker-1'],stderr=subprocess.STDOUT)
-  events=[]
+  events=[];timings={}
   for line in raw.splitlines():
    try:v=json.loads(line)
    except ValueError:continue
+   if set(v)=={'event','milliseconds'} and v['event']=='timings' and isinstance(v['milliseconds'],dict):
+    allowed={'ciphertext_fetch','decrypt','av','validation_and_conversion','artifact_encryption_and_storage'}
+    if set(v['milliseconds'])<=allowed and all(type(n) in (int,float) and 0<=n<=120000 for n in v['milliseconds'].values()):timings=v['milliseconds']
    if set(v)=={'event'} and v['event'] in ('checked','rejected','retryable','no_job'):events.append(v['event'])
-  outcome['events']=events
+  outcome['events']=events;outcome['phase_milliseconds']=timings
   outcome['log_secret_pattern_found']=False
   secret_values=[(local/'scan-auth').read_bytes(),(local/'broker-auth').read_bytes(),base64.urlsafe_b64encode(hmac.new((local/'broker-auth').read_bytes(),b'document-worker-v1',hashlib.sha256).digest()).rstrip(b'=')]
   for role in ('broker','relay','sandbox'):
@@ -65,7 +68,7 @@ with (folder/'operations.log').open('w') as log:
   outcome['containers']={}
   for role in ('broker','relay','sandbox'):
    item=json.loads(subprocess.check_output(['docker','inspect',job+'-'+role+'-1'],text=True))[0]
-   outcome['containers'][role]={'user':item['Config']['User'],'read_only':item['HostConfig']['ReadonlyRootfs'],'cap_drop':item['HostConfig']['CapDrop'],'memory_limit':item['HostConfig']['Memory'],'pids_limit':item['HostConfig']['PidsLimit'],'networks':sorted(item['NetworkSettings']['Networks']),'mount_targets':[m['Destination'] for m in item['Mounts']]}
+   outcome['containers'][role]={'user':item['Config']['User'],'read_only':item['HostConfig']['ReadonlyRootfs'],'cap_drop':item['HostConfig']['CapDrop'],'memory_limit':item['HostConfig']['Memory'],'oom_killed':item['State']['OOMKilled'],'pids_limit':item['HostConfig']['PidsLimit'],'networks':sorted(item['NetworkSettings']['Networks']),'mount_targets':[m['Destination'] for m in item['Mounts']]}
  finally:
   r=subprocess.run([*compose,'stop','--timeout','3'],stdout=log,stderr=subprocess.STDOUT,timeout=25)
   outcome['stopped']=r.returncode==0;outcome['elapsed_seconds']=round(time.monotonic()-start,3)

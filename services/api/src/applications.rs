@@ -577,6 +577,14 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
                 .collect::<Result<Vec<_>, _>>()?;
             ids.sort();
             for doc in ids {
+                // Stored checks establish the selected original. Submission also
+                // requires the currently loaded, fresh AV generation; a stale
+                // database verdict alone must not publish a shared selection.
+                let proof: Option<Value> = sqlx::query_scalar("SELECT jsonb_build_object('nonce','00000000-0000-0000-0000-000000000000','sha256',c.sha256,'verdict',c.verdict,'engine_version',c.engine_version,'generation_id',c.generation_id,'databases',c.signature_manifest->'databases','last_successful_check',c.signature_manifest->'last_successful_check','update_ok',true) FROM document_checks c JOIN documents d ON d.id=c.document_id AND d.sha256=c.sha256 WHERE d.id=$1 AND d.candidate_id=$2 AND d.status='ready' AND c.verdict='clean' AND document_usable(d.id,d.sha256,d.file_format) ORDER BY c.scanned_at DESC,c.id DESC LIMIT 1")
+                    .bind(doc).bind(candidate).fetch_optional(&mut *tx).await.map_err(db_error)?;
+                let scan: crate::scanner::Scan =
+                    serde_json::from_value(proof.ok_or_else(invalid)?).map_err(|_| invalid())?;
+                crate::scanner::current(&app, &scan).await?;
                 let n=sqlx::query("INSERT INTO application_documents(application_id,document_id,agency_org_id,storage_key_snapshot,original_name_snapshot,size_bytes_snapshot,sha256_snapshot,file_format_snapshot,media_type_snapshot,document_kind_snapshot) SELECT $1,id,agency_org_id,storage_key,original_name,size_bytes,sha256,file_format,media_type,document_kind FROM documents WHERE id=$2 AND candidate_id=$3 AND status='ready' AND document_usable(id,sha256,file_format)").bind(resource).bind(doc).bind(candidate).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
                 if n != 1 {
                     return Err(invalid());

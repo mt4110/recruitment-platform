@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true, "target": "ES2022", "module": "commonjs", "moduleResolution": "node",
+    "noEmit": true, "esModuleInterop": true, "skipLibCheck": true,
+    "typeRoots": ["../apps/web/node_modules/@types"], "types": ["node"]
+  },
+  "include": ["*.spec.ts"]
+}
