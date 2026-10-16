@@ -124,3 +124,12 @@ test('S1 retained ciphertext gets a fresh attempt after authorization window exp
  await p.route(status,async route=>{if(route.request().method()!=='GET'){await route.fallback();return;}const r=await route.fetch(),value=await r.json();if(value.attempt_state==='authorized')value.attempt_expires_at='2000-01-01T00:00:00Z';await route.fulfill({response:r,json:value});});
  try{await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'架空の認可期限.pdf',mimeType:'application/pdf',buffer:sample});await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('再試行待ち');await p.getByRole('button',{name:'受付結果を確認して再試行する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');expect(posts).toBe(2);expect(sql(`SELECT count(*) FROM upload_attempts a JOIN upload_sessions s ON s.id=a.upload_id WHERE s.candidate_id='${c}';`)).toBe('2');}finally{await p.unroute(auth);await p.unroute(status);}
 });
+test('S1 composite foreign keys reject cross-context reference injection',async()=>{
+ const e=await reserve(await candidate());
+ const actor='10000000-0000-0000-0000-000000000002';
+ const begin=`BEGIN;SET LOCAL ROLE app_runtime;SELECT set_config('app.user_id','${actor}',true),set_config('app.org_id','${B}',true);`;
+ expect(()=>sql(begin+`INSERT INTO upload_attempts(id,upload_id,org_id,user_id,wrap_version,aad,staging_key) VALUES('${crypto.randomUUID()}','${e.r.upload_id}','${B}','${actor}','original-v1','invalid-cross-context','${crypto.randomUUID()}');ROLLBACK;`)).toThrow('DB_CONTROL_FAILED:23503');
+ const a=await authorize(await encrypted(e));expect((await put(a)).status()).toBe(202);expect((await complete(a)).status()).toBe(202);
+ expect(()=>sql(begin+`UPDATE encrypted_document_jobs SET org_id='${B}' WHERE document_id='${e.r.document_id}';ROLLBACK;`)).toThrow('DB_CONTROL_FAILED:42501');
+ expect(sql("SELECT count(*) FROM pg_constraint WHERE conname IN ('upload_attempt_owned_session','upload_canonical_owned_attempt','encryption_owned_original','encryption_owned_attempt','encrypted_job_owned_document');")).toBe('5');
+});
