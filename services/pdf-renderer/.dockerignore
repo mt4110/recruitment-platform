@@ -8,3 +8,6 @@
 !package-lock.json
 !invoice.mjs
 !sandbox.py
+
+!convert.py
+!view_xlsx.py

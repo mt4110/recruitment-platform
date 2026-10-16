@@ -31,15 +31,26 @@ async function main(){
  const av=await bounded('http://scan:8080/internal/scan',{method:'POST',headers:{'X-Scan-Key':scanKey,'X-Scan-Nonce':nonce,'Content-Type':'application/octet-stream'},body:original.bytes},32768,23000);
  if(av.status!==200)throw Error('SCANNER_UNAVAILABLE');const scan=JSON.parse(av.bytes);validateScan(scan,nonce,hash);if(scan.verdict==='blocked')throw Error('AV_BLOCKED');
  await api('authorize');
- const result=await bounded('http://relay:8080/check',{method:'POST',headers:{'Content-Type':job.file_format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','X-Job-ID':job.generation},body:original.bytes},4096,10000);
+ const result=await bounded('http://relay:8080/check',{method:'POST',headers:{'Content-Type':job.file_format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','X-Job-ID':job.generation},body:original.bytes},16384,30000);
  if(result.status!==200)throw Error('SANDBOX_UNAVAILABLE');const check=JSON.parse(result.bytes);
- if(Object.keys(check).sort().join(',')!=='ok,policy,rejection_code,sha256'||check.sha256!==hash||check.policy!==(job.file_format==='pdf'?'static-resume-v1':'xlsx-resume-v1')||typeof check.ok!=='boolean'||(check.ok?check.rejection_code!==null:!/^FORMAT_[A-Z0-9_]{1,64}$/.test(check.rejection_code)))throw Error('SANDBOX_UNAVAILABLE');
+ if(Object.keys(check).sort().join(',')!=='ok,policy,rejection_code,sha256,view'||check.sha256!==hash||check.policy!==(job.file_format==='pdf'?'static-resume-v1':'xlsx-resume-v1')||typeof check.ok!=='boolean'||(check.ok?check.rejection_code!==null:!/^FORMAT_[A-Z0-9_]{1,64}$/.test(check.rejection_code)))throw Error('SANDBOX_UNAVAILABLE');
  if(!check.ok)throw Error('FORMAT_REJECTED');
- const manifest=Buffer.from(JSON.stringify({schema:1,document_id:job.document_id,generation:job.generation,original_hash:hash,original_name:original.original_name,file_format:job.file_format,policy:'inspection-v1',phase:'awaiting_conversion',scan_generation:scan.generation_id}));
+ const view={format:job.file_format,pages:check.view?.pages,artifacts:[]};
+ if(check.view?.format!==job.file_format||!Array.isArray(check.view.artifacts))throw Error('SANDBOX_UNAVAILABLE');
+ let total=0;
+ for(const item of check.view.artifacts){
+  const output=await bounded('http://relay:8080/artifact/'+item.name,{},item.kind==='page'?8388608:1048576,5000);
+  if(output.status!==200||output.bytes.length!==item.size||sha(output.bytes)!==item.sha256)throw Error('SANDBOX_UNAVAILABLE');
+  total+=output.bytes.length;if(total>68157440)throw Error('FORMAT_REJECTED');
+  const id=c.randomUUID(),sealed=seal({...job,artifact_id:id},output.bytes,hash,item.kind,item.page);
+  await api('artifact',{...sealed,artifact_id:id,generation:job.generation,sha256:hash});
+  view.artifacts.push({id,kind:item.kind,page:item.page,plaintext_hash:item.sha256,ciphertext_hash:sealed.artifact_hash});output.bytes.fill(0);
+ }
+ const manifest=Buffer.from(JSON.stringify({schema:1,document_id:job.document_id,generation:job.generation,original_hash:hash,original_name:original.original_name,file_format:job.file_format,policy:'safe-view-v1',phase:'ready',scan_generation:scan.generation_id,view}));
  const sealed=seal(job,manifest,hash);
  original.bytes.fill(0);
  if(Date.now()-started>115000)throw Error('JOB_TIMEOUT');
- await api('commit',{original_name:original.original_name,sha256:hash,artifact_id:job.artifact_id,generation:job.generation,checks:{scan,format:check},...sealed});
+ await api('commit',{original_name:original.original_name,sha256:hash,artifact_id:job.artifact_id,generation:job.generation,checks:{scan,format:{...check,view:undefined}},view,...sealed});
  console.log(JSON.stringify({event:'checked'}));
 }
 main().catch(async e=>{

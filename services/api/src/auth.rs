@@ -96,7 +96,6 @@ pub struct App {
     pub http: reqwest::Client,
     pub oidc: Oidc,
     pub pdf_key: String,
-    pub invoice_key: String,
     pub scan_key: String,
     pub draft_key: [u8; 32],
     pub upload_config: std::sync::Arc<crate::uploads::Config>,

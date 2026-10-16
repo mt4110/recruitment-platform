@@ -42,6 +42,7 @@ struct Document {
     media_type: String,
     document_kind: String,
     legacy_document: bool,
+    encrypted_transport: bool,
     candidate_id: Uuid,
     created_by: Uuid,
     storage_key: String,
@@ -80,7 +81,7 @@ pub fn routes() -> Router<Arc<App>> {
         .route("/api/v1/documents/{id}/recheck", post(recheck))
         .route("/api/v1/documents/{id}", get(status))
         .route("/api/v1/documents/{id}/retry", post(retry))
-        .route("/api/v1/documents/{id}/content", get(content))
+        .route("/api/v1/documents/{id}/content", get(crate::views::gone))
 }
 fn unavailable(code: &'static str) -> ApiError {
     error(
@@ -172,8 +173,13 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
         .fetch_one(&mut *tx)
         .await
         .map_err(db_error)?;
+    let view_prepared: bool = sqlx::query_scalar("SELECT safe_view_keys($1)")
+        .bind(d.id)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
     Ok(
-        json!({"document_version":version,"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name.as_deref().unwrap_or("暗号化書類（検査待ち）"),"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
+        json!({"view_prepared":view_prepared,"encrypted_transport":d.encrypted_transport,"document_version":version,"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name.as_deref().unwrap_or("暗号化書類（検査待ち）"),"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
     )
 }
 pub(crate) async fn list(tx: &mut PgConnection, candidate: Uuid) -> Result<Value, ApiError> {
@@ -890,47 +896,6 @@ async fn sync_directory() -> Result<(), ApiError> {
         .await
         .map_err(|_| unavailable("STORAGE_UNAVAILABLE"))?
         .map_err(|_| unavailable("STORAGE_UNAVAILABLE"))
-}
-async fn content(
-    State(app): State<Arc<App>>,
-    Path(raw): Path<String>,
-    headers: HeaderMap,
-) -> Result<Response, ApiError> {
-    let u = checked(&app, &headers, false).await?;
-    let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
-    let mut tx = begin(&app, &u).await?;
-    let d = doc(&mut tx, id).await?;
-    let usable: bool = sqlx::query_scalar("SELECT document_usable($1,$2,$3)")
-        .bind(d.id)
-        .bind(&d.sha256)
-        .bind(&d.file_format)
-        .fetch_one(&mut *tx)
-        .await
-        .map_err(db_error)?;
-    if d.status != "ready" || !usable {
-        return Err(missing());
-    }
-    tx.commit().await.map_err(db_error)?;
-    let data = bytes(&d.storage_key, &d)
-        .await?
-        .ok_or_else(|| unavailable("STORAGE_CONFLICT"))?;
-    tracing::info!(event="document_download",resource_id=%id,request_id=%Uuid::new_v4());
-    Ok((
-        [
-            ("content-type", d.media_type.as_str()),
-            (
-                "content-disposition",
-                if d.file_format == "pdf" {
-                    "attachment; filename=\"resume.pdf\""
-                } else {
-                    "attachment; filename=\"resume.xlsx\""
-                },
-            ),
-            ("x-content-type-options", "nosniff"),
-        ],
-        data,
-    )
-        .into_response())
 }
 
 fn expired(l: &Lease) -> bool {

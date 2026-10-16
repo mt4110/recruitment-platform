@@ -50,7 +50,7 @@ services:
       pdf: {}
       scan: {}
       document-control: {aliases: [api-control]}
-    volumes: ['resumes:/data/resumes','${LOCAL_CONFIG_DIR:-./.local}/upload-public.pem:/run/upload-public.pem:ro','${LOCAL_CONFIG_DIR:-./.local}/broker-api-auth:/run/broker-auth:ro']
+    volumes: ['resumes:/data/resumes','${LOCAL_CONFIG_DIR:-./.local}/upload-public.pem:/run/upload-public.pem:ro','${LOCAL_CONFIG_DIR:-./.local}/broker-api-auth:/run/broker-auth:ro','${LOCAL_CONFIG_DIR:-./.local}/viewer-api-auth:/run/viewer-auth:ro']
     read_only: true
     tmpfs: ['/tmp:size=16m,mode=1777']
     cap_drop: [ALL]
@@ -154,6 +154,24 @@ services:
     pids_limit: 256
     healthcheck:
       test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/live',timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  artifact-viewer:
+    build: ./services/document-worker
+    command: [node, viewer.cjs]
+    user: '${LOCAL_UID:-1002}:${LOCAL_GID:-1002}'
+    networks: [pdf]
+    volumes: ['${LOCAL_CONFIG_DIR:-./.local}/viewer-auth:/run/viewer-auth:ro','${LOCAL_CONFIG_DIR:-./.local}/artifact-private.pem:/run/artifact-private.pem:ro','${LOCAL_CONFIG_DIR:-./.local}/viewer-keys:/run/viewer-keys:ro']
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 32
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 5s
       timeout: 3s
       retries: 10

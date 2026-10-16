@@ -7,7 +7,7 @@ use axum::{
     Json, Router,
     body::to_bytes,
     extract::{Query, Request, State},
-    http::{HeaderMap, Method, StatusCode},
+    http::{Method, StatusCode},
     response::{IntoResponse, Response},
     routing::get,
 };
@@ -79,14 +79,6 @@ struct Cursor {
     id: Uuid,
     filter: String,
 }
-#[derive(FromRow)]
-struct SharedFile {
-    file_format_snapshot: String,
-    media_type_snapshot: String,
-    storage_key_snapshot: String,
-    size_bytes_snapshot: i64,
-    sha256_snapshot: String,
-}
 fn conflict(code: &'static str) -> ApiError {
     error(
         StatusCode::CONFLICT,
@@ -136,7 +128,7 @@ pub fn routes() -> Router<Arc<App>> {
         )
         .route(
             "/api/v1/applications/{id}/documents/{document}/content",
-            get(shared_content),
+            get(crate::views::gone),
         )
 }
 async fn row(tx: &mut PgConnection, id: Uuid) -> Result<Application, ApiError> {
@@ -184,7 +176,7 @@ async fn read(tx: &mut PgConnection, id: Uuid, u: &Identity) -> Result<Value, Ap
         if let Some(snapshot) = snapshot {
             out["candidate_snapshot"] = snapshot;
         }
-        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot,'file_format',file_format_snapshot,'document_kind',document_kind_snapshot,'document_version',(SELECT version FROM document_versions v WHERE v.document_id=application_documents.document_id),'available',document_usable(document_id,sha256_snapshot,file_format_snapshot)) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
+        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot,'file_format',file_format_snapshot,'document_kind',document_kind_snapshot,'document_version',(SELECT version FROM document_versions v WHERE v.document_id=application_documents.document_id),'view_prepared',safe_view_keys(document_id),'available',document_usable(document_id,sha256_snapshot,file_format_snapshot)) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
         out["documents"] = json!(docs);
     }
     let mut events:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'event_type',event_type,'from_status',from_status,'to_status',to_status,'reason',reason,'created_at',created_at) FROM selection_events WHERE application_id=$1 ORDER BY created_at,id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
@@ -688,45 +680,4 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     r.headers_mut()
         .insert("x-request-id", request_id.to_string().parse().unwrap());
     Ok(r)
-}
-async fn shared_content(
-    State(app): State<Arc<App>>,
-    axum::extract::Path((raw, doc)): axum::extract::Path<(String, String)>,
-    headers: HeaderMap,
-) -> Result<Response, ApiError> {
-    let u = auth::authorize(&app, &headers, false).await?;
-    let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
-    let document = Uuid::parse_str(&doc).map_err(|_| invalid())?;
-    let mut tx = begin(&app, &u).await?;
-    let file:SharedFile=sqlx::query_as("SELECT storage_key_snapshot,size_bytes_snapshot,sha256_snapshot,file_format_snapshot,media_type_snapshot FROM application_documents WHERE application_id=$1 AND document_id=$2 AND document_usable(document_id,sha256_snapshot,file_format_snapshot)").bind(id).bind(document).fetch_optional(&mut *tx).await.map_err(db_error)?.ok_or_else(missing)?;
-    tx.commit().await.map_err(db_error)?;
-    let data = crate::documents::verified_bytes(
-        &file.storage_key_snapshot,
-        file.size_bytes_snapshot,
-        &file.sha256_snapshot,
-    )
-    .await?
-    .ok_or_else(|| {
-        error(
-            StatusCode::SERVICE_UNAVAILABLE,
-            "STORAGE_CONFLICT",
-            "保存ファイルを確認できません。",
-        )
-    })?;
-    tracing::info!(event="shared_document_download",application_id=%id,document_id=%document,request_id=%Uuid::new_v4());
-    Ok((
-        [
-            ("content-type", file.media_type_snapshot.as_str()),
-            (
-                "content-disposition",
-                if file.file_format_snapshot == "pdf" {
-                    "attachment; filename=\"resume.pdf\""
-                } else {
-                    "attachment; filename=\"resume.xlsx\""
-                },
-            ),
-        ],
-        data,
-    )
-        .into_response())
 }

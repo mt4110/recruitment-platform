@@ -15,10 +15,10 @@ function unwrap(job,raw,privateKey){
  return {bytes:plain.subarray(4+n),original_name:m.original_name};
 }
 function seal(job,bytes,originalHash,kind='manifest',page=null){
- if(bytes.length>262144||kind!=='manifest'||page!==null)throw Error('ARTIFACT_LIMIT');
+ if(bytes.length>({manifest:262144,page:8388608,text:1048576,table:1048576}[kind]||0)||(kind==='page'?(!Number.isInteger(page)||page<1||page>20):page!==null))throw Error('ARTIFACT_LIMIT');
  const publicKey=c.createPublicKey({key:Buffer.from(job.artifact_public_spki,'base64'),format:'der',type:'spki'});
  if(publicKey.asymmetricKeyDetails.modulusLength!==3072)throw Error('KEY_UNAVAILABLE');
- const key=c.randomBytes(32),nonce=c.randomBytes(12),aad=JSON.stringify(['rp-artifact-v1',job.org_id,job.document_id,originalHash,'inspection-v1',job.generation,job.artifact_id,kind,page,job.artifact_version]);
+ const key=c.randomBytes(32),nonce=c.randomBytes(12),aad=JSON.stringify(['rp-artifact-v1',job.org_id,job.document_id,originalHash,'safe-view-v1',job.generation,job.artifact_id,kind,page,job.artifact_version]);
  try{const cipher=c.createCipheriv('aes-256-gcm',key,nonce,{authTagLength:16});cipher.setAAD(Buffer.from(aad));const raw=Buffer.concat([cipher.update(bytes),cipher.final(),cipher.getAuthTag()]);
  return {artifact_bytes:raw.toString('base64url'),artifact_hash:sha(raw),artifact_size:raw.length,artifact_envelope:{schema:1,key_version:job.artifact_version,wrapped_dek:c.publicEncrypt({key:publicKey,oaepHash:'sha256',padding:c.constants.RSA_PKCS1_OAEP_PADDING},key).toString('base64url'),nonce:nonce.toString('base64url'),aad,document_id:job.document_id,org_id:job.org_id,generation:job.generation,kind,page,plaintext_hash:sha(bytes)}};
  }finally{key.fill(0);}

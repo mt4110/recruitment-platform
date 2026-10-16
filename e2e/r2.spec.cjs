@@ -27,32 +27,32 @@ test('R2 actual ClamAV scans PDF and native Sheets XLSX; response is hash and ge
  for(const [buffer,name] of [[pdf,'架空.pdf'],[xlsx,'架空.xlsx']]){
   const r=await upload(c,buffer,name);expect(r.status()).toBe(201);const d=await r.json();expect(d.available).toBe(true);
   expect(sql(`SELECT engine_version,signature_version,generation_id,sha256 FROM document_checks WHERE document_id='${d.id}';`)).toBe(`1.5.4|${m.databases.daily.version}|${m.generation_id}|${crypto.createHash('sha256').update(buffer).digest('hex')}`);
-  expect(await(await api('GET',`/documents/${d.id}/content`)).body()).toEqual(buffer);
+  expect((await api('GET',`/documents/${d.id}/content`)).status()).toBe(410);
  }
  fs.writeFileSync(path.join(dir,'artifacts/r2-av.json'),JSON.stringify({real_engine:'1.5.4',generation_id:m.generation_id,databases:m.databases,last_successful_check:m.last_successful_check,transport:'authenticated HTTP to private Unix INSTREAM'}));
 });
 test('R2 real EICAR is blocked before format inspection and cannot download or recheck',async()=>{
  const c=await candidate(),r=await upload(c,eicar);expect(r.status()).toBe(422);const v=await r.json();expect(v.error.code).toBe('MALWARE_DETECTED');const id=v.error.document_id;
- expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);expect((await api('POST',`/documents/${id}/recheck`)).status()).toBe(409);
+ expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);expect((await api('POST',`/documents/${id}/recheck`)).status()).toBe(409);
  expect(sql(`SELECT verdict,engine_version FROM document_checks WHERE document_id='${id}';`)).toBe('blocked|1.5.4');expect(sql(`SELECT validated_at IS NULL FROM documents WHERE id='${id}';`)).toBe('t');
 });
 test('R2 stale definitions and failed update reject new clean, preserve pending, recover with retry',async()=>{
  const c=await candidate();
  for(const change of ["m['last_successful_check']-=86401","m['update_ok']=False"]){
  let id;
- await fault(change,async()=>{const r=await upload(c);expect(r.status()).toBe(503);const v=await r.json();expect(v.error.code).toBe('SCANNER_UNAVAILABLE');id=v.error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');});
+ await fault(change,async()=>{const r=await upload(c);expect(r.status()).toBe(503);const v=await r.json();expect(v.error.code).toBe('SCANNER_UNAVAILABLE');id=v.error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');});
  const r=await api('POST',`/documents/${id}/retry`);expect(r.status()).toBe(200);expect((await r.json()).available).toBe(true);
  }
 });
 test('R2 published-loaded generation or hash mismatch refuses scans, then reloads verified generation',async()=>{
  const c=await candidate();
  for(const change of ["m['generation_id']=str(uuid.uuid4())","m['databases']['daily']['sha256']='0'*64"]){
- await fault(change,async()=>{const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');});
+ await fault(change,async()=>{const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');});
  }
 });
 test('R2 already clean remains available during scanner outage; original and shared permissions remain scoped',async()=>{
  const c=await candidate(),r=await upload(c),d=await r.json();expect(r.status()).toBe(201);
- compose('pause','scan');try{expect((await api('GET',`/documents/${d.id}/content`)).status()).toBe(200);const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);}finally{compose('unpause','scan');await ready();}
+ compose('pause','scan');try{expect((await api('GET',`/documents/${d.id}/content`)).status()).toBe(410);const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);}finally{compose('unpause','scan');await ready();}
 });
 test('R2 limits reject rate and storage admission with no new document or bytes reservation',async()=>{
  const c=await candidate(),o=me.organization.id,u=me.user.id;
@@ -76,7 +76,7 @@ test('R2 stopped scan worker times out without a clean record and is replaced be
  const pid=compose('exec','-T','scan','python3','-c',"from pathlib import Path;print(next(p.name for p in Path('/proc').iterdir() if p.name.isdigit() and (p/'comm').read_text().strip()=='clamd'))").trim();
  compose('exec','-T','scan','python3','-c',`import os,signal;os.kill(${Number(pid)},signal.SIGSTOP)`);
  // A real hung process exercises INSTREAM socket timeout and forced worker recovery.
- const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);
+ const r=await upload(c);expect(r.status()).toBe(503);const id=(await r.json()).error.document_id;expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);
  await ready();const next=compose('exec','-T','scan','python3','-c',"from pathlib import Path;print(next(p.name for p in Path('/proc').iterdir() if p.name.isdigit() and (p/'comm').read_text().strip()=='clamd'))").trim();expect(next).not.toBe(pid);
  const retry=await api('POST',`/documents/${id}/retry`);expect(retry.status()).toBe(200);expect((await retry.json()).available).toBe(true);
 });
@@ -102,7 +102,7 @@ test('R2 definition change after AV and before format completion cannot persist 
   await expect.poll(()=>{id=sql(`SELECT id FROM documents WHERE candidate_id='${c}';`);return !!id;}).toBe(true);
   await new Promise(resolve=>setTimeout(resolve,1000));
   await fault("import shutil;generation=str(uuid.uuid4());shutil.copytree(ROOT/m['generation_id'],ROOT/generation);m['generation_id']=generation",async()=>{
-   compose('unpause','pdf-renderer');const r=await pending;expect(r.status()).toBe(503);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');expect((await api('GET',`/documents/${id}/content`)).status()).toBe(404);
+   compose('unpause','pdf-renderer');const r=await pending;expect(r.status()).toBe(503);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);
   });
  }finally{cp.spawnSync('python3',['scripts/local.py','compose','unpause','pdf-renderer'],{cwd:root,env:process.env,stdio:'ignore'});}
  const retry=await api('POST',`/documents/${id}/retry`);expect(retry.status()).toBe(200);expect((await retry.json()).available).toBe(true);

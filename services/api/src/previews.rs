@@ -1,18 +1,17 @@
 //! Read-only demo notifications and invoice previews, under ordinary tenant RLS.
 use crate::auth::{self, ApiError, App, Identity};
-use crate::business::{begin, db_error, error, invalid, missing};
+use crate::business::{begin, db_error, invalid, missing};
 use axum::{
     Json, Router,
     extract::{Path, Query, RawQuery, State},
-    http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Response},
+    http::HeaderMap,
     routing::get,
 };
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD as B64};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use std::{sync::Arc, time::Duration};
+use std::sync::Arc;
 use uuid::Uuid;
 #[derive(Deserialize, Default)]
 #[serde(deny_unknown_fields)]
@@ -31,8 +30,12 @@ struct Cursor {
 pub fn routes() -> Router<Arc<App>> {
     Router::new()
         .route("/api/v1/notifications", get(notifications))
+        .route("/api/v1/applications/{id}/invoice-view", get(metadata))
         .route("/api/v1/applications/{id}/invoice-preview", get(metadata))
-        .route("/api/v1/applications/{id}/invoice-preview.pdf", get(pdf))
+        .route(
+            "/api/v1/applications/{id}/invoice-preview.pdf",
+            get(crate::views::gone),
+        )
 }
 async fn notifications(
     State(app): State<Arc<App>>,
@@ -122,107 +125,4 @@ async fn metadata(
     Ok(Json(
         invoice(&app, &u, Uuid::parse_str(&raw).map_err(|_| invalid())?).await?,
     ))
-}
-async fn pdf(
-    State(app): State<Arc<App>>,
-    Path(raw): Path<String>,
-    headers: HeaderMap,
-    RawQuery(q): RawQuery,
-) -> Result<Response, ApiError> {
-    let u = auth::authorize(&app, &headers, false).await?;
-    if q.is_some() {
-        return Err(invalid());
-    }
-    let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
-    let data = invoice(&app, &u, id).await?;
-    let unavailable = || {
-        error(
-            StatusCode::SERVICE_UNAVAILABLE,
-            "PDF_UNAVAILABLE",
-            "PDFを生成できません。しばらくしてから再試行してください。",
-        )
-    };
-    let response = app
-        .http
-        .post("http://invoice-renderer:8080/internal/pdf/render-invoice")
-        .header("X-PDF-Key", &app.invoice_key)
-        .timeout(Duration::from_secs(10))
-        .header("Content-Type", "application/json")
-        .body(serde_json::to_vec(&data).map_err(|_| unavailable())?)
-        .send()
-        .await
-        .map_err(|e| {
-            if e.is_timeout() {
-                error(
-                    StatusCode::GATEWAY_TIMEOUT,
-                    "PDF_TIMEOUT",
-                    "PDFの生成が時間内に完了しませんでした。再試行してください。",
-                )
-            } else {
-                unavailable()
-            }
-        })?;
-    if !response.status().is_success() {
-        let code = response
-            .bytes()
-            .await
-            .ok()
-            .and_then(|v| serde_json::from_slice::<Value>(&v).ok());
-        return Err(
-            if code
-                .as_ref()
-                .and_then(|v| v.get("code"))
-                .and_then(Value::as_str)
-                == Some("PDF_LAYOUT_ERROR")
-            {
-                error(
-                    StatusCode::SERVICE_UNAVAILABLE,
-                    "PDF_LAYOUT_ERROR",
-                    "PDFを1ページに配置できませんでした。再試行してください。",
-                )
-            } else {
-                unavailable()
-            },
-        );
-    }
-    if response
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        != Some("application/pdf")
-        || response.content_length().is_none_or(|n| n > 524288)
-    {
-        return Err(unavailable());
-    }
-    let bytes = response.bytes().await.map_err(|e| {
-        if e.is_timeout() {
-            error(
-                StatusCode::GATEWAY_TIMEOUT,
-                "PDF_TIMEOUT",
-                "PDFの生成が時間内に完了しませんでした。再試行してください。",
-            )
-        } else {
-            unavailable()
-        }
-    })?;
-    if bytes.len() > 524288 || !bytes.starts_with(b"%PDF-") {
-        return Err(unavailable());
-    }
-    // Rendering happens outside a DB transaction. Recheck auth and sharing before delivery.
-    let current = auth::authorize(&app, &headers, false).await?;
-    if invoice(&app, &current, id).await? != data {
-        return Err(unavailable());
-    }
-    tracing::info!(event="invoice_preview",application_id=%id,request_id=%Uuid::new_v4());
-    Ok((
-        [
-            ("content-type", "application/pdf"),
-            (
-                "content-disposition",
-                "inline; filename=\"demo-invoice.pdf\"",
-            ),
-        ],
-        bytes,
-    )
-        .into_response())
 }

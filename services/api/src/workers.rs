@@ -42,7 +42,7 @@ pub fn routes() -> Router<Arc<App>> {
     Router::new()
         .route("/claim", post(claim))
         .route("/jobs/{id}/{op}", post(operation))
-        .layer(DefaultBodyLimit::max(524288))
+        .layer(DefaultBodyLimit::max(12582912))
 }
 async fn control(
     app: &App,
@@ -86,7 +86,16 @@ async fn operation(
     Json(body): Json<Input>,
 ) -> Result<Response, ApiError> {
     check(&h)?;
-    if !["authorize", "ciphertext", "commit", "reject", "retry"].contains(&op.as_str()) {
+    if ![
+        "authorize",
+        "ciphertext",
+        "commit",
+        "artifact",
+        "reject",
+        "retry",
+    ]
+    .contains(&op.as_str())
+    {
         return Err(denied());
     }
     let authority = control(
@@ -130,18 +139,21 @@ async fn operation(
             .into_response());
     }
     let mut result = body.result;
-    if op == "commit" {
-        let scan: crate::scanner::Scan =
-            serde_json::from_value(result["checks"]["scan"].clone()).map_err(|_| invalid())?;
-        if scan.verdict != "clean"
-            || result["sha256"] != scan.sha256
-            || result["checks"]["format"]["ok"] != true
-            || result["checks"]["format"]["sha256"] != scan.sha256
-        {
-            return Err(denied());
+    if op == "commit" || op == "artifact" {
+        let is_manifest = op == "commit";
+        if is_manifest {
+            let scan: crate::scanner::Scan =
+                serde_json::from_value(result["checks"]["scan"].clone()).map_err(|_| invalid())?;
+            if scan.verdict != "clean"
+                || result["sha256"] != scan.sha256
+                || result["checks"]["format"]["ok"] != true
+                || result["checks"]["format"]["sha256"] != scan.sha256
+            {
+                return Err(denied());
+            }
+            crate::scanner::current(&app, &scan).await?;
         }
-        crate::scanner::current(&app, &scan).await?;
-        if result["artifact_id"] != authority["artifact_id"]
+        if (is_manifest && result["artifact_id"] != authority["artifact_id"])
             || result["generation"] != authority["generation"]
             || result["artifact_envelope"]["org_id"] != authority["org_id"]
         {
@@ -156,7 +168,14 @@ async fn operation(
             .decode(result["artifact_bytes"].as_str().ok_or_else(invalid)?)
             .map_err(|_| invalid())?;
         if raw.len() < 17
-            || raw.len() > 262160
+            || raw.len()
+                > if is_manifest {
+                    262160
+                } else if result["artifact_envelope"]["kind"] == "page" {
+                    8388624
+                } else {
+                    1048592
+                }
             || result["artifact_size"] != raw.len()
             || result["artifact_hash"]
                 != Sha256::digest(&raw)
@@ -168,9 +187,15 @@ async fn operation(
         }
         let envelope = &result["artifact_envelope"];
         if envelope["schema"] != 1
-            || envelope["kind"] != "manifest"
+            || (is_manifest && envelope["kind"] != "manifest")
+            || (!is_manifest
+                && !["page", "text", "table"].contains(&envelope["kind"].as_str().unwrap_or("")))
             || envelope["key_version"] != authority["artifact_version"]
-            || envelope["page"] != Value::Null
+            || (envelope["kind"] == "page"
+                && !envelope["page"]
+                    .as_i64()
+                    .is_some_and(|n| (1..=20).contains(&n)))
+            || (envelope["kind"] != "page" && envelope["page"] != Value::Null)
             || envelope["generation"] != result["generation"]
         {
             return Err(invalid());
@@ -180,11 +205,11 @@ async fn operation(
             envelope["org_id"],
             id,
             result["sha256"],
-            "inspection-v1",
+            "safe-view-v1",
             result["generation"],
             artifact,
-            "manifest",
-            null,
+            envelope["kind"],
+            envelope["page"],
             authority["artifact_version"]
         ])
         .to_string();
@@ -200,6 +225,21 @@ async fn operation(
                 .is_none_or(|v| v.len() != 12)
         {
             return Err(invalid());
+        }
+        if !is_manifest {
+            let mut reservation = result.clone();
+            reservation
+                .as_object_mut()
+                .ok_or_else(invalid)?
+                .remove("artifact_bytes");
+            control(
+                &app,
+                "reserve_artifact",
+                Some(id),
+                Some(body.lease_token),
+                reservation,
+            )
+            .await?;
         }
         // UUID names and create_new preserve unreferenced output after a lost commit.
         fs::create_dir_all("/data/resumes/encrypted/artifacts")

@@ -53,6 +53,24 @@ def worker_keys():
     run(['openssl','pkey','-in',str(LOCAL/'artifact-private.pem'),'-pubout','-out',str(LOCAL/'artifact-public.pem')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     (LOCAL/'artifact-private.pem').chmod(0o600);(LOCAL/'artifact-public.pem').chmod(0o644)
     marker.write_text('S2 keys provisioned; missing material must be restored.\n')
+def viewer_keys():
+    marker=LOCAL/'viewer-keys-initialized'
+    files=['viewer-auth','viewer-api-auth']
+    if marker.exists():
+        if not all((LOCAL/f).is_file() for f in files):raise SystemExit('Viewer auth missing; restore original configuration.')
+        return
+    if any((LOCAL/f).exists() for f in files):raise SystemExit('Incomplete viewer provisioning; inspect retained files.')
+    value=secrets.token_bytes(32)
+    for name,mode in [('viewer-auth',0o600),('viewer-api-auth',0o644)]:
+        with (LOCAL/name).open('xb') as f:f.write(value)
+        (LOCAL/name).chmod(mode)
+    (LOCAL/'viewer-keys').mkdir(mode=0o700,exist_ok=True)
+    for source in (LOCAL/'keyring').glob('artifact-v[0-9]*.pem'):
+        if '.public.' in source.name:continue
+        with (LOCAL/'viewer-keys'/source.name).open('xb') as f:f.write(source.read_bytes())
+        (LOCAL/'viewer-keys'/source.name).chmod(0o600)
+    with ENV.open('a') as f:f.write('LOCAL_UID='+str(os.getuid())+'\nLOCAL_GID='+str(os.getgid())+'\n')
+    marker.write_text('S3 artifact viewer auth initialized. Restore missing files.\n')
 def register_worker_keys():
     body="SET ROLE app_migrator;\n"
     for purpose,name in [('original','upload-public.pem'),('artifact','artifact-public.pem')]:
@@ -75,7 +93,7 @@ def setup():
             if checked.stdout.strip()!='t':raise SystemExit('Draft key missing for an existing draft database; restore the original private configuration. No replacement key generated.')
             with ENV.open('a') as f:f.write('DRAFT_MASTER_KEY='+secrets.token_urlsafe(32)+'\n')
         if not (LOCAL/'realm.json').is_file() or not (LOCAL/'demo-accounts.json').is_file():raise SystemExit('Incomplete local config; retain files and inspect before continuing.')
-        upload_keys();worker_keys();print('Existing local configuration retained.');return
+        upload_keys();worker_keys();viewer_keys();print('Existing local configuration retained.');return
     app_port,idp_port=ports()
     names=[('agency-a','001'),('agency-b','002'),('employer-x','011'),('employer-y','012'),('unregistered','099')]
     accounts={name:secrets.token_urlsafe(24) for name,_ in names}
@@ -88,7 +106,7 @@ def setup():
     values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','INVOICE_SHARED_KEY','SCAN_SHARED_KEY','DRAFT_MASTER_KEY')}
     values.update(APP_PORT=str(app_port),IDP_PORT=str(idp_port),COMPOSE_PROJECT_NAME='recruitment-local' if INSTANCE=='default' else 'recruitment-'+INSTANCE,LOCAL_CONFIG_DIR=str(LOCAL))
     ENV.write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
-    upload_keys();worker_keys()
+    upload_keys();worker_keys();viewer_keys()
     print('Created private .local/local.env and .local/demo-accounts.json. No credential values are printed.')
 def migrate():
     _,idp_port=ports()

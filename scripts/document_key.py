@@ -17,6 +17,10 @@ if args.action=='rotate':
  if private.exists() or public.exists() or version.endswith('-v1'):raise SystemExit('Key version already exists; retain it. No overwrite.')
  subprocess.run(['openssl','genpkey','-algorithm','RSA','-pkeyopt','rsa_keygen_bits:3072','-out',str(private)],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
  subprocess.run(['openssl','pkey','-in',str(private),'-pubout','-out',str(public)],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+ if args.purpose=='artifact':
+  target=local/'viewer-keys'/(version+'.pem')
+  with target.open('xb') as f:f.write(private.read_bytes())
+  target.chmod(0o600)
  material=''.join(s for s in public.read_text().splitlines() if not s.startswith('-'))
  sql=f"INSERT INTO document_key_versions(purpose,version,public_spki) VALUES('{args.purpose}','{version}','{material}');"
  action='activate'

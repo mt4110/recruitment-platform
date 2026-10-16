@@ -6,6 +6,7 @@ mod drafts;
 mod previews;
 mod scanner;
 mod uploads;
+mod views;
 mod workers;
 
 use auth::{ApiError, App, Config};
@@ -93,7 +94,6 @@ async fn start() -> anyhow::Result<()> {
         http,
         oidc,
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
-        invoice_key: std::env::var("INVOICE_SHARED_KEY")?,
         scan_key: std::env::var("SCAN_SHARED_KEY")?,
         draft_key: drafts::master_key()?,
         upload_config,
@@ -123,6 +123,7 @@ async fn start() -> anyhow::Result<()> {
         .merge(uploads::routes())
         .merge(drafts::routes())
         .merge(previews::routes())
+        .merge(views::routes())
         .fallback(|| async {
             ApiError::new(
                 StatusCode::NOT_FOUND,
