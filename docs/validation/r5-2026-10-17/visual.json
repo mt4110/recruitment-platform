@@ -1,0 +1,28 @@
+{
+  "source_commit": "ed54e9c0273ce85b3a4ce825fe175ea389cea23d",
+  "url": "http://localhost:3001/candidates/new",
+  "status": "passed",
+  "sizes": [
+    {
+      "width": 1280,
+      "height": 900,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    }
+  ],
+  "identity": true,
+  "main_content": true,
+  "overlay_absent": true,
+  "focus": true,
+  "confirmation_unchecked": true,
+  "restored": true,
+  "console_errors": 0,
+  "console_warnings": 0,
+  "page_errors": 0,
+  "scope": "Additional normal-operation visual/console QA in accepted isolated images; separate from 13-case browser test count.",
+  "isolated_services_stopped": true
+}

@@ -357,8 +357,13 @@ test('R5 inactive form resolves a committed pending receipt from the list withou
     await synchronized();
     await p.getByLabel('氏名・経歴はすべて架空のデータです').check();
     let committed = false;
-    await p.route('**/api/v1/candidates', async (r) => { if (r.request().method() !== 'POST')
-        return r.continue(); expect((await r.fetch()).status()).toBe(201); committed = true; await r.abort(); });
+    await p.route('**/api/v1/candidates', async (r) => {
+        if (r.request().method() !== 'POST')
+            return r.continue();
+        expect((await r.fetch()).status()).toBe(201);
+        committed = true;
+        await r.abort();
+    });
     await p.getByRole('button', { name: '保存する', exact: true }).click();
     await expect.poll(() => committed).toBe(true);
     const receipt = (await envelopes()).find(e => !!e.operation_id)!;
@@ -369,4 +374,35 @@ test('R5 inactive form resolves a committed pending receipt from the list withou
     await expect.poll(async () => (await envelopes()).some(e => e.id === receipt.id && e.tab === 'terminal')).toBe(true);
     expect(sql("SELECT count(*) FROM candidates WHERE name='R5一覧からの確定照合';")).toBe('1');
     await expect(p.getByText('R5一覧からの確定照合', { exact: true })).toBeVisible();
+});
+test('R5 slow first initialization shares the serial save queue and never rolls back newer input', async () => {
+    const cr = await context.request.post(origin + '/api/v1/candidates', { headers: { Origin: origin, 'X-CSRF-Token': me.csrf_token, 'Idempotency-Key': crypto.randomUUID() }, data: { name: 'R5初期化競合の元候補者', summary: '架空の初期経歴', fictional_confirmed: true } });
+    expect(cr.status()).toBe(201);
+    const c = await cr.json();
+    const keys: import('@playwright/test').Route[] = [];
+    await p.route('**/api/v1/drafts/key', async (r) => { keys.push(r); });
+    let active = 0, peak = 0, first = true, draftId = '', release: () => void = () => { };
+    const held = new Promise<void>(resolve => { release = resolve; });
+    await p.route(/\/api\/v1\/drafts\/[0-9a-f-]{36}$/, async (r) => { if (r.request().method() !== 'PUT' || r.request().postDataJSON().target_id !== c.id)
+        return r.continue(); active++; peak = Math.max(peak, active); draftId = new URL(r.request().url()).pathname.split('/').pop()!; const response = await r.fetch(); if (first) {
+        first = false;
+        await held;
+    } active--; await r.fulfill({ response }); });
+    await p.goto(origin + '/candidates/' + c.id + '/edit');
+    await expect(p.getByLabel('架空氏名')).toBeEnabled();
+    await p.getByLabel('架空氏名').fill('R5初期化競合の最初の入力');
+    await expect.poll(() => keys.length).toBeGreaterThanOrEqual(2);
+    await Promise.all(keys.map(async (r) => r.fulfill({ response: await r.fetch() })));
+    await expect.poll(() => active).toBe(1);
+    await p.getByLabel('架空氏名').fill('R5初期化競合の最新版');
+    await p.evaluate(() => window.dispatchEvent(new Event('blur')));
+    // Hold the first response across the configured 500ms debounce; this is a fault fixture, not a latency SLA.
+    await p.waitForTimeout(750);
+    const beforeRelease=peak;
+    release();
+    expect(beforeRelease).toBe(1);
+    await synchronized();
+    await expect.poll(async () => { const r = await context.request.get(origin + '/api/v1/drafts/' + draftId); return r.ok() ? (await r.json()).payload.name : ''; }).toBe('R5初期化競合の最新版');
+    await expect(p.getByLabel('架空氏名')).toHaveValue('R5初期化競合の最新版');
+    expect(peak).toBe(1);
 });
