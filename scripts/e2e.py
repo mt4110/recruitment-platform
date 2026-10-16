@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs'],help='Development subset; final CI always runs the full suite.')
+parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs'],help='Development subset; final CI always runs the full suite.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')
@@ -21,9 +21,9 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'M1 through M4 + R1/R2/R3/R4; stop before R5/M5', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'M1 through M4 + R1/R2/R3/R4; M5 demo previews; stop before R5/M6', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
-    tracked = ['scripts/local.py','scripts/e2e.py','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
+    tracked = ['scripts/local.py','scripts/e2e.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file() and '__pycache__' not in p.parts]
     for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','e2e/fixtures','validation/r0/fixtures']:
@@ -89,7 +89,7 @@ try:
     values = list(json.loads((local/'demo-accounts.json').read_text()).values())
     values += [s.split('=',1)[1] for s in (local/'local.env').read_text().splitlines() if '=' in s and len(s.split('=',1)[1])>=30]
     summary['av_runtime']={}
-    for service in ('scan','updater'):
+    for service in ('scan','updater','pdf-renderer'):
         name=f'recruitment-{instance}-{service}-1'
         state=json.loads(subprocess.check_output(['docker','inspect','--format','{{json .State}}',name],env=env,text=True))
         peak=int(subprocess.check_output(['docker','exec',name,'cat','/sys/fs/cgroup/memory.peak'],env=env,text=True))

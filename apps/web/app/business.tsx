@@ -216,7 +216,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     if (!signedIn && !editing)
         return null;
     return <section className="workspace" aria-labelledby="workspace-title">
-    {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}<a href="/applications">推薦</a></nav>}
+    {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}<a href="/applications">推薦</a><a href="/notifications">通知モック</a></nav>}
     <div className="section-title"><h2 id="workspace-title">{editing ? (id ? '編集する' : jobs ? '求人を登録する' : '候補者を登録する') : detail ? (record?.title || record?.name || '詳細') : title}</h2>{!id && !editing && allowed && (!jobs || !agency) && <a className="button" href={base + '/new'}>{jobs ? '求人を登録する' : '候補者を登録する'}</a>}</div>
     {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => {if(conflict)draft.prepareFresh();setReload(v => v + 1);}}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
     {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}><DraftStatus draft={draft}/>

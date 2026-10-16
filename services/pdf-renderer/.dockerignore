@@ -4,3 +4,6 @@
 !requirements.txt
 
 !xlsx_validator.py
+!package.json
+!package-lock.json
+!invoice.mjs

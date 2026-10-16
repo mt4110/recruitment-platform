@@ -3,6 +3,7 @@ mod auth;
 mod business;
 mod documents;
 mod drafts;
+mod previews;
 mod scanner;
 
 use auth::{ApiError, App, Config};
@@ -83,6 +84,7 @@ async fn start() -> anyhow::Result<()> {
         .merge(applications::routes())
         .merge(documents::routes())
         .merge(drafts::routes())
+        .merge(previews::routes())
         .fallback(|| async {
             ApiError::new(
                 StatusCode::NOT_FOUND,

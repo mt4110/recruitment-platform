@@ -13,7 +13,7 @@
 
 RustはCargo.toml/Cargo.lock、Webはpackage.json/package-lock.json、基底イメージはDockerfile/Composeのdigestで固定する。上記は公式crate/npm metadataおよび各プロジェクトのLICENSEによる主要依存の一覧。全推移依存・OS packageのライセンス適合と製品イメージの脆弱性監査を完了した表ではない。
 
-M0専用のpikepdf(MPL-2.0)、libqpdf(Apache-2.0)、Playwright(Apache-2.0)、Notoフォント(SIL OFL 1.1)等は[技術確認記録](docs/validation/2026-10-15-m0-report.md)を参照。M3の製品PDF serviceはpikepdf 10.17.0（MPL-2.0）と同梱libqpdf（Apache-2.0）を含む。pikepdfのソースを改変していない。再配布時にwheel内のLICENSEを保持し、対応ソースは[固定版の公開ソース](https://github.com/pikepdf/pikepdf/tree/v10.17.0)から取得できる。Chromium・日本語フォントと請求PDF生成はM5で組み込む。
+M0専用のpikepdf(MPL-2.0)、libqpdf(Apache-2.0)、Playwright(Apache-2.0)、Notoフォント(SIL OFL 1.1)等は[技術確認記録](docs/validation/2026-10-15-m0-report.md)を参照。M3の製品PDF serviceはpikepdf 10.17.0（MPL-2.0）と同梱libqpdf（Apache-2.0）を含む。pikepdfのソースを改変していない。再配布時にwheel内のLICENSEを保持し、対応ソースは[固定版の公開ソース](https://github.com/pikepdf/pikepdf/tree/v10.17.0)から取得できる。M5で同じ固定版Playwright 1.62.1（Apache-2.0）と公式v1.62.1-noble image/digest、Chromium・Noto CJKフォント（SIL OFL 1.1）・PopplerのPDF検証を製品serviceへ組み込んだ。npm依存はM0のintegrity付きlockを再利用し、Python wheelのhash固定も維持する。各OSパッケージのライセンス/著作権文書をimage内に保持する。ベースOS、Chromiumとnative依存全体の脆弱性監査完了とは扱わず、残る配布物監査はM6へ残す。
 
 ## セキュリティ確認
 

@@ -118,16 +118,19 @@ services:
     build: ./services/pdf-renderer
     networks: [pdf]
     read_only: true
-    tmpfs: ['/tmp:size=32m,mode=1777']
+    tmpfs: ['/tmp:size=256m,mode=1777']
     cap_drop: [ALL]
-    security_opt: ['no-new-privileges:true']
+    cap_add: [SYS_CHROOT]
+    security_opt: ['no-new-privileges:true','seccomp=./infra/local/pdf-seccomp.json']
     healthcheck:
       test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/live',timeout=2)"]
       interval: 5s
       timeout: 3s
       retries: 10
-    mem_limit: 384m
-    pids_limit: 32
+    mem_limit: 1536m
+    shm_size: 256m
+    cpus: 2
+    pids_limit: 256
   scan:
     build: ./services/av
     environment:

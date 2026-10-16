@@ -14,11 +14,33 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200 if self.path=='/live' else 404,{})
     def do_POST(self):
         self.connection.settimeout(6)
-        if self.path not in ('/internal/pdf/check','/internal/document/check'):return self.reply(404,{})
+        if self.path not in ('/internal/pdf/check','/internal/document/check','/internal/pdf/render-invoice'):return self.reply(404,{})
         if not hmac.compare_digest(self.headers.get('X-PDF-Key','').encode('utf-8'),KEY.encode('utf-8')):return self.reply(403,{})
         try:length=int(self.headers.get('Content-Length','0'))
         except ValueError:return self.reply(400,{})
         if not 1<=length<=LIMIT:return self.reply(413,{})
+        if self.path=='/internal/pdf/render-invoice':
+            if length>4096:return self.reply(413,{})
+            if self.headers.get('Content-Type')!='application/json':return self.reply(415,{})
+            if not SLOT.acquire(blocking=False):return self.reply(503,{})
+            try:
+                raw=self.rfile.read(length)
+                if len(raw)!=length:return self.reply(400,{})
+                worker=subprocess.Popen(['node','/app/invoice.mjs'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                try:
+                    pdf,diagnostic=worker.communicate(raw,timeout=8)
+                except subprocess.TimeoutExpired:
+                    worker.terminate()
+                    try:worker.communicate(timeout=1)
+                    except subprocess.TimeoutExpired:
+                        worker.kill();worker.communicate()
+                    return self.reply(503,{'code':'PDF_UNAVAILABLE'})
+                if worker.returncode:return self.reply(503,{'code':'PDF_LAYOUT_ERROR' if diagnostic==b'PDF_LAYOUT_ERROR' else 'PDF_UNAVAILABLE'})
+                if not pdf.startswith(b'%PDF-') or len(pdf)>524288:return self.reply(503,{})
+                self.send_response(200);self.send_header('Content-Type','application/pdf');self.send_header('Content-Length',str(len(pdf)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(pdf)
+            except (OSError,ValueError,subprocess.TimeoutExpired):self.reply(503,{'code':'PDF_UNAVAILABLE'})
+            finally:SLOT.release()
+            return
         media=self.headers.get('Content-Type')
         if media not in ('application/pdf','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') or (self.path=='/internal/pdf/check' and media!='application/pdf'):return self.reply(415,{})
         policy='static-resume-v1' if media=='application/pdf' else 'xlsx-resume-v1'
