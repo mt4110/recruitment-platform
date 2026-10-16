@@ -89,6 +89,16 @@ try:
     def ip(name,net):return json.loads(docker('inspect',name))[0]['NetworkSettings']['Networks'][net]['IPAddress']
     config=[['relay_reachable',ip(relay,front),8080,True],['broker_blocked',ip(broker,back),8080,False],['viewer_blocked',ip(viewer,view),8080,False],['external_blocked','1.1.1.1',443,False]]
     config.extend([[n+'_blocked',ip(c,net),8080,False] for n,c,net in [('api',api_target,back),('db',db_target,back),('other_job',peer_target,view)]])
+    # Positive controls: a dead/misaddressed sentinel must never make a deny probe pass.
+    for label,caller,target,net in [('api',broker,api_target,back),('db',broker,db_target,back),('other_job',viewer,peer_target,view)]:
+        url='http://'+ip(target,net)+':8080/health'
+        code="fetch(process.argv[1],{signal:AbortSignal.timeout(1500)}).then(async r=>{if(r.status!==200||!(await r.json()).ok)process.exitCode=1}).catch(()=>process.exitCode=1)"
+        for _ in range(20):
+            control=subprocess.run(['docker','exec',caller,'node','-e',code,url],capture_output=True,timeout=5)
+            if control.returncode==0:break
+            time.sleep(.1)
+        check(label+'_sentinel_positive_control',control.returncode==0)
+        if control.returncode:raise RuntimeError('sentinel readiness failed')
     for i in range(2):
         value=sandbox('isolation',config=config);save('isolation-'+str(i)+'.json',value)
         check('isolation_'+str(i),all(value['checks'].values()))
