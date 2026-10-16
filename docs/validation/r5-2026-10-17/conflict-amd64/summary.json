@@ -1,0 +1,219 @@
+{
+  "scope": "R5 encrypted device draft verification and existing browser regression",
+  "status": "failed",
+  "tests": [
+    {
+      "name": "M2 RLS fails closed without context and filters actual runtime queries",
+      "status": "passed",
+      "duration_ms": 3790,
+      "errors": []
+    },
+    {
+      "name": "M2 direct IDs, role changes and missing sessions cannot disclose other organizations",
+      "status": "passed",
+      "duration_ms": 94,
+      "errors": []
+    },
+    {
+      "name": "M2 input bounds, CSRF, UUID, unknown fields and mutation key are enforced",
+      "status": "passed",
+      "duration_ms": 103,
+      "errors": []
+    },
+    {
+      "name": "M2 job lifecycle, canonical idempotency, concurrent versions and cursor filtering",
+      "status": "passed",
+      "duration_ms": 920,
+      "errors": []
+    },
+    {
+      "name": "M2 candidate update/archive is immutable, scoped and replay-safe",
+      "status": "passed",
+      "duration_ms": 301,
+      "errors": []
+    },
+    {
+      "name": "M2 browser job registration, publication, search/save and forbidden detail",
+      "status": "passed",
+      "duration_ms": 1276,
+      "errors": []
+    },
+    {
+      "name": "M2 browser candidate form, conflict preserves input, archive and mobile keyboard",
+      "status": "failed",
+      "duration_ms": 10660,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.workspace').getByRole('alert')\nExpected substring: \u001b[32m\"入力は自動で上書きしません\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.workspace').getByRole('alert')\u001b[22m\n"
+      ]
+    },
+    {
+      "name": "M2 job advisory lock times out safely and leaves the version unchanged",
+      "status": "passed",
+      "duration_ms": 5284,
+      "errors": []
+    },
+    {
+      "name": "M2 browser resolves a lost creation response with the same operation and no duplicate POST",
+      "status": "passed",
+      "duration_ms": 709,
+      "errors": []
+    },
+    {
+      "name": "R4 expired browser session clears plaintext form and refuses writes",
+      "status": "passed",
+      "duration_ms": 393,
+      "errors": []
+    },
+    {
+      "name": "R2 actual ClamAV scans PDF and native Sheets XLSX; response is hash and generation bound",
+      "status": "passed",
+      "duration_ms": 1453,
+      "errors": []
+    },
+    {
+      "name": "R2 real EICAR is blocked before format inspection and cannot download or recheck",
+      "status": "passed",
+      "duration_ms": 731,
+      "errors": []
+    },
+    {
+      "name": "R2 stale definitions and failed update reject new clean, preserve pending, recover with retry",
+      "status": "passed",
+      "duration_ms": 30618,
+      "errors": []
+    },
+    {
+      "name": "R2 published-loaded generation or hash mismatch refuses scans, then reloads verified generation",
+      "status": "passed",
+      "duration_ms": 31036,
+      "errors": []
+    },
+    {
+      "name": "R2 already clean remains available during scanner outage; original and shared permissions remain scoped",
+      "status": "passed",
+      "duration_ms": 25487,
+      "errors": []
+    },
+    {
+      "name": "R2 limits reject rate and storage admission with no new document or bytes reservation",
+      "status": "passed",
+      "duration_ms": 1457,
+      "errors": []
+    },
+    {
+      "name": "R2 verified generation directory reload and same-generation check refresh use actual clamd",
+      "status": "passed",
+      "duration_ms": 36567,
+      "errors": []
+    },
+    {
+      "name": "R2 stopped scan worker times out without a clean record and is replaced before retry",
+      "status": "passed",
+      "duration_ms": 36113,
+      "errors": []
+    },
+    {
+      "name": "R2 internal service rejects unauthenticated, arbitrary-path and oversized requests; scanner cannot egress",
+      "status": "passed",
+      "duration_ms": 491,
+      "errors": []
+    },
+    {
+      "name": "R2 definition change after AV and before format completion cannot persist a clean result",
+      "status": "passed",
+      "duration_ms": 5120,
+      "errors": []
+    },
+    {
+      "name": "R2 startup charges retained files outside the old ledger and preserves their bytes",
+      "status": "passed",
+      "duration_ms": 11703,
+      "errors": []
+    },
+    {
+      "name": "R5 offline ciphertext survives real browser restart and reauthentication, then syncs without restoring confirmation",
+      "status": "passed",
+      "duration_ms": 3935,
+      "errors": []
+    },
+    {
+      "name": "R5 lost business response resolves committed outcome after browser restart without another candidate",
+      "status": "passed",
+      "duration_ms": 2735,
+      "errors": []
+    },
+    {
+      "name": "R5 other account cannot decrypt or display this profile unsynchronized input",
+      "status": "passed",
+      "duration_ms": 2633,
+      "errors": []
+    },
+    {
+      "name": "R5 old key restores and reencrypts under current key; revoked version never restores",
+      "status": "passed",
+      "duration_ms": 5243,
+      "errors": []
+    },
+    {
+      "name": "R5 tampered ciphertext and expired server draft are refused, not erased or replayed",
+      "status": "passed",
+      "duration_ms": 2825,
+      "errors": []
+    },
+    {
+      "name": "R5 IndexedDB failure is not reported as durable and blocks business submission",
+      "status": "passed",
+      "duration_ms": 2182,
+      "errors": []
+    },
+    {
+      "name": "R5 concurrent tab candidates remain distinct without overwriting typed input",
+      "status": "passed",
+      "duration_ms": 3221,
+      "errors": []
+    },
+    {
+      "name": "R5 not-recorded intent waits for confirmation and reuses original operation instead of a new key",
+      "status": "passed",
+      "duration_ms": 2932,
+      "errors": []
+    },
+    {
+      "name": "R5 durable draft-wide tombstone refuses a delayed crypto write from another tab",
+      "status": "passed",
+      "duration_ms": 3673,
+      "errors": []
+    },
+    {
+      "name": "R5 uncertain draft mutation is replayed before syncing the newer local input",
+      "status": "passed",
+      "duration_ms": 3812,
+      "errors": []
+    },
+    {
+      "name": "R5 opener-cloned sessionStorage gets a separate tab identity and preserves both inputs",
+      "status": "passed",
+      "duration_ms": 2898,
+      "errors": []
+    },
+    {
+      "name": "R5 discard creates a durable marker before any local slot and rejects its delayed first write",
+      "status": "passed",
+      "duration_ms": 2544,
+      "errors": []
+    },
+    {
+      "name": "R5 inactive form resolves a committed pending receipt from the list without decrypting or replaying it",
+      "status": "passed",
+      "duration_ms": 2623,
+      "errors": []
+    },
+    {
+      "name": "R5 slow first initialization shares the serial save queue and never rolls back newer input",
+      "status": "passed",
+      "duration_ms": 3049,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

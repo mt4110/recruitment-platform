@@ -1,0 +1,10 @@
+{
+  "commit": "6fbe82a1f1e61fcd9ad2092a66346db36f16931d",
+  "source_files": 130,
+  "all_git_hashes_match": true,
+  "source_unchanged_during_run": true,
+  "classification": "staged corrected regression; preserve actual outcomes",
+  "counts": {
+    "passed": 35
+  }
+}

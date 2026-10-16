@@ -1,0 +1,111 @@
+{
+  "baseline_commit": "922efdbb7adbaa8c5db62f7a22813c21ffa09b1f",
+  "affected_commit": "68ecca8b18a1fa6ba65aadcac65f43f489d2f092",
+  "conflict_commit": "6fbe82a1f1e61fcd9ad2092a66346db36f16931d",
+  "commit": "b27c8f807711bc48ee529a830c0e9e35cfc8efda",
+  "source_files": 130,
+  "staged_changes": [
+    {
+      "from": "922efdbb7adbaa8c5db62f7a22813c21ffa09b1f",
+      "to": "68ecca8b18a1fa6ba65aadcac65f43f489d2f092",
+      "changed_source_files": [
+        "e2e/m5.spec.cjs",
+        "e2e/s5.spec.ts",
+        "e2e/workflow.spec.cjs"
+      ],
+      "unchanged_files": 127,
+      "workflow_change": "Adds the corresponding regression selection only"
+    },
+    {
+      "from": "68ecca8b18a1fa6ba65aadcac65f43f489d2f092",
+      "to": "6fbe82a1f1e61fcd9ad2092a66346db36f16931d",
+      "changed_source_files": [
+        "apps/web/app/business.tsx",
+        "apps/web/app/drafts.tsx",
+        "e2e/business.spec.cjs",
+        "e2e/r2.spec.cjs"
+      ],
+      "unchanged_files": 126,
+      "workflow_change": "Adds the corresponding regression selection only"
+    },
+    {
+      "from": "6fbe82a1f1e61fcd9ad2092a66346db36f16931d",
+      "to": "b27c8f807711bc48ee529a830c0e9e35cfc8efda",
+      "changed_source_files": [
+        "e2e/business.spec.cjs",
+        "e2e/m5.spec.cjs",
+        "scripts/e2e.py"
+      ],
+      "unchanged_files": 127,
+      "workflow_change": "Adds the corresponding regression selection only"
+    }
+  ],
+  "counts": {
+    "full-local-arm64": {
+      "passed": 159,
+      "failed": 5,
+      "skipped": 5
+    },
+    "full-amd64": {
+      "passed": 166,
+      "timedOut": 1,
+      "failed": 2
+    },
+    "full-arm64": {
+      "passed": 159,
+      "timedOut": 1,
+      "failed": 4,
+      "skipped": 5
+    },
+    "affected-local-arm64": {
+      "passed": 52
+    },
+    "affected-amd64": {
+      "passed": 52
+    },
+    "affected-arm64": {
+      "passed": 51,
+      "failed": 1
+    },
+    "conflict-local-arm64": {
+      "passed": 35
+    },
+    "conflict-amd64": {
+      "passed": 34,
+      "failed": 1
+    },
+    "conflict-arm64": {
+      "passed": 34,
+      "failed": 1
+    },
+    "final-local-arm64": {
+      "passed": 44
+    },
+    "amd64": {
+      "passed": 44
+    },
+    "arm64": {
+      "passed": 44
+    }
+  },
+  "coverage": {
+    "local-arm64": {
+      "baseline_test_names": 169,
+      "all_nonpassing_cases_rerun_and_passed": true,
+      "final_affected_suites_passed": true
+    },
+    "amd64": {
+      "baseline_test_names": 169,
+      "all_nonpassing_cases_rerun_and_passed": true,
+      "final_affected_suites_passed": true
+    },
+    "arm64": {
+      "baseline_test_names": 169,
+      "all_nonpassing_cases_rerun_and_passed": true,
+      "final_affected_suites_passed": true
+    }
+  },
+  "final_full_suite_rerun": false,
+  "qualification": "Staged source-bounded verification: baseline full 169, corrected five suites 52 (arm64 one later M5 failure retained), frontend context-conflict fix and three suites 35 (native one later business timing failure retained), then deterministic conflict and scanner-outage final four suites 44. Failed/skipped/timed-out baseline cases are not called passed in their original runs.",
+  "scope": "R5 only; stop before R6/M7/publication"
+}

@@ -1,0 +1,1031 @@
+{
+  "scope": "R5 encrypted device draft verification and existing browser regression",
+  "status": "failed",
+  "tests": [
+    {
+      "name": "eleven services are healthy; DB roles and immutable identity are enforced",
+      "status": "passed",
+      "duration_ms": 1394,
+      "errors": []
+    },
+    {
+      "name": "agency-a: real OIDC login, fixed organization, protected logout",
+      "status": "passed",
+      "duration_ms": 1425,
+      "errors": []
+    },
+    {
+      "name": "agency-b: real OIDC login, fixed organization, protected logout",
+      "status": "passed",
+      "duration_ms": 860,
+      "errors": []
+    },
+    {
+      "name": "employer-x: real OIDC login, fixed organization, protected logout",
+      "status": "passed",
+      "duration_ms": 841,
+      "errors": []
+    },
+    {
+      "name": "employer-y: real OIDC login, fixed organization, protected logout",
+      "status": "passed",
+      "duration_ms": 813,
+      "errors": []
+    },
+    {
+      "name": "same browser changes agency A to B after logout",
+      "status": "passed",
+      "duration_ms": 812,
+      "errors": []
+    },
+    {
+      "name": "unregistered user sees a recoverable HTML error and no new session",
+      "status": "passed",
+      "duration_ms": 410,
+      "errors": []
+    },
+    {
+      "name": "disabled user invalidates a session and refuses login",
+      "status": "passed",
+      "duration_ms": 907,
+      "errors": []
+    },
+    {
+      "name": "disabled organization invalidates a session and refuses login",
+      "status": "passed",
+      "duration_ms": 875,
+      "errors": []
+    },
+    {
+      "name": "nonce mismatch refuses authentication",
+      "status": "passed",
+      "duration_ms": 374,
+      "errors": []
+    },
+    {
+      "name": "expired attempt refuses authentication",
+      "status": "passed",
+      "duration_ms": 6449,
+      "errors": []
+    },
+    {
+      "name": "tampered encrypted verifier refuses authentication",
+      "status": "passed",
+      "duration_ms": 6429,
+      "errors": []
+    },
+    {
+      "name": "missing or foreign browser binding refuses authentication",
+      "status": "passed",
+      "duration_ms": 6281,
+      "errors": []
+    },
+    {
+      "name": "wrong state and malformed query are rejected without consuming a valid attempt",
+      "status": "passed",
+      "duration_ms": 6334,
+      "errors": []
+    },
+    {
+      "name": "callback reuse is rejected and cannot switch the existing identity",
+      "status": "passed",
+      "duration_ms": 6301,
+      "errors": []
+    },
+    {
+      "name": "expired session clears stale UI on focus and offers login",
+      "status": "passed",
+      "duration_ms": 6532,
+      "errors": []
+    },
+    {
+      "name": "logout clears the other tab and discards a delayed identity response",
+      "status": "passed",
+      "duration_ms": 6550,
+      "errors": []
+    },
+    {
+      "name": "API restart preserves the database session",
+      "status": "passed",
+      "duration_ms": 16906,
+      "errors": []
+    },
+    {
+      "name": "identity and logout network errors are visible and recoverable",
+      "status": "passed",
+      "duration_ms": 562,
+      "errors": []
+    },
+    {
+      "name": "mobile layout, keyboard login and logout work",
+      "status": "passed",
+      "duration_ms": 6611,
+      "errors": []
+    },
+    {
+      "name": "M2 RLS fails closed without context and filters actual runtime queries",
+      "status": "passed",
+      "duration_ms": 2075,
+      "errors": []
+    },
+    {
+      "name": "M2 direct IDs, role changes and missing sessions cannot disclose other organizations",
+      "status": "passed",
+      "duration_ms": 68,
+      "errors": []
+    },
+    {
+      "name": "M2 input bounds, CSRF, UUID, unknown fields and mutation key are enforced",
+      "status": "passed",
+      "duration_ms": 62,
+      "errors": []
+    },
+    {
+      "name": "M2 job lifecycle, canonical idempotency, concurrent versions and cursor filtering",
+      "status": "passed",
+      "duration_ms": 701,
+      "errors": []
+    },
+    {
+      "name": "M2 candidate update/archive is immutable, scoped and replay-safe",
+      "status": "passed",
+      "duration_ms": 186,
+      "errors": []
+    },
+    {
+      "name": "M2 browser job registration, publication, search/save and forbidden detail",
+      "status": "passed",
+      "duration_ms": 869,
+      "errors": []
+    },
+    {
+      "name": "M2 browser candidate form, conflict preserves input, archive and mobile keyboard",
+      "status": "passed",
+      "duration_ms": 710,
+      "errors": []
+    },
+    {
+      "name": "M2 job advisory lock times out safely and leaves the version unchanged",
+      "status": "passed",
+      "duration_ms": 5163,
+      "errors": []
+    },
+    {
+      "name": "M2 browser resolves a lost creation response with the same operation and no duplicate POST",
+      "status": "passed",
+      "duration_ms": 448,
+      "errors": []
+    },
+    {
+      "name": "R4 expired browser session clears plaintext form and refuses writes",
+      "status": "passed",
+      "duration_ms": 225,
+      "errors": []
+    },
+    {
+      "name": "M3 static and tagged PDFs pass; all forbidden policy fixtures fail closed",
+      "status": "passed",
+      "duration_ms": 8963,
+      "errors": []
+    },
+    {
+      "name": "M3 authentication CSRF input limits and original document RLS deny foreign access",
+      "status": "passed",
+      "duration_ms": 1785,
+      "errors": []
+    },
+    {
+      "name": "M3 duplicate uploads share one reservation and replay after candidate archive",
+      "status": "passed",
+      "duration_ms": 1206,
+      "errors": []
+    },
+    {
+      "name": "M3 live lease is 202 and expired pending survives actual API restart",
+      "status": "passed",
+      "duration_ms": 19000,
+      "errors": []
+    },
+    {
+      "name": "M3 recovery checks existing final bytes and refuses wrong hash without replacement",
+      "status": "passed",
+      "duration_ms": 8729,
+      "errors": []
+    },
+    {
+      "name": "M3 obsolete lease cannot finalize and archive wins candidate document lock order",
+      "status": "passed",
+      "duration_ms": 1862,
+      "errors": []
+    },
+    {
+      "name": "M3 browser upload download rejection and expired pending recovery work on desktop and mobile",
+      "status": "passed",
+      "duration_ms": 9058,
+      "errors": []
+    },
+    {
+      "name": "M3 kill during inspection preserves the same document and missing storage rejects safely",
+      "status": "passed",
+      "duration_ms": 2099,
+      "errors": []
+    },
+    {
+      "name": "M3 actual PDF service isolation internal authentication and concurrency bounds",
+      "status": "passed",
+      "duration_ms": 545,
+      "errors": []
+    },
+    {
+      "name": "M5 invoice metadata and PDF isolate participants and never create a second placement",
+      "status": "passed",
+      "duration_ms": 172,
+      "errors": []
+    },
+    {
+      "name": "M5 non-hired and unknown IDs have no invoice",
+      "status": "passed",
+      "duration_ms": 261,
+      "errors": []
+    },
+    {
+      "name": "M5 notification cursor and runtime RLS expose only recipient organization and always unsent",
+      "status": "passed",
+      "duration_ms": 181,
+      "errors": []
+    },
+    {
+      "name": "M5 full browser flow reaches invoice and unsent notification without sending mail",
+      "status": "passed",
+      "duration_ms": 1723,
+      "errors": []
+    },
+    {
+      "name": "M5 long Japanese and markup names remain complete and escaped in invoice HTML",
+      "status": "passed",
+      "duration_ms": 1431,
+      "errors": []
+    },
+    {
+      "name": "M5 invoice HTML has no PDF service dependency or raw PDF fallback",
+      "status": "passed",
+      "duration_ms": 16093,
+      "errors": []
+    },
+    {
+      "name": "M5 revoked share removes employer PDF and plaintext while agency retains invoice",
+      "status": "passed",
+      "duration_ms": 2520,
+      "errors": []
+    },
+    {
+      "name": "M5 internal renderer refuses missing key and caller-controlled HTML URL or extra schema",
+      "status": "passed",
+      "duration_ms": 609,
+      "errors": []
+    },
+    {
+      "name": "M5 expired session clears invoice metadata and rendered blob",
+      "status": "failed",
+      "duration_ms": 477,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"CONSOLE_UNPROVEN_TERMINAL\",\u001b[39m\n\u001b[31m+ ]\u001b[39m"
+      ]
+    },
+    {
+      "name": "R2 AV outage leaves both formats unavailable and unsubmitable, with no clean evidence",
+      "status": "passed",
+      "duration_ms": 49078,
+      "errors": []
+    },
+    {
+      "name": "R1 extension MIME content kinds and CSRF fail closed, correct octet stream is inspected",
+      "status": "passed",
+      "duration_ms": 1466,
+      "errors": []
+    },
+    {
+      "name": "R1 upload outcomes preserve processing, seven-day failures, mismatch and terminal expiry tombstones",
+      "status": "passed",
+      "duration_ms": 1197,
+      "errors": []
+    },
+    {
+      "name": "R1 migrated ready PDF and existing active shared snapshot refuse delivery without AV evidence",
+      "status": "passed",
+      "duration_ms": 25628,
+      "errors": []
+    },
+    {
+      "name": "R2 real AV clean with synthetic blocked fixture proves snapshot format, RLS, block precedence and share revocation",
+      "status": "passed",
+      "duration_ms": 876,
+      "errors": []
+    },
+    {
+      "name": "R2 browser XLSX upload displays actual AV completion and download on desktop and mobile",
+      "status": "passed",
+      "duration_ms": 588,
+      "errors": []
+    },
+    {
+      "name": "R2 actual ClamAV scans PDF and native Sheets XLSX; response is hash and generation bound",
+      "status": "passed",
+      "duration_ms": 743,
+      "errors": []
+    },
+    {
+      "name": "R2 real EICAR is blocked before format inspection and cannot download or recheck",
+      "status": "passed",
+      "duration_ms": 440,
+      "errors": []
+    },
+    {
+      "name": "R2 stale definitions and failed update reject new clean, preserve pending, recover with retry",
+      "status": "passed",
+      "duration_ms": 25133,
+      "errors": []
+    },
+    {
+      "name": "R2 published-loaded generation or hash mismatch refuses scans, then reloads verified generation",
+      "status": "passed",
+      "duration_ms": 26807,
+      "errors": []
+    },
+    {
+      "name": "R2 already clean remains available during scanner outage; original and shared permissions remain scoped",
+      "status": "passed",
+      "duration_ms": 24912,
+      "errors": []
+    },
+    {
+      "name": "R2 limits reject rate and storage admission with no new document or bytes reservation",
+      "status": "passed",
+      "duration_ms": 838,
+      "errors": []
+    },
+    {
+      "name": "R2 verified generation directory reload and same-generation check refresh use actual clamd",
+      "status": "passed",
+      "duration_ms": 27069,
+      "errors": []
+    },
+    {
+      "name": "R2 stopped scan worker times out without a clean record and is replaced before retry",
+      "status": "passed",
+      "duration_ms": 33852,
+      "errors": []
+    },
+    {
+      "name": "R2 internal service rejects unauthenticated, arbitrary-path and oversized requests; scanner cannot egress",
+      "status": "passed",
+      "duration_ms": 294,
+      "errors": []
+    },
+    {
+      "name": "R2 definition change after AV and before format completion cannot persist a clean result",
+      "status": "passed",
+      "duration_ms": 4065,
+      "errors": []
+    },
+    {
+      "name": "R2 startup charges retained files outside the old ledger and preserves their bytes",
+      "status": "passed",
+      "duration_ms": 11220,
+      "errors": []
+    },
+    {
+      "name": "R3 immutable kind ordinals survive concurrent creation and deny cross-tenant reads or writes",
+      "status": "passed",
+      "duration_ms": 1534,
+      "errors": []
+    },
+    {
+      "name": "R3 multiple PDF XLSX register sequentially with kinds versions and mobile keyboard access",
+      "status": "passed",
+      "duration_ms": 718,
+      "errors": []
+    },
+    {
+      "name": "R3 eleven files are rejected before POST and one rejected file does not prevent the next valid file",
+      "status": "passed",
+      "duration_ms": 551,
+      "errors": []
+    },
+    {
+      "name": "R3 browser submits only explicitly selected version; later originals never change shared snapshot",
+      "status": "passed",
+      "duration_ms": 1172,
+      "errors": []
+    },
+    {
+      "name": "R3 lost response recovers the accepted ID without uploading again",
+      "status": "passed",
+      "duration_ms": 640,
+      "errors": []
+    },
+    {
+      "name": "R3 new browser context restores only opaque receipts after authentication and never resends a file",
+      "status": "passed",
+      "duration_ms": 1130,
+      "errors": []
+    },
+    {
+      "name": "R3 missing or expired restart receipts cannot auto-resend; another identity cannot adopt a receipt",
+      "status": "passed",
+      "duration_ms": 262,
+      "errors": []
+    },
+    {
+      "name": "R3 pre-reservation network interruption reconciles before an explicit same-key retry",
+      "status": "passed",
+      "duration_ms": 691,
+      "errors": []
+    },
+    {
+      "name": "R3 submission preflight resets confirmations when candidate version changed",
+      "status": "passed",
+      "duration_ms": 553,
+      "errors": []
+    },
+    {
+      "name": "R4 personal RLS encrypted storage strict schemas and no-store headers",
+      "status": "passed",
+      "duration_ms": 992,
+      "errors": []
+    },
+    {
+      "name": "R4 same-user other-organization context and another user in same organization cannot read drafts",
+      "status": "passed",
+      "duration_ms": 427,
+      "errors": []
+    },
+    {
+      "name": "R4 mutation replay conflict expiry discard and ciphertext tamper never resurrect a draft",
+      "status": "passed",
+      "duration_ms": 995,
+      "errors": []
+    },
+    {
+      "name": "R4 business commit consumes atomically and replays after 24h without a second candidate",
+      "status": "passed",
+      "duration_ms": 723,
+      "errors": []
+    },
+    {
+      "name": "R4 wrong form revision or payload rolls business back without consuming the draft",
+      "status": "passed",
+      "duration_ms": 297,
+      "errors": []
+    },
+    {
+      "name": "R4 server drafts restore browser form and confirmation stays unchecked",
+      "status": "passed",
+      "duration_ms": 1300,
+      "errors": []
+    },
+    {
+      "name": "R4 all current form schemas validate resource context and sharing revocation blocks employer draft restoration",
+      "status": "passed",
+      "duration_ms": 1917,
+      "errors": []
+    },
+    {
+      "name": "R4 key wrapping is owner bound, concurrent stable, no-store and revoked versions refuse restoration",
+      "status": "passed",
+      "duration_ms": 561,
+      "errors": []
+    },
+    {
+      "name": "R4 draft rate, quota and larger request limits stop writes without replacing input",
+      "status": "passed",
+      "duration_ms": 4283,
+      "errors": []
+    },
+    {
+      "name": "R4 two browser tabs preserve conflicting input and apply only after explicit comparison",
+      "status": "passed",
+      "duration_ms": 2963,
+      "errors": []
+    },
+    {
+      "name": "R4 authenticated draft routes enforce CSRF origin schema and request-size limits",
+      "status": "passed",
+      "duration_ms": 160,
+      "errors": []
+    },
+    {
+      "name": "R4 upload metadata restores separately from candidate edits and reselected original uses its saved key",
+      "status": "passed",
+      "duration_ms": 2731,
+      "errors": []
+    },
+    {
+      "name": "R5 offline ciphertext survives real browser restart and reauthentication, then syncs without restoring confirmation",
+      "status": "passed",
+      "duration_ms": 3203,
+      "errors": []
+    },
+    {
+      "name": "R5 lost business response resolves committed outcome after browser restart without another candidate",
+      "status": "passed",
+      "duration_ms": 2150,
+      "errors": []
+    },
+    {
+      "name": "R5 other account cannot decrypt or display this profile unsynchronized input",
+      "status": "passed",
+      "duration_ms": 1875,
+      "errors": []
+    },
+    {
+      "name": "R5 old key restores and reencrypts under current key; revoked version never restores",
+      "status": "passed",
+      "duration_ms": 4407,
+      "errors": []
+    },
+    {
+      "name": "R5 tampered ciphertext and expired server draft are refused, not erased or replayed",
+      "status": "passed",
+      "duration_ms": 2222,
+      "errors": []
+    },
+    {
+      "name": "R5 IndexedDB failure is not reported as durable and blocks business submission",
+      "status": "passed",
+      "duration_ms": 7779,
+      "errors": []
+    },
+    {
+      "name": "R5 concurrent tab candidates remain distinct without overwriting typed input",
+      "status": "passed",
+      "duration_ms": 2657,
+      "errors": []
+    },
+    {
+      "name": "R5 not-recorded intent waits for confirmation and reuses original operation instead of a new key",
+      "status": "passed",
+      "duration_ms": 8437,
+      "errors": []
+    },
+    {
+      "name": "R5 durable draft-wide tombstone refuses a delayed crypto write from another tab",
+      "status": "passed",
+      "duration_ms": 3294,
+      "errors": []
+    },
+    {
+      "name": "R5 uncertain draft mutation is replayed before syncing the newer local input",
+      "status": "passed",
+      "duration_ms": 9521,
+      "errors": []
+    },
+    {
+      "name": "R5 opener-cloned sessionStorage gets a separate tab identity and preserves both inputs",
+      "status": "passed",
+      "duration_ms": 2547,
+      "errors": []
+    },
+    {
+      "name": "R5 discard creates a durable marker before any local slot and rejects its delayed first write",
+      "status": "passed",
+      "duration_ms": 8109,
+      "errors": []
+    },
+    {
+      "name": "R5 inactive form resolves a committed pending receipt from the list without decrypting or replaying it",
+      "status": "passed",
+      "duration_ms": 8222,
+      "errors": []
+    },
+    {
+      "name": "R5 slow first initialization shares the serial save queue and never rolls back newer input",
+      "status": "passed",
+      "duration_ms": 2754,
+      "errors": []
+    },
+    {
+      "name": "S1 reservation replay, fixed scope, no auth/CSRF and metadata bounds",
+      "status": "passed",
+      "duration_ms": 308,
+      "errors": []
+    },
+    {
+      "name": "S1 authorized immutable envelope, tampered expired wrong-purpose tickets and current login",
+      "status": "passed",
+      "duration_ms": 173,
+      "errors": []
+    },
+    {
+      "name": "S1 two PUTs and complete attach only once; uninspected ciphertext stays unavailable",
+      "status": "passed",
+      "duration_ms": 680,
+      "errors": []
+    },
+    {
+      "name": "S1 checksum failure closes old attempt, preserves orphan and creates fresh AAD",
+      "status": "passed",
+      "duration_ms": 192,
+      "errors": []
+    },
+    {
+      "name": "S1 interrupted stream reconciles after process restart without overwriting bytes",
+      "status": "passed",
+      "duration_ms": 11174,
+      "errors": []
+    },
+    {
+      "name": "S1 durable manifest restores a lost stored commit; lost complete response keeps same ID",
+      "status": "passed",
+      "duration_ms": 11275,
+      "errors": []
+    },
+    {
+      "name": "S1 concurrent organization quota allows ten reservations only, and storage refuses admission",
+      "status": "passed",
+      "duration_ms": 1086,
+      "errors": []
+    },
+    {
+      "name": "S1 original reservation and authorization deadlines plus seven-day replay tombstone",
+      "status": "passed",
+      "duration_ms": 585,
+      "errors": []
+    },
+    {
+      "name": "S1 actual browser PDF XLSX encryption, draft restart and no plaintext network body",
+      "status": "passed",
+      "duration_ms": 1155,
+      "errors": []
+    },
+    {
+      "name": "S1 full 10MiB ciphertext admission and route-only maximum size refusal",
+      "status": "passed",
+      "duration_ms": 232,
+      "errors": []
+    },
+    {
+      "name": "S1 lost browser PUT response resumes by receipt after reload, without another PUT",
+      "status": "passed",
+      "duration_ms": 579,
+      "errors": []
+    },
+    {
+      "name": "S1 retained ciphertext gets a fresh attempt after authorization window expires",
+      "status": "passed",
+      "duration_ms": 562,
+      "errors": []
+    },
+    {
+      "name": "S1 composite foreign keys reject cross-context reference injection",
+      "status": "passed",
+      "duration_ms": 600,
+      "errors": []
+    },
+    {
+      "name": "S2 real broker AV format sandbox, live isolation probes and encrypted manifest",
+      "status": "passed",
+      "duration_ms": 7827,
+      "errors": []
+    },
+    {
+      "name": "S2 native Sheets XLSX follows real AV and one job per fresh sandbox",
+      "status": "passed",
+      "duration_ms": 13947,
+      "errors": []
+    },
+    {
+      "name": "S2 corrupted GCM tag never reaches AV or parser; terminal outcome is retained",
+      "status": "passed",
+      "duration_ms": 7260,
+      "errors": []
+    },
+    {
+      "name": "S2 scanner outage refuses, retains accepted ID and recovers in a new generation",
+      "status": "passed",
+      "duration_ms": 33769,
+      "errors": []
+    },
+    {
+      "name": "S2 original/artifact revocation persists across restart, blocks leased decrypt and commit",
+      "status": "passed",
+      "duration_ms": 30662,
+      "errors": []
+    },
+    {
+      "name": "S2 ownership archive and stale lease fencing deny decryption; expired worker recovers",
+      "status": "passed",
+      "duration_ms": 2880,
+      "errors": []
+    },
+    {
+      "name": "S2 worker role cannot issue arbitrary DB queries; public gateway does not expose control",
+      "status": "passed",
+      "duration_ms": 1109,
+      "errors": []
+    },
+    {
+      "name": "S2 rotation retains old original and artifact keys and restores encrypted manifests",
+      "status": "passed",
+      "duration_ms": 15832,
+      "errors": []
+    },
+    {
+      "name": "S2 real malware and invalid format are terminal without making documents usable",
+      "status": "passed",
+      "duration_ms": 14101,
+      "errors": []
+    },
+    {
+      "name": "S2 browser encrypted intake becomes view-ready after checking and page reload",
+      "status": "passed",
+      "duration_ms": 7734,
+      "errors": []
+    },
+    {
+      "name": "S2 missing original key permission refuses and restored old material resumes same document",
+      "status": "passed",
+      "duration_ms": 14173,
+      "errors": []
+    },
+    {
+      "name": "S2 actual broker process loss is fenced and resumes after lease expiry without another upload",
+      "status": "passed",
+      "duration_ms": 15314,
+      "errors": []
+    },
+    {
+      "name": "S2 invoice and original inspection routes reject the opposite service purpose",
+      "status": "passed",
+      "duration_ms": 900,
+      "errors": []
+    },
+    {
+      "name": "S2 idle worker has no job, performs no decryption and stops cleanly",
+      "status": "passed",
+      "duration_ms": 6893,
+      "errors": []
+    },
+    {
+      "name": "S3 encrypted PDF becomes PNG and alternate text; browser never receives the original",
+      "status": "passed",
+      "duration_ms": 7480,
+      "errors": []
+    },
+    {
+      "name": "S3 Sheets actual output renders saved values without formulas or active links",
+      "status": "passed",
+      "duration_ms": 14393,
+      "errors": []
+    },
+    {
+      "name": "S3 immutable selected version, current participant access and shared page authorization",
+      "status": "passed",
+      "duration_ms": 14741,
+      "errors": []
+    },
+    {
+      "name": "S3 original and artifact revocation reject manifest/image and clear an open browser view",
+      "status": "passed",
+      "duration_ms": 1178,
+      "errors": []
+    },
+    {
+      "name": "S3 missing artifact secret, invalid AAD and viewer outage fail closed without original fallback",
+      "status": "passed",
+      "duration_ms": 23940,
+      "errors": []
+    },
+    {
+      "name": "S3 current AV outage denies every new view and page request",
+      "status": "passed",
+      "duration_ms": 19755,
+      "errors": []
+    },
+    {
+      "name": "S3 artifact key rotation retains old viewing and grants only artifact key material to viewer",
+      "status": "passed",
+      "duration_ms": 7816,
+      "errors": []
+    },
+    {
+      "name": "S3 share revoke removes open pages/text and denies subsequent image and manifest requests",
+      "status": "passed",
+      "duration_ms": 287,
+      "errors": []
+    },
+    {
+      "name": "S3 old original and invoice PDF endpoints return empty 410 to every actor and anonymous user",
+      "status": "passed",
+      "duration_ms": 48,
+      "errors": []
+    },
+    {
+      "name": "S3 fixed XLSX type date merge hidden and stale-cache expectations from S0 remain true",
+      "status": "passed",
+      "duration_ms": 34970,
+      "errors": []
+    },
+    {
+      "name": "S3 unrepresentable XLSX refs types merges and quotas never become ready or truncated views",
+      "status": "passed",
+      "duration_ms": 49498,
+      "errors": []
+    },
+    {
+      "name": "S3 Japanese twenty-page order and image-only text alternative, geometry never silently downscaled",
+      "status": "passed",
+      "duration_ms": 25512,
+      "errors": []
+    },
+    {
+      "name": "S3 session expiry removes already open text and image",
+      "status": "passed",
+      "duration_ms": 7796,
+      "errors": []
+    },
+    {
+      "name": "S5 encrypted PDF and XLSX browser journey reaches immutable sharing and invoice HTML",
+      "status": "passed",
+      "duration_ms": 25583,
+      "errors": []
+    },
+    {
+      "name": "S5 retained internal invoice PDF matches authorized HTML values without browser delivery",
+      "status": "passed",
+      "duration_ms": 1445,
+      "errors": []
+    },
+    {
+      "name": "S5 stale definitions load mismatch and update failure reject encrypted shared pages and submit",
+      "status": "passed",
+      "duration_ms": 2109,
+      "errors": []
+    },
+    {
+      "name": "S5 cross-document derivative substitution is refused without raw fallback",
+      "status": "passed",
+      "duration_ms": 456,
+      "errors": []
+    },
+    {
+      "name": "S5 browser context loss after stored response restores same receipt without a second PUT",
+      "status": "passed",
+      "duration_ms": 9326,
+      "errors": []
+    },
+    {
+      "name": "S5 browser loss before PUT requires file reselection and new attempt with the same document",
+      "status": "passed",
+      "duration_ms": 9811,
+      "errors": []
+    },
+    {
+      "name": "S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs",
+      "status": "passed",
+      "duration_ms": 9384,
+      "errors": []
+    },
+    {
+      "name": "S5 small batch and 10MiB browser uploads record bounded phase latency without a fabricated SLA",
+      "status": "passed",
+      "duration_ms": 69431,
+      "errors": []
+    },
+    {
+      "name": "S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload",
+      "status": "failed",
+      "duration_ms": 8000,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[32m-   \"rejected\",\u001b[39m\n\u001b[31m+   \"retryable\",\u001b[39m\n\u001b[2m  ]\u001b[22m"
+      ]
+    },
+    {
+      "name": "M4 draft hidden from employers; submit atomically freezes candidate job and selected PDF",
+      "status": "passed",
+      "duration_ms": 706,
+      "errors": []
+    },
+    {
+      "name": "M4 direct IDs and runtime RLS isolate all six new tables without privileged shared reads",
+      "status": "passed",
+      "duration_ms": 1732,
+      "errors": []
+    },
+    {
+      "name": "M4 input CSRF role and failed submissions leave no snapshots events or idempotency residue",
+      "status": "passed",
+      "duration_ms": 1747,
+      "errors": []
+    },
+    {
+      "name": "M4 same-key submit and transitions replay once even after sharing is revoked",
+      "status": "passed",
+      "duration_ms": 1158,
+      "errors": []
+    },
+    {
+      "name": "M4 E_SHARED permits submitted screening rejected and hired; terminal revoke preserves placement",
+      "status": "passed",
+      "duration_ms": 1089,
+      "errors": []
+    },
+    {
+      "name": "M4 status table rejects invalid transitions and duplicate active recommendations",
+      "status": "passed",
+      "duration_ms": 304,
+      "errors": []
+    },
+    {
+      "name": "M4 concurrent versions serialize selection against revoke without restoring shared content",
+      "status": "passed",
+      "duration_ms": 290,
+      "errors": []
+    },
+    {
+      "name": "M4 job lock orders close before submit and rejects stale candidate or archived submissions",
+      "status": "passed",
+      "duration_ms": 1700,
+      "errors": []
+    },
+    {
+      "name": "M4 list pagination filters and active share revocation never expose candidate metadata",
+      "status": "passed",
+      "duration_ms": 296,
+      "errors": []
+    },
+    {
+      "name": "M4 browser creates and submits a preview; employer selects then loses shared UI and direct PDF access",
+      "status": "failed",
+      "duration_ms": 10594,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.metadata')\nExpected substring: \u001b[32m\"提出済み\"\u001b[39m\nReceived string:    \u001b[31m\"下書き更新版 1\"\u001b[39m\nTimeout: 10000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.metadata')\u001b[22m\n\u001b[2m    24 × locator resolved to <div class=\"metadata\">…</div>\u001b[22m\n\u001b[2m       - unexpected value \"下書き更新版 1\"\u001b[22m\n"
+      ]
+    },
+    {
+      "name": "M4 browser lost draft response retries the original key once and retains conflict input",
+      "status": "failed",
+      "duration_ms": 10407,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('complementary', { name: '個人下書き' }).first()\nExpected pattern: \u001b[32m/下書きをサーバーへ保存しました|保存した下書きを復元しました/\u001b[39m\nReceived string:  \u001b[31m\"保存が混み合っています。入力を保持して後で再試行してください。下書きの保存を再試行する最新の下書きと比較する現在の入力で新しい下書きを開始するこの下書きを破棄する\"\u001b[39m\nTimeout: 10000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('complementary', { name: '個人下書き' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <aside class=\"notice\" aria-label=\"個人下書き\">…</aside>\u001b[22m\n\u001b[2m    - unexpected value \"新しい下書きとして保存します。この下書きを破棄する\"\u001b[22m\n\u001b[2m    23 × locator resolved to <aside class=\"notice\" aria-label=\"個人下書き\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"保存が混み合っています。入力を保持して後で再試行してください。下書きの保存を再試行する最新の下書きと比較する現在の入力で新しい下書きを開始するこの下書きを破棄する\"\u001b[22m\n"
+      ]
+    },
+    {
+      "name": "S4 inventory preserves old PDF/shared selection and rejects unprepared views",
+      "status": "passed",
+      "duration_ms": 777,
+      "errors": []
+    },
+    {
+      "name": "S4 backup crypto preserves large pipe output and rejects tag or context tampering",
+      "status": "passed",
+      "duration_ms": 415,
+      "errors": []
+    },
+    {
+      "name": "S4 cold backup authenticates DB original files old keys and AV definitions",
+      "status": "passed",
+      "duration_ms": 266797,
+      "errors": []
+    },
+    {
+      "name": "S4 mapping adds ciphertext then resumes after old original key loss and worker failure",
+      "status": "failed",
+      "duration_ms": 77432,
+      "errors": [
+        "Error: {\"status\": \"refused\", \"events\": [\"rejected\"], \"stopped\": true, \"record\": \"[redacted]/jobs/document-a0e5e6ef22edbe18/result.json\"}\n\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m"
+      ]
+    },
+    {
+      "name": "S4 migrated selected version renders with no raw fallback or framework errors",
+      "status": "skipped",
+      "duration_ms": 0,
+      "errors": []
+    },
+    {
+      "name": "S4 current key policy denies migrated views and shares without rewriting snapshots",
+      "status": "skipped",
+      "duration_ms": 0,
+      "errors": []
+    },
+    {
+      "name": "S4 cutover drains old admission and explicitly quarantines unmigrated records",
+      "status": "skipped",
+      "duration_ms": 0,
+      "errors": []
+    },
+    {
+      "name": "S4 tampered backup refuses authentication before creating a restore target",
+      "status": "skipped",
+      "duration_ms": 0,
+      "errors": []
+    },
+    {
+      "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+      "status": "skipped",
+      "duration_ms": 0,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

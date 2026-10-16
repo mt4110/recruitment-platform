@@ -1,0 +1,12 @@
+{
+  "commit": "922efdbb7adbaa8c5db62f7a22813c21ffa09b1f",
+  "source_files": 130,
+  "all_git_hashes_match": true,
+  "source_unchanged_during_run": true,
+  "classification": "baseline full regression; retain actual outcomes",
+  "counts": {
+    "failed": 5,
+    "passed": 159,
+    "skipped": 5
+  }
+}

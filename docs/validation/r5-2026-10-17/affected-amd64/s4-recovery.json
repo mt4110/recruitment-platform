@@ -1,0 +1,11 @@
+{
+  "same_document_and_selection": true,
+  "old_keys_restored": true,
+  "source_retained_stopped": true,
+  "target": "e2e-20261016-202413-51682d-restore",
+  "backup_authenticated": true,
+  "access_denials": true,
+  "raw_routes_closed": true,
+  "restored_log_secret_pattern_found": false,
+  "restored_services_stopped": true
+}

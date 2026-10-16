@@ -1,0 +1,211 @@
+{
+  "scope": "R5 encrypted device autosave and recovery + regression; stop before R6/M7/publication",
+  "instance": "e2e-20261016-205239-4b7665",
+  "app_port": 3001,
+  "idp_port": 18082,
+  "phase": "complete",
+  "status": "passed",
+  "test_selection": [
+    "business.spec.cjs",
+    "m5.spec.cjs",
+    "r2.spec.cjs",
+    "r5.spec.ts"
+  ],
+  "test_subnets": [
+    "10.253.43.192/27",
+    "10.253.43.224/27",
+    "10.253.44.0/27",
+    "10.253.44.32/27",
+    "10.253.44.64/27"
+  ],
+  "source_sha256": {
+    "apps/web/.dockerignore": "8ff7534b0a3db87f8c20796d98c3b580924a987b1c458d5e6a6ab38d967ebf14",
+    "apps/web/Dockerfile": "31383aec918b1b4ca25acf30002884aa856bed0e564040f384d265515fe75b74",
+    "apps/web/app/api/health/route.ts": "a63940a9457ad3f8797904b056ed2ff6615ac74413e529b455c4d5034595a414",
+    "apps/web/app/applications.tsx": "79eed1a8ce1031302f7c94bb72db1caec15e31fdc4086ca9df5d13b325788606",
+    "apps/web/app/applications/[[...path]]/page.tsx": "80009601b3bf1db0daa64078c7c528d3a608a54232ec64333574e46846b2b3a0",
+    "apps/web/app/business.tsx": "c68746de3d397315b442234d39374ba5fa5b5c6faaf7ad6dc496350fe9e5c8f4",
+    "apps/web/app/candidates/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+    "apps/web/app/document-info.ts": "5a3188303b02bbb264032292e3ff0e57a6d7fa647e88690597410128cc8c0361",
+    "apps/web/app/documents.tsx": "f45d3201ca75cd39bbfefca01456159892aeafcd009e93c63d354cce7d76f668",
+    "apps/web/app/drafts.tsx": "3853e38fba47358a4994eeb884566e1462238cfc9c197d4aae93d984cd1abfe7",
+    "apps/web/app/encrypted-upload.ts": "f895b43d95b926c0abbc3d8656f4ed22f701585dcd65e378fd3b32f3ddb3f5bb",
+    "apps/web/app/icon.svg": "5493d33c01164d524b52107ca1c5e93a11d36a08682778fafa43e24520b69162",
+    "apps/web/app/jobs/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+    "apps/web/app/layout.tsx": "76629e59ff2a05f6beb370722c6281d7edf41c86e7c7e0433f01479de41a9261",
+    "apps/web/app/local-drafts.ts": "2c9902daab5fe03eeb6c6730957969672065887b621d15ddf5bbcaea51738376",
+    "apps/web/app/login/page.tsx": "779fb1568e832468a4dcb06136fa3dfc9adea3e78c91ca1d88a9da50127a1e68",
+    "apps/web/app/notifications/page.tsx": "af154fb4bef129df318c5a19ac11c79362bc6ecf3ef019e58fbcc32f90b537af",
+    "apps/web/app/page.tsx": "14d764aec11028a460675d0816ec1f97b577e166d4723a069ab91fd0a84687fe",
+    "apps/web/app/previews.tsx": "f6f6c74bfaf1baf203610c44f14385cd993c984dd068f0ff8e2659d19d172c63",
+    "apps/web/app/safe-view.tsx": "0edd4a992d0cec606549b1f0c3b97308678901ecb030976eb296402d399a7a8d",
+    "apps/web/app/style.css": "d2eb725b1e845b65a2fd5936184c79ac6ba8c27c019656b136e5e258f5c031ad",
+    "apps/web/next-env.d.ts": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b",
+    "apps/web/package-lock.json": "3a5f015decd9b2a3d236e855c3c3ff394e4b4f9220c7a80bc3254b2710ba395e",
+    "apps/web/package.json": "7759bb99af82bc58fef4b3c35825f37731b4ef89bd8f2d950547e8bd18377076",
+    "apps/web/public/sample-resume.pdf": "1e003121a36e62dcd79f5a96e6fb023dadb527695297ba2cb0ef250a6e412d78",
+    "apps/web/tsconfig.json": "5f13aa76dff2e63afa46e3ecdb80369b94d5007a15ff9edc91b4eecf6c609435",
+    "e2e/README.md": "324b5ea34e37147ea0a5e856284aa5778aae8a7372870694ff69068e37534955",
+    "e2e/auth.spec.cjs": "64ef168815b8fe975026ae0f3441329b2e8b792ca9f8c0360e18318f55ca3617",
+    "e2e/av_isolation.py": "df964e2ebd567808f3b7d44a2962484f5872fdcfcffd435428b1721e65067f44",
+    "e2e/business.spec.cjs": "e3cb0c42224a01f05c3f3bb96ed17bbab955212df4a896a2b81939771df9264c",
+    "e2e/check_xlsx.py": "0186ae69b9f32d87405d21ed8c2a1cff74e2ed30073ca839647a5b04e1f64b91",
+    "e2e/documents.spec.cjs": "2be34942af242bac15e8c460c2e6108fe49a5d45f7e89bea8688db7830759554",
+    "e2e/draft-key.cjs": "bc6e2430ed6127f15562ab964ff630e80bf26de71e5ada88ec7c2e84b2ca83e9",
+    "e2e/fixtures/provenance.json": "37cade2ce213b721d116c984312b28bad6a6926e4af1ea145924f05ba56d1013",
+    "e2e/fixtures/sheets-career-history.xlsx": "dd8a2c9b637b306395c55318cfd32a952d561ca8d0c7d3154c66d7cbbcc3cbcd",
+    "e2e/fixtures/sheets-resume.xlsx": "b27b31bf905d7d56170fa80670d9127a4dfdd1c5cf628228fd3452414868fc34",
+    "e2e/helpers.cjs": "fc49e7664f38dc8379c2b41bc62a826daafee613855655dedf947c5d68a9218a",
+    "e2e/legacy_migration.py": "47b38fabc3f167b2de0bf2d9219b43969dfe523e9509768484ee7fc039d4e4b4",
+    "e2e/m5.spec.cjs": "8ecd40e38fab81a09cb9c2a62c70d427af1fb879cceb1e0849e63ed719e12572",
+    "e2e/make_pdf_fixtures.py": "f256271016c5c4f36cd8cab571c7d1ab93d162b74eb48102089c39fdb92d5e48",
+    "e2e/make_safe_view_fixtures.py": "7d76fc548d49c92adae5e70a8e94c3642438109dadd91b6d641c8b50a3d1f110",
+    "e2e/package-lock.json": "3bd6ead6c5bd2ebc808f8c643218afc30b6782b0a3ce6f7ad7f65882c2d1c626",
+    "e2e/package.json": "fb2f035421df1c0248735aa4d0191e0871725b517dffab5bcc245cd7e683a802",
+    "e2e/playwright.config.cjs": "bbe64b193234ec1ee6936d38f8c5b375455db426e1be8ed22486cf82d3e8e3eb",
+    "e2e/r1.spec.cjs": "3682704af651cb7c15f0cb19e903c44575a1c0464836bc297cfe8090738a9041",
+    "e2e/r2.spec.cjs": "a80e5cf8de302ad2aa36751115607bbca72b15ccc5b3c56bdd87b0cf2feccefb",
+    "e2e/r3.spec.cjs": "624a7fd368f47e9ef6133f78eaf436a3996462251ae92c5f9e35eb718450b9ac",
+    "e2e/r4.spec.cjs": "7e74f90beef80a1e66b85d8ac9773a3ffff121310c7e28ce95c9013cb7f546ed",
+    "e2e/r5.spec.ts": "290aac0d6279291493e73c619982d5e05bbfef96ca8c5332ea76807778b01ae2",
+    "e2e/reporter.cjs": "32fd4bc48e82041697b2928883047b2f921f9972e961dc934e821ce8b388f984",
+    "e2e/s1.spec.cjs": "9bef3684cc56aa65d17ddc5ca743d9d90260b0958cd74a86d1256c360b4dc348",
+    "e2e/s2.spec.cjs": "c504db1efe5fec5d511911cf831b240d6869ff22d7dc915d9bb9c03e3d0bba10",
+    "e2e/s2_isolation.py": "63f9ef28112a08d576f94c33bca4402dd20265ebc2abf4d0e1d2746a92cc7e43",
+    "e2e/s3.spec.cjs": "9d384eebf0ee6e45750aa3b3f63beaaa05f9b04e7fe9bc0b5e428f2eebd928df",
+    "e2e/s5.spec.ts": "ba53d5bf1841f119d95f1e10083a70dc9ad6ad0bc303662867f88577c79eb3a1",
+    "e2e/synthetic_av.cjs": "c8a95fa4ec20511c51c17f7736446599552011e24b3113b1256defdcd1c916cd",
+    "e2e/tsconfig.json": "4ac74743170f04576e4abebc7f7efab9b5202a480341b5c1356b10968f519566",
+    "e2e/workflow.spec.cjs": "122ec5299fbd6efc7225d0be203020c02df7a40c85d7f9747da5e74485198b93",
+    "e2e/z-s4.spec.cjs": "9a98d39ed4b0077033640b909110666eb48e4359d104acb1d00489c6eee56b25",
+    "fixtures/0001_auth.sql": "f47ee02c67efa5897e092f4f8663894750c199a50e181d41255784bad430bdd0",
+    "fixtures/0002_jobs_candidates.sql": "ed5c18eecd8eb86f5d46a970ce2c233ea68524fca507c56e460485ed952c3568",
+    "infra/local/compose.yaml": "5c96a9e37eb9d2a63925d1975a2d1e7938139a1940c409f8f83f281236aacab2",
+    "infra/local/db-init.sh": "0995f83755372b02b213ccea8fac9265264dbedafb7a1791208257a63e5221c2",
+    "infra/local/nginx.conf": "e4f42925fae2dcb8589b033fff105270a4d32f9b2ee7ab462d71d4494e761748",
+    "infra/local/pdf-seccomp.json": "cc3e61cabda6bbc1e53e54d27ba4d55a9d3be829b6dd1a596f4a7b31b1cc7849",
+    "migrations/0001_auth.sql": "e266b163eb1980214210808efef61590444539edbd6018363a70cd8876fbafb5",
+    "migrations/0002_jobs_candidates.sql": "6856bff59f8e25045b834629dcde2b895a12c265dccf632d5aa130020734200c",
+    "migrations/0003_documents.sql": "090f37b6dbe6c2813c718312df8007967e066fd81492d90cb921755b3d3dc5e4",
+    "migrations/0004_applications.sql": "19c46b8b7aef9b77dfe92e44da49fea5abdb89e2846ca39f22d59058bf50efbe",
+    "migrations/0005_snapshot_validation.sql": "2162c7eaff926080aaa7abc40f4ab522256f9c4b68795bbe2e7c37539a9ad0a3",
+    "migrations/0006_document_formats.sql": "09fdd77407a006cb64c17e38474b7e4c00073859ab8ecf819174a2168af758a5",
+    "migrations/0007_document_av.sql": "ee41b5475caff39e26c4fac3a0a2a199c4bd8e4dd08b6fc4a179120d05129a3f",
+    "migrations/0008_document_versions.sql": "b5276ca02af1c09903ee8bf88f2da047e3d5cb60f9b154b764fd6d1751b3f5b9",
+    "migrations/0009_form_drafts.sql": "974207bff40e2af52e1ad9170ec077ae3f81a53c2f3501c24bec930ef49dc42c",
+    "migrations/0010_encrypted_uploads.sql": "067779fb24e52ba2c72b6253841463b70f2c00b73b2541e0bca3fb628bf12f79",
+    "migrations/0011_upload_context_constraints.sql": "8fa85f3cead2fc97959cb93e3f691a3eee7d86b84ef127bc81eff1f141768a16",
+    "migrations/0012_document_workers.sql": "4db291ab63303cff907f9766a083f4b6cb36198adeb385a194df193d4aa5968f",
+    "migrations/0013_safe_views.sql": "4b18920d6b9cb271471f6794d138c57dd5d9855fa9c0fe848928ee81a63fd4c1",
+    "migrations/0014_document_migration.sql": "fec7a210672254790548a49436b3b5c8890c747d3b9f5504fc6497661b0386e5",
+    "scripts/audit.py": "fb7ce516f6a34dbbc691c72e46868b1f523a6a70c4f99316ac1feb973c0e9493",
+    "scripts/check.py": "a6ab0f312c1540ccc6cb2a504c46430ba1a5e097803440b205184ae16a844f2c",
+    "scripts/document_crypto.cjs": "f06f5c2fa5aa561acaa7a8fb98dc57b8d3e5e2202090a09febfbcc7c0dce0136",
+    "scripts/document_job.py": "c273a2fd1c8c078edc4b350e43d2d1a1fb9ae9d934756d14acf7448f9d294a5a",
+    "scripts/document_key.py": "8478deee09c2683c08b1ba05361d77ff46264659116cffdd9e3a29cce3d34f71",
+    "scripts/document_migrate.py": "2a0832eb237c12f62dbd15809e8fab37df522e9e85c3938342bf7eedf9bbd208",
+    "scripts/document_operator.py": "4ffed37c3c2cb3107185293bbe2df53988e60de6eadead174be08e3bed412709",
+    "scripts/document_snapshot.py": "3936fc868b495ff638d685380abafe4166775b27d1ca6cd27aaae3f43691836d",
+    "scripts/e2e.py": "a6f90fe85705cb6ad60507c3584bcac8b267386b0a5966f241f5820a8ed50bee",
+    "scripts/local.py": "f3a800d9db890b1f269e16d9701d6a5894edf007f0d613d5e22a8832f21b0541",
+    "services/api/.dockerignore": "5999c1b55c0e789196772bc812ca50b9d59a97edba5811f313463a9be5d76b5f",
+    "services/api/Cargo.lock": "7e2acdbc3ccc0603a1aeeb5827066b47d53368eadb8af8923ce14ee4ce071aa9",
+    "services/api/Cargo.toml": "f26553273acdb23c2a25c4289083dacf1cb2c0fa3d1740c0aa152080c3d14e4a",
+    "services/api/Dockerfile": "55f9c33dd8d41e60d5c9b8e2f6f73e025256dc33383b641c09782fbb9265401f",
+    "services/api/src/applications.rs": "7e342d65c0a7e545521e7cdfcd7bb36a9240efc81eed0ca04800403190db0837",
+    "services/api/src/auth.rs": "30cdd2f0aa5e7fe7afe38bba6d35f402c2f039fba1ceb66098c335598bc54baa",
+    "services/api/src/business.rs": "ea1a10ec99f8c5829d2347bfa9f5b7b17507d960b0c298d9a252b89cd5aa9eff",
+    "services/api/src/documents.rs": "35d7669a7876f0172763c02064198767378aba6534a3390b0ef9a282a34108c1",
+    "services/api/src/drafts.rs": "a4f9173efe709998cef4718d0f2ae499624fed2a0a938061b645d45c005a6550",
+    "services/api/src/main.rs": "6dee04bd9d19691cf2b6625f00f692e9d66611e6c8e261becf6fa2861f9a91cb",
+    "services/api/src/previews.rs": "ecaa7b6fded37e64e1ea635bf0d1283bd12d24a33462a8b6e98049e1a141bc82",
+    "services/api/src/scanner.rs": "4de1e6bb8355bc513e65594f72b67b275fc39fccf845678770963498e0b95774",
+    "services/api/src/uploads.rs": "c35adead1fb23ca52b34ae936dc589fcf6ec94c637c8c0a54bd2e0abdc795253",
+    "services/api/src/views.rs": "d1c8846ade1087177581808ef2df2b13efc8493c7ec048f25ce588eb8b41aec2",
+    "services/api/src/workers.rs": "57a61acb5d4d859ac56794a5d1464e50acc07fb138b014c7ffc9f2dcc826f87c",
+    "services/av/Dockerfile": "b408fa0efe4be02334d4ab7a78ef12e1464ec0dd55bbd4453206faf981197345",
+    "services/av/common.py": "a76cc41f1c5ebec6299e9fb3da5cd00b8a317b9b285a826134217e07d0f9d39f",
+    "services/av/scanner.py": "b8b1f6a42cca2acb11467c23ed2d0052e6b3478e0972edc5c6925b3cd67d7c2e",
+    "services/av/updater.py": "8581ebb6943ea26cf22650307a95d78a0e87353331b391e0eeef2f8f002529cb",
+    "services/document-worker/.dockerignore": "3c98068f51336af59b57522feb33f3c05c1bee2e15d4569675819c18c18d434c",
+    "services/document-worker/Dockerfile": "f06e1eccaa04ebe18352f8b45526b12ce2d28376e06dccdeffde48390ebf8541",
+    "services/document-worker/broker.cjs": "0b1317fbf63061cf239e3851500d4e32b948512017faaff937280d40b00df237",
+    "services/document-worker/crypto.cjs": "ab5c57578a0b650b110fedbf41f6164709623707985a955e0ce208db21ed7fe6",
+    "services/document-worker/relay.cjs": "3bbc85e51573e50ffcb57fc45db3c4ea71c1c7715651a218c1e92c89ba9df84e",
+    "services/document-worker/sandbox.py": "62b5758ff23f9bdfa85fb4117c779f31cad19f5f16c82631a997a385aac754be",
+    "services/document-worker/viewer.cjs": "fe43b2e6c2e8efd21bfbf9620f46dc22f401e23edb32d4a05f1f48fd3af41623",
+    "services/pdf-renderer/.dockerignore": "9babb1a22c1ca3d069f15552f673b3aca937175bd48bcb1f304ac19bc57d6823",
+    "services/pdf-renderer/Dockerfile": "20194584015cad6983545dbcea0dbdc82f0a84dfcc95ea85781a4c2b729136f5",
+    "services/pdf-renderer/convert.py": "761d56b41a7af50bfb7b358e97aad1f1de771f6949064586620656ef23d5cab2",
+    "services/pdf-renderer/invoice.mjs": "7499ae02aa58ba8bb9494d80105503287780765c5abdb845014a44c1d1c848db",
+    "services/pdf-renderer/package-lock.json": "9cb6016c2d56c404f284cbe6f0dc9006ca35f22951a3f0dceee01f56098054e0",
+    "services/pdf-renderer/package.json": "ab0efd252577e89a682357a1cc3f322d9b0c2e8a8e653d9051548189c9df52d0",
+    "services/pdf-renderer/requirements.txt": "d2189265adfe5898436bb5ec2d7668e439bf8a6cad0599cd5d5722516d1681b1",
+    "services/pdf-renderer/sandbox.py": "04d16c49a37f7e9a5f6d47491c2fe4f14066bc940d3201a4571c3caa7015e576",
+    "services/pdf-renderer/server.py": "9caac1404515c61709bafea9cbb2dcf9aabf94b87c8d20997ff578b9e5031f45",
+    "services/pdf-renderer/validator.py": "886a1560d32f65fdcd8f1ff1dbf21e4dd4a09aecf26421883db956923a6fc335",
+    "services/pdf-renderer/view_xlsx.py": "daee4f7f3edd0d3b93a2fc0d139e0ab1320e5cf879361f9cad8be61934c5f489",
+    "services/pdf-renderer/xlsx_validator.py": "45d1a86bc87408581aded60e4b9a68a5da966f8b6adad1f6b54732c351419675",
+    "services/postgres/Dockerfile": "49a87e70d82057df4ce97ad638395a0d3a7e57ebd80992e72dece7075ab93ddf",
+    "validation/r0/fixtures/sheets-career-history.xlsx": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+    "validation/r0/fixtures/sheets-resume.xlsx": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9"
+  },
+  "source_commit": "b27c8f807711bc48ee529a830c0e9e35cfc8efda",
+  "source_dirty": false,
+  "source_unchanged_during_run": true,
+  "docker": "29.5.2 / aarch64",
+  "av_runtime": {
+    "scan": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 1109626880
+    },
+    "updater": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 1018912768
+    },
+    "pdf-renderer": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 107999232
+    }
+  },
+  "log_scan": {
+    "gateway": {
+      "secret_pattern_found": false
+    },
+    "web": {
+      "secret_pattern_found": false
+    },
+    "api": {
+      "secret_pattern_found": false
+    },
+    "db": {
+      "secret_pattern_found": false
+    },
+    "idp": {
+      "secret_pattern_found": false
+    },
+    "idp-db": {
+      "secret_pattern_found": false
+    },
+    "pdf-renderer": {
+      "secret_pattern_found": false
+    },
+    "invoice-renderer": {
+      "secret_pattern_found": false
+    },
+    "artifact-viewer": {
+      "secret_pattern_found": false
+    },
+    "scan": {
+      "secret_pattern_found": false
+    },
+    "updater": {
+      "secret_pattern_found": false
+    }
+  },
+  "services_stopped": true,
+  "elapsed_seconds": 354.268
+}

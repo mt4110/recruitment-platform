@@ -1,0 +1,420 @@
+{
+  "api": [
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "auth_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "runtime_db"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "inventory"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "oidc"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "upload_config"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "app_state"
+    },
+    {
+      "event": "startup_phase",
+      "phase": "listen"
+    }
+  ]
+}

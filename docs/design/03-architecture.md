@@ -1,7 +1,7 @@
 # アーキテクチャと実装配置
 
 > **2026-10-16：現行構成への案内**
-> 署名付き暗号化受付・隔離ワーカー・安全な閲覧はS1〜S3で実装済み。S4の移行・復旧は[S4記録](../validation/2026-10-16-s4-report.md)、S5の両arch横断受入は[S5記録](../validation/2026-10-16-s5-report.md)を参照。以下の構成図・同居するPDF検査／請求・LocalBlobStoreの説明は旧構成の履歴であり、現行の文書保護経路を表さない。現行契約は[正本設計](12-secure-document-pipeline.md)、[S2](14-s2-worker-contract.md)、[S3](15-s3-safe-view-contract.md)、[S4](16-s4-migration-contract.md)を優先する。
+> 署名付き暗号化受付・隔離ワーカー・安全な閲覧はS1〜S3で実装済み。S4の移行・復旧は[S4記録](../validation/2026-10-16-s4-report.md)、S5の両arch横断受入は[S5記録](../validation/2026-10-16-s5-report.md)、R5の端末保存・復元は[R5記録](../validation/2026-10-17-r5-report.md)を参照。以下の構成図・同居するPDF検査／請求・LocalBlobStoreの説明は旧構成の履歴であり、現行の文書保護経路を表さない。現行契約は[正本設計](12-secure-document-pipeline.md)、[S2](14-s2-worker-contract.md)、[S3](15-s3-safe-view-contract.md)、[S4](16-s4-migration-contract.md)を優先する。
 
 ## 現行の責務と言語
 
@@ -89,3 +89,7 @@ docs/                      設計、使い方、ガイド
 実装開始時にサポート対象のNode、Next.js、Rust、Axum、SQLx、PostgreSQL、Keycloak、Playwright、Python、pikepdf/libqpdfを一次資料で確認し、バージョンとlockfileを固定する。latestタグを配布手順に使わない。DB migration用の権限と通常API用の権限を分ける。依存とフォントのライセンスを一覧にし、配布するイメージの脆弱性を確認する。
 
 参照：[Axum](https://docs.rs/axum/latest/axum/)、[Next.js self-hosting](https://nextjs.org/docs/app/guides/self-hosting)、[Keycloak container](https://www.keycloak.org/server/containers)、[Playwright PDF](https://playwright.dev/docs/api/class-page#page-pdf)。これらを用いた上記構成は本プロジェクトの設計判断であり、M1の実装範囲と実行結果は[確認記録](../validation/2026-10-15-m1-report.md)を参照。未実装部分の成立を保証しない。
+
+## R5の端末保存境界
+
+ブラウザ側の`local-drafts.ts`が暗号化IndexedDB・tab排他・終了marker、`drafts.tsx`が認証済みAPIとの同期・復元選択を担当する。業務確定は端末送信予定の永続化後に要求し、結果照合は既存のサーバー台帳を正本とする。Reactの認証再照合gateで表示・復号・同期・送信を停止する。製品実装・制約・検証範囲は[実装契約](18-r5-device-drafts.md)を優先する。
