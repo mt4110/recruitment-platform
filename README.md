@@ -14,7 +14,7 @@
 
 [クラウドサインの導入方法・連携方針](docs/design/11-cloudsign.md)も設計に追加しました。手動運用からAPI導入までの準備・誤送信防止・状態照合を整理したもので、連携は未実装です。
 
-**書類保護方針v0.5のS1（暗号化受付）は実装・E2E・Linux/amd64 CIまで完了しました。** [設計](docs/design/12-secure-document-pipeline.md)と[S1記録](docs/validation/2026-10-16-s1-report.md)を参照してください。新経路の書類は未検査・閲覧／推薦不可です。鍵broker・復号・隔離検査・安全な閲覧はS2以降、旧原本／請求PDF経路の切替も後続です。S1受入後の残計画は新方式50〜86時間、既存分を合わせ78〜134時間＋未積算のM6監査残件（任意ツール接続・公開は別枠）。[S0は両archで成立](docs/validation/2026-10-16-s0-report.md)。外部公開は行っていません。
+**書類保護方針v0.5のS2（鍵管理・隔離ワーカー）は実装・局所23件・Linux/amd64全体124件のE2Eまで完了しました。** [設計](docs/design/12-secure-document-pipeline.md)、[S2の実装契約](docs/design/14-s2-worker-contract.md)、[S2記録](docs/validation/2026-10-16-s2-report.md)を参照してください。原本鍵・成果物鍵の版管理と失効、broker／relay／sandbox分離、実AV／形式検査、暗号化manifestを追加しました。検査合格でも変換待ちで、閲覧／推薦は不可です。安全な閲覧・旧原本／請求PDF経路の閉鎖はS3以降。S2受入後の残計画は新方式34〜60時間、既存分を合わせ62〜108時間＋未積算のM6監査残件（任意ツール接続・公開は別枠）。[S0は両archで成立](docs/validation/2026-10-16-s0-report.md)、[S1は暗号化受付まで完了](docs/validation/2026-10-16-s1-report.md)。外部公開は行っていません。
 
 [S0確認計画](docs/design/13-s0-verification-plan.md)に、隔離・鍵・変換の必須確認、暫定資源上限、fixture/証拠と8〜14時間の停止枠を定義しました。S0は両arch・最終CI・暗号化したnative目視証拠まで確認済みです。製品実装の完了ではありません。
 
@@ -73,6 +73,7 @@ python3 scripts/e2e.py
 - [AWS・GCP・AzureのIaCサンプル設計](docs/design/08-cloud-examples.md)
 - [LP・ガイド・利用文書の要件と目次](docs/design/09-documentation.md)
 - [PDF/XLSX・AV・全フォーム保存/復元の追加設計](docs/design/10-resumes-and-autosave.md)
+- [S2鍵管理・隔離ワーカーの実装・検証記録](docs/validation/2026-10-16-s2-report.md)
 - [S1暗号化受付の実装・検証記録](docs/validation/2026-10-16-s1-report.md)
 - [S0の確認条件・停止条件（実施記録へリンク）](docs/design/13-s0-verification-plan.md)
 - [署名付き・暗号化アップロードと安全な閲覧（v0.5・段階実装）](docs/design/12-secure-document-pipeline.md)

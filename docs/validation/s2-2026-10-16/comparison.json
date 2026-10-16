@@ -1,0 +1,13 @@
+{
+  "local_commit": "d93a288519dc24e322b99799fb17ad5e459f78be",
+  "native_commit": "cf12a10756b755949f7a8a127cf79af517a16767",
+  "source_files": 111,
+  "identical_files": 110,
+  "changed_files": [
+    "e2e/auth.spec.cjs"
+  ],
+  "change_reason": "Only authentication test now verifies exact ten service names including invoice-renderer; product runtime and S2 tests unchanged.",
+  "all_native_sources_match_committed_source": true,
+  "local_immutable": true,
+  "native_immutable": true
+}

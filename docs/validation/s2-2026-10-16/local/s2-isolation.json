@@ -1,0 +1,24 @@
+{
+  "sandbox": {
+    "allowed": [
+      "relay:8080"
+    ],
+    "denied": [
+      "api:8080",
+      "api:8081",
+      "db:5432",
+      "scan:8080",
+      "pdf-renderer:8080",
+      "invoice-renderer:8080",
+      "broker:8080",
+      "1.1.1.1:443"
+    ],
+    "secrets_absent": true,
+    "root_readonly": true,
+    "uid": 1004,
+    "caps_zero": true,
+    "pid1": "/sbin/docker-init"
+  },
+  "relay_secret_mounts": false,
+  "relay_distinct_user": true
+}

@@ -1,0 +1,145 @@
+{
+  "scope": "M1 through M5 and R1 through R4 browser E2E",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "M5 invoice metadata and PDF isolate participants and never create a second placement",
+      "status": "passed",
+      "duration_ms": 2624,
+      "errors": []
+    },
+    {
+      "name": "M5 non-hired and unknown IDs have no invoice",
+      "status": "passed",
+      "duration_ms": 270,
+      "errors": []
+    },
+    {
+      "name": "M5 notification cursor and runtime RLS expose only recipient organization and always unsent",
+      "status": "passed",
+      "duration_ms": 167,
+      "errors": []
+    },
+    {
+      "name": "M5 full browser flow reaches invoice and unsent notification without sending mail",
+      "status": "passed",
+      "duration_ms": 4287,
+      "errors": []
+    },
+    {
+      "name": "M5 long Japanese and escaped names remain one page with complete names in metadata",
+      "status": "passed",
+      "duration_ms": 3769,
+      "errors": []
+    },
+    {
+      "name": "M5 renderer outage fails closed and browser offers retry",
+      "status": "passed",
+      "duration_ms": 17585,
+      "errors": []
+    },
+    {
+      "name": "M5 revoked share removes employer PDF and plaintext while agency retains invoice",
+      "status": "passed",
+      "duration_ms": 3242,
+      "errors": []
+    },
+    {
+      "name": "M5 internal renderer refuses missing key and caller-controlled HTML URL or extra schema",
+      "status": "passed",
+      "duration_ms": 584,
+      "errors": []
+    },
+    {
+      "name": "M5 expired session clears invoice metadata and rendered blob",
+      "status": "passed",
+      "duration_ms": 1371,
+      "errors": []
+    },
+    {
+      "name": "S2 real broker AV format sandbox, live isolation probes and encrypted manifest",
+      "status": "passed",
+      "duration_ms": 4670,
+      "errors": []
+    },
+    {
+      "name": "S2 native Sheets XLSX follows real AV and one job per fresh sandbox",
+      "status": "passed",
+      "duration_ms": 8296,
+      "errors": []
+    },
+    {
+      "name": "S2 corrupted GCM tag never reaches AV or parser; terminal outcome is retained",
+      "status": "passed",
+      "duration_ms": 4408,
+      "errors": []
+    },
+    {
+      "name": "S2 scanner outage refuses, retains accepted ID and recovers in a new generation",
+      "status": "passed",
+      "duration_ms": 28001,
+      "errors": []
+    },
+    {
+      "name": "S2 original/artifact revocation persists across restart, blocks leased decrypt and commit",
+      "status": "passed",
+      "duration_ms": 27324,
+      "errors": []
+    },
+    {
+      "name": "S2 ownership archive and stale lease fencing deny decryption; expired worker recovers",
+      "status": "passed",
+      "duration_ms": 2560,
+      "errors": []
+    },
+    {
+      "name": "S2 worker role cannot issue arbitrary DB queries; public gateway does not expose control",
+      "status": "passed",
+      "duration_ms": 961,
+      "errors": []
+    },
+    {
+      "name": "S2 rotation retains old original and artifact keys and restores encrypted manifests",
+      "status": "passed",
+      "duration_ms": 9345,
+      "errors": []
+    },
+    {
+      "name": "S2 real malware and invalid format are terminal without making documents usable",
+      "status": "passed",
+      "duration_ms": 8594,
+      "errors": []
+    },
+    {
+      "name": "S2 browser encrypted intake remains unavailable after checking and page reload",
+      "status": "passed",
+      "duration_ms": 4503,
+      "errors": []
+    },
+    {
+      "name": "S2 missing original key permission refuses and restored old material resumes same document",
+      "status": "passed",
+      "duration_ms": 8406,
+      "errors": []
+    },
+    {
+      "name": "S2 actual broker process loss is fenced and resumes after lease expiry without another upload",
+      "status": "passed",
+      "duration_ms": 9560,
+      "errors": []
+    },
+    {
+      "name": "S2 invoice and original inspection routes reject the opposite service purpose",
+      "status": "passed",
+      "duration_ms": 872,
+      "errors": []
+    },
+    {
+      "name": "S2 idle worker has no job, performs no decryption and stops cleanly",
+      "status": "passed",
+      "duration_ms": 3875,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

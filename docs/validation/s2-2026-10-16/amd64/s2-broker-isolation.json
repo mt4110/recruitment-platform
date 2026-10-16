@@ -1,0 +1,16 @@
+{
+  "yes": [
+    "api-control:8081",
+    "relay:8080",
+    "scan:8080"
+  ],
+  "no": [
+    "api-control:8080",
+    "api-public:8080",
+    "db:5432",
+    "invoice-renderer:8080",
+    "1.1.1.1:443"
+  ],
+  "artifact_private_absent": true,
+  "docker_absent": true
+}

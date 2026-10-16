@@ -1,0 +1,964 @@
+{
+  "jobs": [
+    {
+      "status": "refused",
+      "events": [],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-0382b2a3f0294947_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem",
+            "/run/broker-auth",
+            "/run/scan-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-0382b2a3f0294947_broker-relay",
+            "document-0382b2a3f0294947_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-0382b2a3f0294947_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-0cd554d1b0cdf7ea_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-0cd554d1b0cdf7ea_broker-relay",
+            "document-0cd554d1b0cdf7ea_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-0cd554d1b0cdf7ea_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-2e85755d77c4cd20_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/keys/original-v1.pem",
+            "/run/broker-auth",
+            "/run/scan-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-2e85755d77c4cd20_broker-relay",
+            "document-2e85755d77c4cd20_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-2e85755d77c4cd20_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-3d0c9352473c9526_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-3d0c9352473c9526_broker-relay",
+            "document-3d0c9352473c9526_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-3d0c9352473c9526_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-59431b482dc83c52_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/broker-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-59431b482dc83c52_broker-relay",
+            "document-59431b482dc83c52_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-59431b482dc83c52_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-60a40abf1a41e724_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-60a40abf1a41e724_broker-relay",
+            "document-60a40abf1a41e724_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-60a40abf1a41e724_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-6b37f722bcce4835_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-6b37f722bcce4835_broker-relay",
+            "document-6b37f722bcce4835_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-6b37f722bcce4835_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "refused",
+      "events": [
+        "rejected"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-8b1c1c26bcbde9a4_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-8b1c1c26bcbde9a4_broker-relay",
+            "document-8b1c1c26bcbde9a4_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-8b1c1c26bcbde9a4_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-8d9c27f440c4db07_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-8d9c27f440c4db07_broker-relay",
+            "document-8d9c27f440c4db07_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-8d9c27f440c4db07_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "refused",
+      "events": [
+        "retryable"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-9770173eb1ccd505_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-9770173eb1ccd505_broker-relay",
+            "document-9770173eb1ccd505_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-9770173eb1ccd505_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "refused",
+      "events": [
+        "rejected"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b1b88f653bb2773e_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b1b88f653bb2773e_broker-relay",
+            "document-b1b88f653bb2773e_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-b1b88f653bb2773e_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "refused",
+      "events": [
+        "retryable"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b444b7893cc7fb25_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/keys/original-v1.pem",
+            "/run/broker-auth",
+            "/run/scan-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b444b7893cc7fb25_broker-relay",
+            "document-b444b7893cc7fb25_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-b444b7893cc7fb25_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "refused",
+      "events": [
+        "rejected"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b46eb156b41c878f_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem",
+            "/run/broker-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-b46eb156b41c878f_broker-relay",
+            "document-b46eb156b41c878f_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-b46eb156b41c878f_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-cb10772fe21dfe33_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/keys/original-v2.pem",
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-cb10772fe21dfe33_broker-relay",
+            "document-cb10772fe21dfe33_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-cb10772fe21dfe33_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "no_job"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-d07a9500d2f95c56_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem",
+            "/run/broker-auth",
+            "/run/scan-auth"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-d07a9500d2f95c56_broker-relay",
+            "document-d07a9500d2f95c56_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-d07a9500d2f95c56_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-dea621c304a9db88_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem",
+            "/run/keys/original-v2.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-dea621c304a9db88_broker-relay",
+            "document-dea621c304a9db88_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-dea621c304a9db88_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    },
+    {
+      "status": "passed",
+      "events": [
+        "checked"
+      ],
+      "stopped": true,
+      "log_secret_pattern_found": false,
+      "containers": {
+        "broker": {
+          "user": "501:20",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-ffe3ca3c867f56df_broker-relay",
+            "recruitment-e2e-20261016-090144-5abbb1_document-control",
+            "recruitment-e2e-20261016-090144-5abbb1_scan"
+          ],
+          "mount_targets": [
+            "/run/broker-auth",
+            "/run/scan-auth",
+            "/run/keys/original-v1.pem"
+          ]
+        },
+        "relay": {
+          "user": "1003:1003",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 536870912,
+          "pids_limit": 64,
+          "networks": [
+            "document-ffe3ca3c867f56df_broker-relay",
+            "document-ffe3ca3c867f56df_sandbox-relay"
+          ],
+          "mount_targets": []
+        },
+        "sandbox": {
+          "user": "1004:1004",
+          "read_only": true,
+          "cap_drop": [
+            "ALL"
+          ],
+          "memory_limit": 268435456,
+          "pids_limit": 64,
+          "networks": [
+            "document-ffe3ca3c867f56df_sandbox-relay"
+          ],
+          "mount_targets": []
+        }
+      }
+    }
+  ]
+}

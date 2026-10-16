@@ -1,0 +1,27 @@
+{
+  "allowed_types": [
+    "json",
+    "png"
+  ],
+  "secret_pattern_found": false,
+  "files": [
+    "amd64/run.json",
+    "amd64/s2-broker-isolation.json",
+    "amd64/s2-checked-pending.png",
+    "amd64/s2-isolation.json",
+    "amd64/startup.json",
+    "amd64/summary.json",
+    "ci.json",
+    "comparison.json",
+    "local/job-runtime.json",
+    "local/run.json",
+    "local/s2-broker-isolation.json",
+    "local/s2-checked-pending.png",
+    "local/s2-isolation.json",
+    "local/source-check.json",
+    "local/startup.json",
+    "local/stopped-check.json",
+    "local/summary.json"
+  ],
+  "no_originals_keys_env_trace_session_dumps": true
+}

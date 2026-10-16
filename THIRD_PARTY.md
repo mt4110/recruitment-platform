@@ -44,3 +44,7 @@ R2では公式ClamAV 1.5.4 Debian 13 slimをmultiarch index digest `sha256:9a969
 PDF製品workerはPlaywright1.64.1（Apache-2.0）と公式v1.64.1-noble digestへ更新。実runtimeはChrome for Testing156.0.8078.4で、Chromium151だったM0/M5と区別する。`ABOUT`とsandbox付き`chrome://terms`表示を実imageで確認し、[観測metadata](docs/validation/m6-2026-10-16/browser-terms.json)を保存した。[Playwright release notes](https://playwright.dev/docs/release-notes)と[Googleの実行バイナリ用追加規約](https://www.google.com/chrome/terms/)も参照。ブラウザ全体をPlaywrightと同じApache-2.0とは表記しない。Noto/Poppler/各OSのcopyright/license文書を保持し、独自imageの一般再配布条件の最終確認はM7に残す。製品imageの公開は行っていない。
 
 [M6記録](docs/validation/2026-10-16-m6-report.md)とpackage/license inventoryを参照。Trivy0.76.0・同日更新DBで独立7image（9サービス）を検査し、Web/E2E/PDFのnpm lockは既知指摘0、RustSecは従前1件、OS/同梱ツールには指摘が残った。arm64 534/amd64 535 packageのlicenseが未知または未取得であり、全配布物の適合・脆弱性0件を確認した一覧ではない。修正版ありの同梱CLI/PythonやGo補助ツール、未修正のOSライブラリは監査残件へ明記し、ignoreしていない。
+
+## S2のサービス分離（2026-10-16）
+
+broker／relayは既存のdigest固定Node24.22.0 imageとNode/OpenSSL標準cryptoだけを利用し、npm依存を追加しない。sandbox／旧形式検査／請求生成は既存の固定Python inspector・Playwright1.64.1 imageを再利用する。書類用秘密鍵をsandboxへ渡さず、請求サービスの認証鍵も独立させる。Rustのrsa秘密操作禁止は維持する。サービス分離をOS／image全体の監査合格とは扱わず、M6の保留を維持する。[S2記録](docs/validation/2026-10-16-s2-report.md)。
