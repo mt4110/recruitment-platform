@@ -1,6 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const crypto=require('node:crypto');
-const {sql,signIn,identity,origin,shot}=require('./helpers.cjs');
+const {sql,signIn,identity,origin,shot,freshDraft,assertPrivateStorage}=require('./helpers.cjs');
 const A='00000000-0000-0000-0000-000000000001',B='00000000-0000-0000-0000-000000000002',X='00000000-0000-0000-0000-000000000011',Y='00000000-0000-0000-0000-000000000012';
 const uid=org=>'10000000'+org.slice(8);
 const job=(n)=>'30000000-0000-0000-0000-'+String(n).padStart(12,'0');
@@ -101,6 +101,7 @@ test('M2 candidate update/archive is immutable, scoped and replay-safe',async()=
 
 test('M2 browser job registration, publication, search/save and forbidden detail',async()=>{
  const page=actors.x.page;await page.goto(origin+'/jobs');await page.getByRole('link',{name:'求人を登録する',exact:true}).click();
+ await freshDraft(page);
  await page.getByRole('textbox',{name:/求人名/}).fill('架空 ブラウザ求人');await page.getByRole('textbox',{name:/仕事内容/}).fill('ブラウザから登録した架空の仕事内容です。');await page.getByRole('textbox',{name:/勤務地/}).fill('架空 横浜');
  await page.getByRole('button',{name:'下書き保存',exact:true}).click();await expect(page.getByText('下書き',{exact:true})).toBeVisible();const id=page.url().split('/').pop();
  await page.getByRole('button',{name:'公開する',exact:true}).click();await expect(page.getByText('公開中',{exact:true})).toBeVisible();
@@ -114,6 +115,7 @@ test('M2 browser job registration, publication, search/save and forbidden detail
 
 test('M2 browser candidate form, conflict preserves input, archive and mobile keyboard',async()=>{
  const page=actors.a.page;await page.goto(origin+'/candidates');await page.getByRole('link',{name:'候補者を登録する',exact:true}).click();
+ await freshDraft(page);
  await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 ブラウザ候補者');await page.getByRole('textbox',{name:/経歴の概要/}).fill('架空のブラウザ経歴');await page.getByRole('checkbox',{name:'氏名・経歴はすべて架空のデータです'}).check();
  await page.getByRole('button',{name:'保存する',exact:true}).click();await expect(page.getByRole('heading',{name:'架空 ブラウザ候補者',exact:true})).toBeVisible();const id=page.url().split('/').pop();
  await page.getByRole('link',{name:'編集する',exact:true}).click();const input=page.getByRole('textbox',{name:/架空氏名/});await input.fill('架空 入力を保持');
@@ -122,7 +124,7 @@ test('M2 browser candidate form, conflict preserves input, archive and mobile ke
  const b=actors.b.page;await b.goto(origin+'/candidates/'+id);await expect(b.locator('.workspace').getByRole('alert')).toContainText('見つからない、または閲覧できません。');await expect(b.getByText('架空のブラウザ経歴',{exact:true})).toHaveCount(0);
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await shot(page,'m2-mobile-candidate');
  page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'アーカイブする',exact:true}).focus();await page.keyboard.press('Enter');await expect(page.getByText('アーカイブ済み',{exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'編集する',exact:true})).toHaveCount(0);
- expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);
+ await assertPrivateStorage(page);
  await actors.x.page.goto(origin+'/candidates/'+id);await expect(actors.x.page.locator('.workspace').getByRole('alert')).toContainText('この利用区分では候補者を閲覧できません。');
 });
 
@@ -137,20 +139,22 @@ test('M2 job advisory lock times out safely and leaves the version unchanged',as
  expect((await ok('x','GET','/jobs/'+job(1))).version).toBe(before.version);
 });
 
-test('M2 browser retries a lost creation response with the same key and no duplicate',async()=>{
- const page=actors.a.page;await page.goto(origin+'/candidates/new');await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 応答喪失');await page.getByRole('textbox',{name:/経歴の概要/}).fill('架空の再試行');await page.getByRole('checkbox',{name:'氏名・経歴はすべて架空のデータです'}).check();
- let firstKey,createdId;allowNetworkFailure=true;
+test('M2 browser resolves a lost creation response with the same operation and no duplicate POST',async()=>{
+ const page=actors.a.page;await page.goto(origin+'/candidates/new');await freshDraft(page);await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 応答喪失');await page.getByRole('textbox',{name:/経歴の概要/}).fill('架空の再試行');await page.getByRole('checkbox',{name:'氏名・経歴はすべて架空のデータです'}).check();
+ let firstKey,createdId,draftId,posts=0;allowNetworkFailure=true;
+ const observe=r=>{if(r.method()==='POST'&&r.url()===origin+'/api/v1/candidates')posts++;};page.on('request',observe);
  try {
-  await page.route('**/api/v1/candidates',async route=>{if(route.request().method()!=='POST')return route.continue();firstKey=route.request().headers()['idempotency-key'];const response=await route.fetch();expect(response.status()).toBe(201);createdId=(await response.json()).id;await route.abort();},{times:1});
+  await page.route('**/api/v1/candidates',async route=>{if(route.request().method()!=='POST')return route.continue();firstKey=route.request().headers()['idempotency-key'];const body=route.request().postDataJSON();expect(body.operation_id).toBe(firstKey);draftId=body.draft_id;const response=await route.fetch();expect(response.status()).toBe(201);createdId=(await response.json()).id;await route.abort();},{times:1});
   await page.getByRole('button',{name:'保存する',exact:true}).click();await expect(page.locator('.workspace').getByRole('alert')).toContainText('接続が途切れました');
-  const resend=page.waitForRequest(r=>r.method()==='POST'&&r.url()===origin+'/api/v1/candidates');await page.getByRole('button',{name:'保存する',exact:true}).click();expect((await resend).headers()['idempotency-key']).toBe(firstKey);
+  const outcome=page.waitForResponse(r=>r.request().method()==='GET'&&r.url()===origin+`/api/v1/drafts/${draftId}/outcome?operation_id=${firstKey}`);await page.getByRole('button',{name:'保存する',exact:true}).click();const result=await outcome;expect(result.status()).toBe(200);expect(await result.json()).toMatchObject({state:'committed',resource_type:'candidate',resource_id:createdId,result_status:201});
   await expect(page.getByRole('heading',{name:'架空 応答喪失',exact:true})).toBeVisible();expect(page.url().endsWith('/'+createdId)).toBe(true);expect(sql(`SELECT count(*) FROM candidates WHERE id='${createdId}';SELECT count(*) FROM audit_events WHERE resource_id='${createdId}' AND action='create';`)).toBe('1\n1');
- } finally {await page.unrouteAll({behavior:'wait'});allowNetworkFailure=false;}
+  expect(posts).toBe(1);
+ } finally {page.off('request',observe);await page.unrouteAll({behavior:'wait'});allowNetworkFailure=false;}
 });
 
 test('R4 expired browser session clears plaintext form and refuses writes',async()=>{
- const page=actors.a.page;await page.goto(origin+'/candidates/new');await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 期限切れ入力');
+ const page=actors.a.page;await page.goto(origin+'/candidates/new');await freshDraft(page);await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 期限切れ入力');
  const cookie=(await actors.a.context.cookies(origin)).find(v=>v.name==='rp_session');const hash=crypto.createHash('sha256').update(cookie.value).digest('hex');sql(`UPDATE sessions SET expires_at=now()-interval '1 second' WHERE token_hash=decode('${hash}','hex');`);
- await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page.getByRole('link',{name:'ログインする',exact:true})).toBeVisible();await expect(page.getByRole('textbox',{name:/架空氏名/})).toHaveValue('');await expect(page.getByRole('button',{name:'保存する',exact:true})).toBeDisabled();await expect(page.getByText('架空紹介会社A',{exact:true})).toHaveCount(0);
- await expect(page.locator('.workspace').getByRole('alert')).toContainText('保存済みの下書きは再ログイン後に復元できます');expect((await call('a','POST','/candidates',{name:'架空',summary:'架空',fictional_confirmed:true})).status()).toBe(401);
+ await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page.getByRole('link',{name:'ログインする',exact:true})).toBeVisible();await expect(page.locator('input[name="name"],textarea[name="summary"]')).toHaveCount(0);await expect(page.locator('.workspace')).toHaveCount(0);await expect(page.getByRole('button',{name:'保存する',exact:true,includeHidden:true})).toHaveCount(0);await expect(page.getByText('架空紹介会社A',{exact:true})).toHaveCount(0);
+ await expect(page.getByRole('region',{name:'アカウント'})).toContainText('保存済みの下書きは再ログイン後に復元できます');expect((await call('a','POST','/candidates',{name:'架空',summary:'架空',fictional_confirmed:true})).status()).toBe(401);
 });

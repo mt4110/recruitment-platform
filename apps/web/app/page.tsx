@@ -36,8 +36,9 @@ export default function Home() {
       const r = await fetch('/api/v1/me', { cache: 'no-store', credentials: 'same-origin', signal: abort.signal });
       if (abort.signal.aborted || current !== revision.current) return;
       if (r.status === 401) {
-        if (knownSession.current) setMessage('ログインの有効期限が切れています。もう一度ログインしてください。');
+        if (knownSession.current) setMessage('ログインの有効期限が切れています。もう一度ログインしてください。保存済みの下書きは再ログイン後に復元できます。');
         knownSession.current = false;
+        setBusinessMe(null);
         setView({ phase: 'anonymous' });
       } else if (r.ok) {
         const me = await r.json() as Me;

@@ -7,7 +7,7 @@ function body(form_type,payload={},extra={}){return {revision:0,form_type,target
 async function save(who,b,id=crypto.randomUUID(),status=201){admission();const r=await call(who,'PUT','/drafts/'+id,b);expect(r.status()).toBe(status);return {id,data:await r.json(),body:b};}
 async function makeCandidate(){const r=await call('a','POST','/candidates',{name:'R4架空候補者',summary:'暗号化下書きの架空検証',fictional_confirmed:true});expect(r.status()).toBe(201);return r.json();}
 function scope(me){return `BEGIN;SET LOCAL ROLE app_runtime;SELECT set_config('app.user_id','${me.user.id}',true),set_config('app.org_id','${me.organization.id}',true);`;}
-test.beforeAll(async({browser})=>{sql("INSERT INTO users(id,organization_id,oidc_issuer,oidc_subject,display_name) SELECT '10000000-0000-0000-0000-000000000099',organization_id,oidc_issuer,'20000000-0000-0000-0000-000000000099','R4架空の同一組織の別本人' FROM users WHERE id='10000000-0000-0000-0000-000000000001';");for(const [who,name]of Object.entries({a:'agency-a',b:'agency-b',x:'employer-x',y:'employer-y',c:'unregistered'})){const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',()=>issues.push('PAGE_ERROR'));expect((await signIn(page,name)).status()).toBe(303);actors[who]={context,page,me:await identity(context)};}});
+test.beforeAll(async({browser})=>{sql("INSERT INTO users(id,organization_id,oidc_issuer,oidc_subject,display_name) SELECT '10000000-0000-0000-0000-000000000099',organization_id,oidc_issuer,'20000000-0000-0000-0000-000000000099','R4架空の同一組織の別本人' FROM users WHERE id='10000000-0000-0000-0000-000000000001' ON CONFLICT(id) DO UPDATE SET active=true;");for(const [who,name]of Object.entries({a:'agency-a',b:'agency-b',x:'employer-x',y:'employer-y',c:'unregistered'})){const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',()=>issues.push('PAGE_ERROR'));expect((await signIn(page,name)).status()).toBe(303);actors[who]={context,page,me:await identity(context)};}});
 test.afterAll(async()=>{sql("UPDATE users SET active=false WHERE id='10000000-0000-0000-0000-000000000099';");for(const a of Object.values(actors))await a.context.close();expect(issues).toEqual([]);});
 test('R4 personal RLS encrypted storage strict schemas and no-store headers',async()=>{
  const d=await save('a',body('candidate_new',{name:'R4-PRIVATE-SYNTHETIC',summary:'未入力も保存可能'}));
@@ -72,10 +72,10 @@ test('R4 key wrapping is owner bound, concurrent stable, no-store and revoked ve
 });
 test('R4 draft rate, quota and larger request limits stop writes without replacing input',async()=>{
  // Separate real OIDC user in the same organization; the helper never lowers product limits.
- const who='c';admission();const ids=[];
+ const who='c';await actors.c.page.goto('about:blank');admission();const ids=[];const existing=Number(sql(`SELECT count(*) FROM form_drafts WHERE user_id='${actors.c.me.user.id}' AND state='active' AND expires_at>now();`));expect(existing).toBeLessThanOrEqual(20);
  for(let i=0;i<30;i++){const id=crypto.randomUUID(),r=await call(who,'PUT','/drafts/'+id,body('candidate_new',{name:'架空quota'+i}));expect(r.status()).toBe(201);ids.push(id);}
  let r=await call(who,'PUT','/drafts/'+crypto.randomUUID(),body('candidate_new',{}));expect(r.status()).toBe(429);expect(r.headers()['retry-after']).toBe('3600');
- admission();for(let i=30;i<50;i++)await save(who,body('candidate_new',{name:'架空quota'+i}));
+ admission();for(let i=30;i<50-existing;i++)await save(who,body('candidate_new',{name:'架空quota'+i}));
  r=await call(who,'PUT','/drafts/'+crypto.randomUUID(),body('candidate_new',{}));expect(r.status()).toBe(409);expect((await r.json()).error.code).toBe('DRAFT_QUOTA_EXCEEDED');
  // Existing draft updates remain allowed at the count quota.
  admission();let revision=1;for(let i=0;i<120;i++){r=await call(who,'PUT','/drafts/'+ids[0],body('candidate_new',{name:'架空更新'+i},{revision:revision++}));expect(r.status()).toBe(200);}

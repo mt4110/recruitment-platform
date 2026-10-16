@@ -1,6 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {sql,signIn,identity,origin,shot}=require('./helpers.cjs');
+const {sql,signIn,identity,origin,shot,assertPrivateStorage}=require('./helpers.cjs');
 const pdf=fs.readFileSync(path.resolve(__dirname,'../apps/web/public/sample-resume.pdf'));
 const xlsx=fs.readFileSync(path.join(__dirname,'fixtures/sheets-career-history.xlsx'));
 const MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',actors={},issues=[];let expectedNetwork=false;
@@ -63,7 +63,7 @@ test('R3 new browser context restores only opaque receipts after authentication 
  freshAdmission();const c=await candidate(),p=actors.a.page;await p.goto(origin+'/candidates/'+c.id);await select(p,[file('再起動の架空.pdf')]);await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('登録完了');await p.getByText('再起動後の受付結果を確認する',{exact:true}).click();const link=await p.getByRole('link',{name:'受付結果の復帰リンク'}).getAttribute('href');expect(decodeURIComponent(link)).not.toMatch(/再起動の架空|sha256|csrf|password|buffer/);
  const d=JSON.parse(sql(`SELECT json_build_object('id',id) FROM documents WHERE candidate_id='${c.id}';`));const context=await browser.newContext();
  try{const page=await context.newPage();await signIn(page);let posts=0;page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('/documents'))posts++;});await page.goto(link);await expect(page.getByRole('status')).toContainText(/復帰リンク|保存した受付|受付済みの書類を確認/);await expect(page.getByLabel('PDF／XLSXファイル',{exact:true})).toHaveValue('');await page.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(page.getByRole('region',{name:'書類の受付状況'})).toContainText('受付済みID：'+d.id);expect(posts).toBe(0);
- expect(await page.evaluate(async()=>({local:Object.keys(localStorage),session:Object.keys(sessionStorage),dbs:(await indexedDB.databases()).map(d=>d.name)}))).toEqual({local:[],session:[],dbs:[]});await shot(page,'r3-restart-receipt');
+ await assertPrivateStorage(page);await shot(page,'r3-restart-receipt');
  }finally{await context.close();}
  await actors.b.page.goto(link);await expect(actors.b.page.locator('.workspace').getByRole('alert')).toContainText('閲覧できません');
 });

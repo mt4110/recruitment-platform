@@ -1,6 +1,6 @@
 const {test,expect} = require('@playwright/test');
 const crypto = require('node:crypto'), cp=require('node:child_process'), path=require('node:path');
-const {sql,signIn,identity,anonymous,shot,origin,loginPage}=require('./helpers.cjs');
+const {sql,signIn,identity,anonymous,shot,origin,loginPage,assertPrivateStorage}=require('./helpers.cjs');
 const userId='10000000-0000-0000-0000-000000000001';
 const orgId='00000000-0000-0000-0000-000000000001';
 function attempt(page) {
@@ -62,7 +62,7 @@ for(const [name,organization] of [['agency-a','架空紹介会社A'],['agency-b'
     expect((await context.request.get(origin+'/api/v1/me')).status()).toBe(401);
     expect(sql(`SELECT count(*) FROM sessions WHERE ${where};`)).toBe('0');
     expect((await context.cookies(origin)).some(c=>c.name==='rp_session')).toBe(false);
-    expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);
+    await assertPrivateStorage(page);
     expect(errors).toEqual([]);
   });
 }
