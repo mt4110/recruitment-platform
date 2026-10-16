@@ -1,0 +1,24 @@
+{
+  "checks": {
+    "memory_1GiB": true,
+    "pids_64": true,
+    "cpus_2": true,
+    "readonly_root": true,
+    "address_limit_enforced": true,
+    "cpu_limit_enforced": true,
+    "wall_limit_enforced": true,
+    "tmpfs_enospc": true
+  },
+  "cgroup": {
+    "memory.max": "1073741824",
+    "pids.max": "64",
+    "cpu.max": "200000 100000",
+    "memory.peak": "14733312",
+    "cpu.stat": "usage_usec 87150\nuser_usec 62107\nsystem_usec 25043\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 1\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0"
+  },
+  "limit_probe_seconds": 1.2822548059999974,
+  "seconds": 1.3056164249999824,
+  "rss_kib": 21468,
+  "child_rss_kib": 20444,
+  "cgroup_peak_bytes": 284672000
+}

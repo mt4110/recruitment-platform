@@ -1,0 +1,198 @@
+{
+  "scope": "S0 fixture services, not product auth/ticket/retention",
+  "browser": "156.0.8078.4",
+  "playwright": "1.64.1",
+  "browser_plugin": "absent; regular Playwright",
+  "checks": [
+    {
+      "name": "page_identity",
+      "pass": true
+    },
+    {
+      "name": "not_blank",
+      "pass": true
+    },
+    {
+      "name": "secure_loopback_webcrypto",
+      "pass": true
+    },
+    {
+      "name": "browser_to_node",
+      "pass": true
+    },
+    {
+      "name": "plain_hash",
+      "pass": true
+    },
+    {
+      "name": "reject_ciphertext",
+      "pass": true
+    },
+    {
+      "name": "reject_wrapped",
+      "pass": true
+    },
+    {
+      "name": "reject_iv",
+      "pass": true
+    },
+    {
+      "name": "reject_tag",
+      "pass": true
+    },
+    {
+      "name": "reject_other_org",
+      "pass": true
+    },
+    {
+      "name": "reject_kind",
+      "pass": true
+    },
+    {
+      "name": "reject_page",
+      "pass": true
+    },
+    {
+      "name": "reject_generation",
+      "pass": true
+    },
+    {
+      "name": "reject_version",
+      "pass": true
+    },
+    {
+      "name": "no_unauthenticated_release",
+      "pass": true
+    },
+    {
+      "name": "broker_backup_restore",
+      "pass": true
+    },
+    {
+      "name": "original_after_restore",
+      "pass": true
+    },
+    {
+      "name": "new_original_key",
+      "pass": true
+    },
+    {
+      "name": "revoked_original",
+      "pass": true
+    },
+    {
+      "name": "viewer_page_1_1",
+      "pass": true
+    },
+    {
+      "name": "reject_context_page_1_1",
+      "pass": true
+    },
+    {
+      "name": "viewer_page_2_1",
+      "pass": true
+    },
+    {
+      "name": "reject_context_page_2_1",
+      "pass": true
+    },
+    {
+      "name": "viewer_text_null_1",
+      "pass": true
+    },
+    {
+      "name": "reject_context_text_null_1",
+      "pass": true
+    },
+    {
+      "name": "viewer_table_null_1",
+      "pass": true
+    },
+    {
+      "name": "reject_context_table_null_1",
+      "pass": true
+    },
+    {
+      "name": "viewer_manifest_null_1",
+      "pass": true
+    },
+    {
+      "name": "reject_context_manifest_null_1",
+      "pass": true
+    },
+    {
+      "name": "viewer_backup_restore",
+      "pass": true
+    },
+    {
+      "name": "viewer_page_1_2",
+      "pass": true
+    },
+    {
+      "name": "reject_context_page_1_2",
+      "pass": true
+    },
+    {
+      "name": "per_artifact_keys_nonces",
+      "pass": true
+    },
+    {
+      "name": "revoked_viewer",
+      "pass": true
+    },
+    {
+      "name": "new_viewer_key",
+      "pass": true
+    },
+    {
+      "name": "10MiB_0",
+      "pass": true
+    },
+    {
+      "name": "10MiB_1",
+      "pass": true
+    },
+    {
+      "name": "10MiB_2",
+      "pass": true
+    },
+    {
+      "name": "10MiB_3",
+      "pass": true
+    },
+    {
+      "name": "no_browser_storage",
+      "pass": true
+    },
+    {
+      "name": "console_health",
+      "pass": true
+    }
+  ],
+  "timings": [
+    {
+      "sample": 0,
+      "cold": true,
+      "encrypt_ms": 206.5,
+      "fixture_http_decrypt_ms": 265.761453000001
+    },
+    {
+      "sample": 1,
+      "cold": false,
+      "encrypt_ms": 198.59999999999127,
+      "fixture_http_decrypt_ms": 211.4847260000006
+    },
+    {
+      "sample": 2,
+      "cold": false,
+      "encrypt_ms": 187,
+      "fixture_http_decrypt_ms": 221.5998839999993
+    },
+    {
+      "sample": 3,
+      "cold": false,
+      "encrypt_ms": 186.1999999999971,
+      "fixture_http_decrypt_ms": 214.84227299999839
+    }
+  ]
+}

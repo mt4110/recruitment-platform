@@ -1,0 +1,28 @@
+{
+  "scope": "local owner-only evidence roundtrip, not product encryption",
+  "files": [
+    {
+      "name": "twenty-20.png",
+      "sha256": "5ed45348124c9514d8cfd643405066e0fa3fb62b10c08ad99e92afc9be0ec37f"
+    },
+    {
+      "name": "japanese-1.png",
+      "sha256": "2d7e20c27675436e9ca10e0ac648ee3de32bd15a3ab7d4cbe2ebfa16e7ab6131"
+    },
+    {
+      "name": "sheets-career-history.xlsx.png",
+      "sha256": "3ae9f9315a10209c0fbc0cb209b83205b656f6b1457b44d903675815bb2907be"
+    },
+    {
+      "name": "sheets-resume.xlsx.png",
+      "sha256": "af52a0d170109bfb4d8783844535351538ceffd393adbf7c83de909cae8abf08"
+    },
+    {
+      "name": "types.xlsx.png",
+      "sha256": "9068876069814a2159bd30960d1f961c5083e9ce3c143112f985f1d84ca8a01f"
+    }
+  ],
+  "source_files": {
+    "validation/s0/visual-proof.cjs": "e4e3752b7a66e60067307fe5e257134fa3a59f09d8fce7defe9dee8a8997d496"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "scope": "S0 normalized fixture table only; not product routes",
+  "checks": [
+    {
+      "fixture": "sheets-resume.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "sheets-career-history.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "types.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "dates1900.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "dates1904.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "merged.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    },
+    {
+      "fixture": "hidden.xlsx",
+      "rendered": true,
+      "unsafe_elements": 0
+    }
+  ],
+  "console_errors": []
+}

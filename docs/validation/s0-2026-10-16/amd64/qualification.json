@@ -1,0 +1,5607 @@
+{
+  "image_id": "sha256:9874f52cd2ec1dbcc41b6d38032a15af31ee86add6cb47cbd534171ea3ed3224",
+  "scope": "S0 Poppler/pikepdf/Node candidate path only; not image release qualification",
+  "vulnerability_db_fresh": true,
+  "scanner_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-17T01:13:54.947090202Z",
+    "UpdatedAt": "2026-10-16T01:13:54.947090392Z",
+    "DownloadedAt": "2026-10-16T06:42:54.802139373Z"
+  },
+  "all_findings": [
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-86409",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86409"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-86414",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86414"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-87862",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87862"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-87863",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87863"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-87864",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87864"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-92388",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92388"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-92389",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92389"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-92391",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92391"
+    },
+    {
+      "PkgName": "curl",
+      "VulnerabilityID": "CVE-2026-94266",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-94266"
+    },
+    {
+      "PkgName": "dash",
+      "VulnerabilityID": "CVE-2026-102473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.5.12-6ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102473"
+    },
+    {
+      "PkgName": "dash",
+      "VulnerabilityID": "CVE-2026-102474",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.5.12-6ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102474"
+    },
+    {
+      "PkgName": "git",
+      "VulnerabilityID": "CVE-2024-52005",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1:2.43.0-1ubuntu7.3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52005"
+    },
+    {
+      "PkgName": "git-man",
+      "VulnerabilityID": "CVE-2024-52005",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1:2.43.0-1ubuntu7.3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52005"
+    },
+    {
+      "PkgName": "glib-networking",
+      "VulnerabilityID": "CVE-2026-10028",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.80.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-10028"
+    },
+    {
+      "PkgName": "glib-networking-common",
+      "VulnerabilityID": "CVE-2026-10028",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.80.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-10028"
+    },
+    {
+      "PkgName": "glib-networking-services",
+      "VulnerabilityID": "CVE-2026-10028",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.80.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-10028"
+    },
+    {
+      "PkgName": "gstreamer1.0-plugins-bad",
+      "VulnerabilityID": "CVE-2025-3887",
+      "Severity": "HIGH",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-3887"
+    },
+    {
+      "PkgName": "gstreamer1.0-plugins-bad",
+      "VulnerabilityID": "CVE-2026-19387",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19387"
+    },
+    {
+      "PkgName": "gstreamer1.0-plugins-base",
+      "VulnerabilityID": "CVE-2026-85150",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-85150"
+    },
+    {
+      "PkgName": "libass9",
+      "VulnerabilityID": "CVE-2026-61627",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1:0.17.1-2build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-61627"
+    },
+    {
+      "PkgName": "libavahi-client3",
+      "VulnerabilityID": "CVE-2025-59529",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59529"
+    },
+    {
+      "PkgName": "libavahi-client3",
+      "VulnerabilityID": "CVE-2024-52615",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52615"
+    },
+    {
+      "PkgName": "libavahi-client3",
+      "VulnerabilityID": "CVE-2024-52616",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52616"
+    },
+    {
+      "PkgName": "libavahi-common-data",
+      "VulnerabilityID": "CVE-2025-59529",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59529"
+    },
+    {
+      "PkgName": "libavahi-common-data",
+      "VulnerabilityID": "CVE-2024-52615",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52615"
+    },
+    {
+      "PkgName": "libavahi-common-data",
+      "VulnerabilityID": "CVE-2024-52616",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52616"
+    },
+    {
+      "PkgName": "libavahi-common3",
+      "VulnerabilityID": "CVE-2025-59529",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59529"
+    },
+    {
+      "PkgName": "libavahi-common3",
+      "VulnerabilityID": "CVE-2024-52615",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52615"
+    },
+    {
+      "PkgName": "libavahi-common3",
+      "VulnerabilityID": "CVE-2024-52616",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.8-13ubuntu6.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-52616"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libavcodec60",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libavfilter9",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libavformat60",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libavutil58",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libc-bin",
+      "VulnerabilityID": "CVE-2026-18374",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.39-0ubuntu8.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-18374"
+    },
+    {
+      "PkgName": "libc-bin",
+      "VulnerabilityID": "CVE-2026-89092",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.39-0ubuntu8.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89092"
+    },
+    {
+      "PkgName": "libc6",
+      "VulnerabilityID": "CVE-2026-18374",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.39-0ubuntu8.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-18374"
+    },
+    {
+      "PkgName": "libc6",
+      "VulnerabilityID": "CVE-2026-89092",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.39-0ubuntu8.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89092"
+    },
+    {
+      "PkgName": "libcairo-gobject2",
+      "VulnerabilityID": "CVE-2017-7475",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2017-7475"
+    },
+    {
+      "PkgName": "libcairo-gobject2",
+      "VulnerabilityID": "CVE-2018-18064",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2018-18064"
+    },
+    {
+      "PkgName": "libcairo-script-interpreter2",
+      "VulnerabilityID": "CVE-2017-7475",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2017-7475"
+    },
+    {
+      "PkgName": "libcairo-script-interpreter2",
+      "VulnerabilityID": "CVE-2018-18064",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2018-18064"
+    },
+    {
+      "PkgName": "libcairo2",
+      "VulnerabilityID": "CVE-2017-7475",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2017-7475"
+    },
+    {
+      "PkgName": "libcairo2",
+      "VulnerabilityID": "CVE-2018-18064",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.18.0-3build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2018-18064"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2023-26819",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-26819"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2023-53154",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-53154"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2024-31755",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31755"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2025-57052",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-57052"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2026-16554",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-16554"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2026-29036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-29036"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2026-67215",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-67215"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2026-67216",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-67216"
+    },
+    {
+      "PkgName": "libcjson1",
+      "VulnerabilityID": "CVE-2026-67217",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.7.17-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-67217"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-86409",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86409"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-86414",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86414"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-87862",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87862"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-87863",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87863"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-87864",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87864"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-92388",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92388"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-92389",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92389"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-92391",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92391"
+    },
+    {
+      "PkgName": "libcurl3t64-gnutls",
+      "VulnerabilityID": "CVE-2026-94266",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-94266"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-86409",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86409"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-86414",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86414"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-87862",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87862"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-87863",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87863"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-87864",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-87864"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-92388",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92388"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-92389",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92389"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-92391",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-92391"
+    },
+    {
+      "PkgName": "libcurl4t64",
+      "VulnerabilityID": "CVE-2026-94266",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.5.0-2ubuntu10.16",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-94266"
+    },
+    {
+      "PkgName": "libdevmapper1.02.1",
+      "VulnerabilityID": "CVE-2026-19617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2:1.02.185-3ubuntu3.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19617"
+    },
+    {
+      "PkgName": "libduktape207",
+      "VulnerabilityID": "CVE-2026-12216",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.7.0+tests-0ubuntu3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-12216"
+    },
+    {
+      "PkgName": "libdw1t64",
+      "VulnerabilityID": "CVE-2025-1352",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.190-1.1ubuntu0.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1352"
+    },
+    {
+      "PkgName": "libdw1t64",
+      "VulnerabilityID": "CVE-2025-1376",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.190-1.1ubuntu0.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1376"
+    },
+    {
+      "PkgName": "libelf1t64",
+      "VulnerabilityID": "CVE-2025-1352",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.190-1.1ubuntu0.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1352"
+    },
+    {
+      "PkgName": "libelf1t64",
+      "VulnerabilityID": "CVE-2025-1376",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "0.190-1.1ubuntu0.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1376"
+    },
+    {
+      "PkgName": "libexpat1",
+      "VulnerabilityID": "CVE-2025-66382",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.6.1-2ubuntu0.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-66382"
+    },
+    {
+      "PkgName": "libfluidsynth3",
+      "VulnerabilityID": "CVE-2026-58264",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.3.4-1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-58264"
+    },
+    {
+      "PkgName": "libfluidsynth3",
+      "VulnerabilityID": "CVE-2026-61714",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.3.4-1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-61714"
+    },
+    {
+      "PkgName": "libglib2.0-0t64",
+      "VulnerabilityID": "CVE-2026-86469",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.80.0-6ubuntu3.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86469"
+    },
+    {
+      "PkgName": "libgnutls30t64",
+      "VulnerabilityID": "CVE-2026-67693",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.8.3-1.1ubuntu3.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-67693"
+    },
+    {
+      "PkgName": "libgnutls30t64",
+      "VulnerabilityID": "CVE-2026-88647",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.8.3-1.1ubuntu3.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-88647"
+    },
+    {
+      "PkgName": "libgnutls30t64",
+      "VulnerabilityID": "CVE-2026-95184",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.8.3-1.1ubuntu3.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95184"
+    },
+    {
+      "PkgName": "libgnutls30t64",
+      "VulnerabilityID": "CVE-2026-95209",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.8.3-1.1ubuntu3.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95209"
+    },
+    {
+      "PkgName": "libgnutls30t64",
+      "VulnerabilityID": "CVE-2026-95210",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.8.3-1.1ubuntu3.6",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95210"
+    },
+    {
+      "PkgName": "libgstreamer-gl1.0-0",
+      "VulnerabilityID": "CVE-2026-85150",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-85150"
+    },
+    {
+      "PkgName": "libgstreamer-plugins-bad1.0-0",
+      "VulnerabilityID": "CVE-2025-3887",
+      "Severity": "HIGH",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-3887"
+    },
+    {
+      "PkgName": "libgstreamer-plugins-bad1.0-0",
+      "VulnerabilityID": "CVE-2026-19387",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19387"
+    },
+    {
+      "PkgName": "libgstreamer-plugins-base1.0-0",
+      "VulnerabilityID": "CVE-2026-85150",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.24.2-1ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-85150"
+    },
+    {
+      "PkgName": "libharfbuzz-icu0",
+      "VulnerabilityID": "CVE-2026-22693",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.3.0-2build2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-22693"
+    },
+    {
+      "PkgName": "libharfbuzz0b",
+      "VulnerabilityID": "CVE-2026-22693",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "8.3.0-2build2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-22693"
+    },
+    {
+      "PkgName": "libicu74",
+      "VulnerabilityID": "CVE-2025-5222",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "74.2-1ubuntu3.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-5222"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-27810",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-27810"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-47917",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-47917"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-48965",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-48965"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-52496",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-52496"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-52497",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-52497"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2025-66442",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-66442"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2018-1000520",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2018-1000520"
+    },
+    {
+      "PkgName": "libmbedcrypto7t64",
+      "VulnerabilityID": "CVE-2024-45157",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2.28.8-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-45157"
+    },
+    {
+      "PkgName": "libmfx1",
+      "VulnerabilityID": "CVE-2023-45221",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "22.5.4-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-45221"
+    },
+    {
+      "PkgName": "libmfx1",
+      "VulnerabilityID": "CVE-2023-47169",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "22.5.4-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-47169"
+    },
+    {
+      "PkgName": "libmfx1",
+      "VulnerabilityID": "CVE-2023-48368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "22.5.4-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-48368"
+    },
+    {
+      "PkgName": "libmfx1",
+      "VulnerabilityID": "CVE-2023-22656",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "22.5.4-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-22656"
+    },
+    {
+      "PkgName": "libmfx1",
+      "VulnerabilityID": "CVE-2023-47282",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "22.5.4-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-47282"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2023-5841",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-5841"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2024-31047",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31047"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2025-12495",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12495"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2025-12839",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12839"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2026-27622",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-27622"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2026-34380",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-34380"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2026-34588",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-34588"
+    },
+    {
+      "PkgName": "libopenexr-3-1-30",
+      "VulnerabilityID": "CVE-2021-45942",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "3.1.5-5.1build3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-45942"
+    },
+    {
+      "PkgName": "libopenh264-7",
+      "VulnerabilityID": "CVE-2025-27091",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.4.1+dfsg-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-27091"
+    },
+    {
+      "PkgName": "libopenjp2-7",
+      "VulnerabilityID": "CVE-2023-39328",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.5.0-2ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-39328"
+    },
+    {
+      "PkgName": "libopenjp2-7",
+      "VulnerabilityID": "CVE-2023-39329",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.5.0-2ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-39329"
+    },
+    {
+      "PkgName": "libopenjp2-7",
+      "VulnerabilityID": "CVE-2019-6988",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2.5.0-2ubuntu0.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-6988"
+    },
+    {
+      "PkgName": "libpam-systemd",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-103111",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-103111"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-86145",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86145"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-89156",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89156"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-89157",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89157"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-89158",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89158"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-89160",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89160"
+    },
+    {
+      "PkgName": "libpcre2-8-0",
+      "VulnerabilityID": "CVE-2026-89161",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "10.42-4ubuntu2.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89161"
+    },
+    {
+      "PkgName": "libpixman-1-0",
+      "VulnerabilityID": "CVE-2023-37769",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.42.2-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-37769"
+    },
+    {
+      "PkgName": "libpoppler134",
+      "VulnerabilityID": "CVE-2026-93311",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93311"
+    },
+    {
+      "PkgName": "libpoppler134",
+      "VulnerabilityID": "CVE-2026-93653",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93653"
+    },
+    {
+      "PkgName": "libpoppler134",
+      "VulnerabilityID": "CVE-2019-9543",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-9543"
+    },
+    {
+      "PkgName": "libpoppler134",
+      "VulnerabilityID": "CVE-2019-9545",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-9545"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libpostproc57",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libsasl2-2",
+      "VulnerabilityID": "CVE-2026-107161",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+    },
+    {
+      "PkgName": "libsasl2-modules",
+      "VulnerabilityID": "CVE-2026-107161",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+    },
+    {
+      "PkgName": "libsasl2-modules-db",
+      "VulnerabilityID": "CVE-2026-107161",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2.1.28+dfsg1-5ubuntu3.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+    },
+    {
+      "PkgName": "libsndfile1",
+      "VulnerabilityID": "CVE-2025-52194",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.2.2-1ubuntu5.24.04.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-52194"
+    },
+    {
+      "PkgName": "libsndfile1",
+      "VulnerabilityID": "CVE-2026-37555",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.2.2-1ubuntu5.24.04.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-37555"
+    },
+    {
+      "PkgName": "libsndfile1",
+      "VulnerabilityID": "CVE-2026-88372",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.2.2-1ubuntu5.24.04.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-88372"
+    },
+    {
+      "PkgName": "libsndfile1",
+      "VulnerabilityID": "CVE-2024-50613",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1.2.2-1ubuntu5.24.04.1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-50613"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2025-14523",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-14523"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2025-32049",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-32049"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2025-4035",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-4035"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-0716",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-0716"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-0719",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-0719"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-3632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3632"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-3633",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3633"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-3634",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3634"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-66337",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66337"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-66338",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66338"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2025-9901",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9901"
+    },
+    {
+      "PkgName": "libsoup-3.0-0",
+      "VulnerabilityID": "CVE-2026-3099",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3099"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2025-14523",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-14523"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2025-32049",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-32049"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2025-4035",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-4035"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-0716",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-0716"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-0719",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-0719"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-3632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3632"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-3633",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3633"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-3634",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3634"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-66337",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66337"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-66338",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66338"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2025-9901",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9901"
+    },
+    {
+      "PkgName": "libsoup-3.0-common",
+      "VulnerabilityID": "CVE-2026-3099",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "3.4.4-5ubuntu0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-3099"
+    },
+    {
+      "PkgName": "libsrt1.5-gnutls",
+      "VulnerabilityID": "CVE-2026-55868",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.5.3-1build2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-55868"
+    },
+    {
+      "PkgName": "libsrt1.5-gnutls",
+      "VulnerabilityID": "CVE-2026-55869",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.5.3-1build2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-55869"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libswresample4",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-49501",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49501"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-49502",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49502"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-49528",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-49528"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-50007",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50007"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-50008",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50008"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-6601",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6601"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-6602",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6602"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-6604",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6604"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2023-6605",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-6605"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-31578",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31578"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-31582",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-31582"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-32230",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-32230"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-35365",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35365"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-35366",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35366"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-35367",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35367"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-35368",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-35368"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-36613",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36613"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-36616",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36616"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-36617",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36617"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-36618",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36618"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-36619",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-36619"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2024-7055",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-7055"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-0518",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-0518"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-10256",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10256"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-1594",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-1594"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-22919",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22919"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-22921",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-22921"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-25473",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25473"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-59728",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59728"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-59731",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59731"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-59732",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59732"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-59733",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-59733"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-63757",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-63757"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-7700",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7700"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-9951",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-9951"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-30754",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-30754"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38344",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38344"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38346",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38346"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38347",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38347"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38348",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38348"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38349",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38349"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-38350",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-38350"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-40962",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40962"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-64830",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64830"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-64832",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64832"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-64833",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64833"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-64834",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64834"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-64835",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-64835"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-65703",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65703"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-65704",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65704"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-65705",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65705"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-65706",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-65706"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-66036",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66036"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-66038",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66038"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-66039",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66039"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-70628",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70628"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-70632",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-70632"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75141",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75141"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75142",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75142"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75143",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75143"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75144",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75144"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75146",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75146"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2026-75147",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-75147"
+    },
+    {
+      "PkgName": "libswscale7",
+      "VulnerabilityID": "CVE-2025-12343",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "7:6.1.1-3ubuntu5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-12343"
+    },
+    {
+      "PkgName": "libsystemd-shared",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "libsystemd0",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "libudev1",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "libvo-amrwbenc0",
+      "VulnerabilityID": "CVE-2019-2128",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.1.3-2build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-2128"
+    },
+    {
+      "PkgName": "libvpl2",
+      "VulnerabilityID": "CVE-2023-22656",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2023.3.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-22656"
+    },
+    {
+      "PkgName": "libvpl2",
+      "VulnerabilityID": "CVE-2023-47282",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2023.3.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-47282"
+    },
+    {
+      "PkgName": "libvpl2",
+      "VulnerabilityID": "CVE-2023-48727",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2023.3.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-48727"
+    },
+    {
+      "PkgName": "libwavpack1",
+      "VulnerabilityID": "CVE-2021-44269",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "5.6.0-1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-44269"
+    },
+    {
+      "PkgName": "libx264-164",
+      "VulnerabilityID": "CVE-2025-25467",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2:0.164.3108+git31e19f9-1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-25467"
+    },
+    {
+      "PkgName": "libxrender1",
+      "VulnerabilityID": "CVE-2026-88807",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1:0.9.10-1.1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-88807"
+    },
+    {
+      "PkgName": "libxslt1.1",
+      "VulnerabilityID": "CVE-2025-10911",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.1.39-0exp1ubuntu0.24.04.3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-10911"
+    },
+    {
+      "PkgName": "libxslt1.1",
+      "VulnerabilityID": "CVE-2025-7425",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.1.39-0exp1ubuntu0.24.04.3",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-7425"
+    },
+    {
+      "PkgName": "libxtst6",
+      "VulnerabilityID": "CVE-2026-94286",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "2:1.2.3-1.1build1",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-94286"
+    },
+    {
+      "PkgName": "libzvbi-common",
+      "VulnerabilityID": "CVE-2025-2173",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2173"
+    },
+    {
+      "PkgName": "libzvbi-common",
+      "VulnerabilityID": "CVE-2025-2174",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2174"
+    },
+    {
+      "PkgName": "libzvbi-common",
+      "VulnerabilityID": "CVE-2025-2175",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2175"
+    },
+    {
+      "PkgName": "libzvbi-common",
+      "VulnerabilityID": "CVE-2025-2176",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2176"
+    },
+    {
+      "PkgName": "libzvbi-common",
+      "VulnerabilityID": "CVE-2025-2177",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2177"
+    },
+    {
+      "PkgName": "libzvbi0t64",
+      "VulnerabilityID": "CVE-2025-2173",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2173"
+    },
+    {
+      "PkgName": "libzvbi0t64",
+      "VulnerabilityID": "CVE-2025-2174",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2174"
+    },
+    {
+      "PkgName": "libzvbi0t64",
+      "VulnerabilityID": "CVE-2025-2175",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2175"
+    },
+    {
+      "PkgName": "libzvbi0t64",
+      "VulnerabilityID": "CVE-2025-2176",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2176"
+    },
+    {
+      "PkgName": "libzvbi0t64",
+      "VulnerabilityID": "CVE-2025-2177",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "0.2.42-2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-2177"
+    },
+    {
+      "PkgName": "login",
+      "VulnerabilityID": "CVE-2024-56433",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1:4.13+dfsg1-4ubuntu3.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-56433"
+    },
+    {
+      "PkgName": "passwd",
+      "VulnerabilityID": "CVE-2024-56433",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "1:4.13+dfsg1-4ubuntu3.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-56433"
+    },
+    {
+      "PkgName": "poppler-utils",
+      "VulnerabilityID": "CVE-2026-93311",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93311"
+    },
+    {
+      "PkgName": "poppler-utils",
+      "VulnerabilityID": "CVE-2026-93653",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93653"
+    },
+    {
+      "PkgName": "poppler-utils",
+      "VulnerabilityID": "CVE-2019-9543",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-9543"
+    },
+    {
+      "PkgName": "poppler-utils",
+      "VulnerabilityID": "CVE-2019-9545",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "24.02.0-1ubuntu9.10",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2019-9545"
+    },
+    {
+      "PkgName": "systemd",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "systemd-dev",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "systemd-sysv",
+      "VulnerabilityID": "CVE-2026-40228",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "255.4-1ubuntu8.18",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-40228"
+    },
+    {
+      "PkgName": "tar",
+      "VulnerabilityID": "CVE-2026-18477",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.35+dfsg-3ubuntu0.4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-18477"
+    },
+    {
+      "PkgName": "tar",
+      "VulnerabilityID": "CVE-2026-18508",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.35+dfsg-3ubuntu0.4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-18508"
+    },
+    {
+      "PkgName": "wget",
+      "VulnerabilityID": "CVE-2021-31879",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1.21.4-1ubuntu4.5",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-31879"
+    },
+    {
+      "PkgName": "xserver-common",
+      "VulnerabilityID": "CVE-2023-5574",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2:21.1.12-1ubuntu1.8",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-5574"
+    },
+    {
+      "PkgName": "xvfb",
+      "VulnerabilityID": "CVE-2023-5574",
+      "Severity": "LOW",
+      "FixedVersion": null,
+      "InstalledVersion": "2:21.1.12-1ubuntu1.8",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-5574"
+    },
+    {
+      "PkgName": "zlib1g",
+      "VulnerabilityID": "CVE-2026-85091",
+      "Severity": "MEDIUM",
+      "FixedVersion": null,
+      "InstalledVersion": "1:1.3.dfsg-3.1ubuntu2.2",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-85091"
+    },
+    {
+      "PkgName": "brace-expansion",
+      "VulnerabilityID": "CVE-2026-102276",
+      "Severity": "HIGH",
+      "FixedVersion": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+      "InstalledVersion": "5.0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102276"
+    },
+    {
+      "PkgName": "brace-expansion",
+      "VulnerabilityID": "CVE-2026-102278",
+      "Severity": "HIGH",
+      "FixedVersion": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+      "InstalledVersion": "5.0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102278"
+    },
+    {
+      "PkgName": "brace-expansion",
+      "VulnerabilityID": "CVE-2026-102277",
+      "Severity": "MEDIUM",
+      "FixedVersion": "5.0.12, 3.0.9, 2.1.7, 1.1.21",
+      "InstalledVersion": "5.0.9",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102277"
+    },
+    {
+      "PkgName": "http-cache-semantics",
+      "VulnerabilityID": "CVE-2026-93748",
+      "Severity": "HIGH",
+      "FixedVersion": null,
+      "InstalledVersion": "4.2.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93748"
+    },
+    {
+      "PkgName": "ip-address",
+      "VulnerabilityID": "CVE-2026-101910",
+      "Severity": "MEDIUM",
+      "FixedVersion": "10.5.1",
+      "InstalledVersion": "10.5.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-101910"
+    },
+    {
+      "PkgName": "ip-address",
+      "VulnerabilityID": "CVE-2026-101911",
+      "Severity": "MEDIUM",
+      "FixedVersion": "10.7.1",
+      "InstalledVersion": "10.5.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-101911"
+    },
+    {
+      "PkgName": "ip-address",
+      "VulnerabilityID": "CVE-2026-101912",
+      "Severity": "MEDIUM",
+      "FixedVersion": "10.7.1",
+      "InstalledVersion": "10.5.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-101912"
+    },
+    {
+      "PkgName": "ip-address",
+      "VulnerabilityID": "CVE-2026-101913",
+      "Severity": "MEDIUM",
+      "FixedVersion": "10.5.1",
+      "InstalledVersion": "10.5.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-101913"
+    },
+    {
+      "PkgName": "postcss-selector-parser",
+      "VulnerabilityID": "CVE-2026-104844",
+      "Severity": "MEDIUM",
+      "FixedVersion": "7.1.6",
+      "InstalledVersion": "7.1.4",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-104844"
+    },
+    {
+      "PkgName": "undici",
+      "VulnerabilityID": "CVE-2026-19534",
+      "Severity": "HIGH",
+      "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+      "InstalledVersion": "6.28.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19534"
+    },
+    {
+      "PkgName": "undici",
+      "VulnerabilityID": "CVE-2026-85024",
+      "Severity": "MEDIUM",
+      "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+      "InstalledVersion": "6.28.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-85024"
+    },
+    {
+      "PkgName": "undici",
+      "VulnerabilityID": "CVE-2026-18540",
+      "Severity": "LOW",
+      "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+      "InstalledVersion": "6.28.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-18540"
+    },
+    {
+      "PkgName": "msgpack",
+      "VulnerabilityID": "GHSA-6v7p-g79w-8964",
+      "Severity": "HIGH",
+      "FixedVersion": "1.2.1",
+      "InstalledVersion": "1.1.2",
+      "PrimaryURL": "https://github.com/advisories/GHSA-6v7p-g79w-8964"
+    },
+    {
+      "PkgName": "setuptools",
+      "VulnerabilityID": "CVE-2025-47273",
+      "Severity": "HIGH",
+      "FixedVersion": "78.1.1",
+      "InstalledVersion": "70.3.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-47273"
+    },
+    {
+      "PkgName": "setuptools",
+      "VulnerabilityID": "CVE-2026-59890",
+      "Severity": "MEDIUM",
+      "FixedVersion": "83.0.0",
+      "InstalledVersion": "70.3.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-59890"
+    },
+    {
+      "PkgName": "urllib3",
+      "VulnerabilityID": "CVE-2026-97687",
+      "Severity": "HIGH",
+      "FixedVersion": "2.8.0",
+      "InstalledVersion": "2.7.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97687"
+    },
+    {
+      "PkgName": "urllib3",
+      "VulnerabilityID": "CVE-2026-97689",
+      "Severity": "HIGH",
+      "FixedVersion": "2.8.0",
+      "InstalledVersion": "2.7.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97689"
+    },
+    {
+      "PkgName": "urllib3",
+      "VulnerabilityID": "CVE-2026-97688",
+      "Severity": "MEDIUM",
+      "FixedVersion": "2.8.0",
+      "InstalledVersion": "2.7.0",
+      "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97688"
+    }
+  ],
+  "candidate_packages": [
+    {
+      "Name": "fontconfig",
+      "Version": "2.15.0",
+      "Licenses": null
+    },
+    {
+      "Name": "fontconfig-config",
+      "Version": "2.15.0",
+      "Licenses": null
+    },
+    {
+      "Name": "libc6",
+      "Version": "2.39",
+      "Licenses": [
+        "LGPL-2.1-only",
+        "GPL-2.0-only",
+        "GFDL-1.3-only"
+      ]
+    },
+    {
+      "Name": "libexpat1",
+      "Version": "2.6.1",
+      "Licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "Name": "libfontconfig1",
+      "Version": "2.15.0",
+      "Licenses": null
+    },
+    {
+      "Name": "libfreetype6",
+      "Version": "2.13.2+dfsg",
+      "Licenses": [
+        "FTL",
+        "MIT",
+        "BSD-3-Clause",
+        "FSFAP",
+        "GPL-3.0-or-later",
+        "GPL-2.0-or-later",
+        "Public-Domain",
+        "MIT-SMC",
+        "BSL-1.0",
+        "MIT-Modern-Variant",
+        "Zlib",
+        "OpenGroup-MIT",
+        "GPL-2.0-only",
+        "GPL-3.0-only"
+      ]
+    },
+    {
+      "Name": "libjpeg-turbo8",
+      "Version": "2.1.5",
+      "Licenses": [
+        "BSD-BY-LC-NE",
+        "Zlib",
+        "BSD-3-Clause",
+        "MIT",
+        "NTP"
+      ]
+    },
+    {
+      "Name": "libjpeg8",
+      "Version": "8c",
+      "Licenses": [
+        "LGPL-2.1-only"
+      ]
+    },
+    {
+      "Name": "liblcms2-2",
+      "Version": "2.14",
+      "Licenses": [
+        "MIT",
+        "GPL-3.0-only",
+        "IJG",
+        "GPL-2.0-or-later",
+        "GPL-2.0-only"
+      ]
+    },
+    {
+      "Name": "libnspr4",
+      "Version": "4.35",
+      "Licenses": [
+        "MPL-2.0"
+      ]
+    },
+    {
+      "Name": "libnss3",
+      "Version": "3.98",
+      "Licenses": [
+        "MPL-2.0",
+        "Zlib",
+        "BSD-3-Clause",
+        "public-domain"
+      ]
+    },
+    {
+      "Name": "libopenjp2-7",
+      "Version": "2.5.0",
+      "Licenses": [
+        "BSD-2-Clause",
+        "MIT",
+        "BSD-3-Clause",
+        "public-domain",
+        "Libpng",
+        "Zlib",
+        "libtiff",
+        "LIBTIFF-PIXAR",
+        "LIBTIFF-GLARSON"
+      ]
+    },
+    {
+      "Name": "libpng16-16t64",
+      "Version": "1.6.43",
+      "Licenses": [
+        "Libpng",
+        "MIT",
+        "GPL-2.0-or-later",
+        "BSD-like-with-advertising-clause",
+        "libpng OR Apache-2.0 OR BSD-3-clause",
+        "Apache-2.0",
+        "GPL-2.0-only",
+        "BSD-3-Clause"
+      ]
+    },
+    {
+      "Name": "libpoppler134",
+      "Version": "24.02.0",
+      "Licenses": [
+        "GPL-2.0-only",
+        "GPL-3.0-only",
+        "Apache-2.0"
+      ]
+    },
+    {
+      "Name": "libssl3t64",
+      "Version": "3.0.13",
+      "Licenses": [
+        "Apache-2.0",
+        "Artistic-2.0",
+        "GPL-1.0-or-later",
+        "GPL-1.0-only"
+      ]
+    },
+    {
+      "Name": "libstdc++6",
+      "Version": "14.2.0",
+      "Licenses": null
+    },
+    {
+      "Name": "libtiff6",
+      "Version": "4.5.1+git230720",
+      "Licenses": [
+        "Hylafax"
+      ]
+    },
+    {
+      "Name": "nodejs",
+      "Version": "24.22.0",
+      "Licenses": null
+    },
+    {
+      "Name": "poppler-data",
+      "Version": "0.4.12",
+      "Licenses": [
+        "BSD-3-cluase",
+        "MIT",
+        "GPL-2.0-only",
+        "AGPL-3+"
+      ]
+    },
+    {
+      "Name": "poppler-utils",
+      "Version": "24.02.0",
+      "Licenses": [
+        "GPL-2.0-only",
+        "GPL-3.0-only",
+        "Apache-2.0"
+      ]
+    },
+    {
+      "Name": "@npmcli/node-gyp",
+      "Version": "6.0.0",
+      "Licenses": [
+        "ISC"
+      ]
+    },
+    {
+      "Name": "node-gyp",
+      "Version": "13.0.0",
+      "Licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "Name": "packaging",
+      "Version": "26.2",
+      "Licenses": null
+    },
+    {
+      "Name": "packaging",
+      "Version": "26.3",
+      "Licenses": [
+        "Apache-2.0 OR BSD-2-Clause"
+      ]
+    },
+    {
+      "Name": "pikepdf",
+      "Version": "10.17.0",
+      "Licenses": [
+        "MPL-2.0"
+      ]
+    },
+    {
+      "Name": "pillow",
+      "Version": "12.3.0",
+      "Licenses": [
+        "MIT-CMU"
+      ]
+    }
+  ],
+  "candidate_high_critical": [],
+  "unresolved_image_findings_remain": true,
+  "license_notes": {
+    "poppler": "GPL-2.0/GPL-3.0 components; subprocess prototype only, no published image. Distribution/source obligations remain M7.",
+    "pikepdf": "MPL-2.0",
+    "pillow": "HPND",
+    "node": "MIT plus bundled notices",
+    "chromium": "Chrome for Testing binary terms remain separate from Playwright Apache-2.0"
+  },
+  "classification_limit": "Name-based candidate set cross-checked with dependency-path.txt; not exhaustive exploitability proof. npm/python tooling and GStreamer findings remain in all_findings; not invoked by this PDF candidate.",
+  "candidate_gate_passed": true
+}

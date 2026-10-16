@@ -1,0 +1,183 @@
+{
+  "scope": "S0 only; no product API/migration/R5/S1/publication",
+  "prefix": "recruitment-s0-20261016-064116-04e71",
+  "source_files": {
+    "validation/s0/Dockerfile": "055c38791e1c7c32aeb4328311e96c7302459244a24e56bf0241c13c7e8c1244",
+    "validation/s0/README.md": "fd3834c5a1a00dd1533837d17cf172c82d6f4870dcdac6d39fa1c15f3b58fafc",
+    "validation/s0/browser.cjs": "c11d303d5e1cf77636335bf1eb252e900943e2f61583eabf43f5a5cfdc54b98f",
+    "validation/s0/client.cjs": "f725dcc7816007750f346daed5ad873ce2615d2269775a3de9be59e1f985f0df",
+    "validation/s0/fixtures.py": "6208bcfe088e07a6a4f2602b12df3bb4272a8d5b8c96fffa9ab32e5f2a10260e",
+    "validation/s0/probe.py": "d1ff63523427e98321205915007ed73953d839cccc5a631a9dc79937b3eadfe6",
+    "validation/s0/qualify.py": "77ea729093a3f82925ee0419fb50eeb74fc9706cd8f0556bffc477c509bdb17d",
+    "validation/s0/role.cjs": "83fc4da803e01bd37aec130b383897f2413216156730683a81a7ddf1bf178943",
+    "validation/s0/run.py": "dc4d080134c5732342b18a3b001fa66163f82047bd70178a715e92e8ec3442d4",
+    "validation/s0/view.cjs": "fd7a6b23d34ef96d6e2b8cd3ea401335f94b74a3b3da518aa9cc4846aece5baa",
+    "validation/s0/view_xlsx.py": "c539c0f7139d9584fa0f12720df5103404b154b6510bf8725d0d0b1b92740cdb",
+    "validation/s0/visual-proof.cjs": "e4e3752b7a66e60067307fe5e257134fa3a59f09d8fce7defe9dee8a8997d496"
+  },
+  "source_unchanged": true,
+  "source_commit": "67a22db020fcae630396f8207ca6c67d222ad455",
+  "host": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "qualified_platform": "x86_64 10.17.0",
+  "base_image": "recruitment-s0-base:ci",
+  "image_id": "sha256:9874f52cd2ec1dbcc41b6d38032a15af31ee86add6cb47cbd534171ea3ed3224",
+  "seconds": 91.261472425,
+  "checks": [
+    {
+      "name": "api_sentinel_positive_control",
+      "pass": true
+    },
+    {
+      "name": "db_sentinel_positive_control",
+      "pass": true
+    },
+    {
+      "name": "other_job_sentinel_positive_control",
+      "pass": true
+    },
+    {
+      "name": "isolation_0",
+      "pass": true
+    },
+    {
+      "name": "isolation_1",
+      "pass": true
+    },
+    {
+      "name": "crypto",
+      "pass": true
+    },
+    {
+      "name": "japanese.pdf",
+      "pass": true
+    },
+    {
+      "name": "tagged.pdf",
+      "pass": true
+    },
+    {
+      "name": "twenty.pdf",
+      "pass": true
+    },
+    {
+      "name": "image-only.pdf",
+      "pass": true
+    },
+    {
+      "name": "huge.pdf",
+      "pass": true
+    },
+    {
+      "name": "javascript.pdf",
+      "pass": true
+    },
+    {
+      "name": "broken.pdf",
+      "pass": true
+    },
+    {
+      "name": "twenty-one.pdf",
+      "pass": true
+    },
+    {
+      "name": "m5-invoice.pdf",
+      "pass": true
+    },
+    {
+      "name": "image-noise.pdf",
+      "pass": true
+    },
+    {
+      "name": "sheets-resume.xlsx",
+      "pass": true
+    },
+    {
+      "name": "sheets-career-history.xlsx",
+      "pass": true
+    },
+    {
+      "name": "types.xlsx",
+      "pass": true
+    },
+    {
+      "name": "dates1900.xlsx",
+      "pass": true
+    },
+    {
+      "name": "dates1904.xlsx",
+      "pass": true
+    },
+    {
+      "name": "merged.xlsx",
+      "pass": true
+    },
+    {
+      "name": "hidden.xlsx",
+      "pass": true
+    },
+    {
+      "name": "legacy-sheets-resume.xlsx",
+      "pass": true
+    },
+    {
+      "name": "legacy-sheets-career-history.xlsx",
+      "pass": true
+    },
+    {
+      "name": "crossed.xlsx",
+      "pass": true
+    },
+    {
+      "name": "unknown.xlsx",
+      "pass": true
+    },
+    {
+      "name": "bad-reference.xlsx",
+      "pass": true
+    },
+    {
+      "name": "bad-bool.xlsx",
+      "pass": true
+    },
+    {
+      "name": "too-long-cell.xlsx",
+      "pass": true
+    },
+    {
+      "name": "too-many-cells.xlsx",
+      "pass": true
+    },
+    {
+      "name": "too-much-text.xlsx",
+      "pass": true
+    },
+    {
+      "name": "resources",
+      "pass": true
+    },
+    {
+      "name": "sequential_sample_0",
+      "pass": true
+    },
+    {
+      "name": "sequential_sample_1",
+      "pass": true
+    },
+    {
+      "name": "sequential_sample_2",
+      "pass": true
+    },
+    {
+      "name": "sequential_sample_3",
+      "pass": true
+    },
+    {
+      "name": "demo_preserved",
+      "pass": true
+    }
+  ],
+  "failures": [],
+  "all_passed": true,
+  "containers_stopped": true,
+  "preserved_volumes": true
+}

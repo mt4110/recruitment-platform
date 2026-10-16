@@ -14,9 +14,9 @@
 
 [クラウドサインの導入方法・連携方針](docs/design/11-cloudsign.md)も設計に追加しました。手動運用からAPI導入までの準備・誤送信防止・状態照合を整理したもので、連携は未実装です。
 
-**新しい書類保護方針は設計v0.5改訂1へ反映済み・未実装です。** [署名付き暗号化upload・隔離検査・安全な閲覧・追加工数](docs/design/12-secure-document-pipeline.md)を参照してください。既存の原本ダウンロード/請求PDF表示が既に変更されたわけではありません。追加74〜126時間、既存分を合わせた残計画102〜174時間＋未積算のM6監査残件（任意ツール接続・公開は別枠）。S0・製品実装・外部公開へは進んでいません。
+**新しい書類保護方針は設計v0.5改訂1へ反映済み・未実装です。** [署名付き暗号化upload・隔離検査・安全な閲覧・追加工数](docs/design/12-secure-document-pipeline.md)を参照してください。既存の原本ダウンロード/請求PDF表示が既に変更されたわけではありません。S0完了後の新方式残分66〜112時間、既存分を合わせた残計画94〜160時間＋未積算のM6監査残件（任意ツール接続・公開は別枠）。[S0の技術確認は両archで成立](docs/validation/2026-10-16-s0-report.md)。S1以降の製品実装・外部公開へは進んでいません。
 
-[S0確認計画](docs/design/13-s0-verification-plan.md)に、隔離・鍵・変換の必須確認、暫定資源上限、fixture/証拠と8〜14時間の停止枠を定義しました。設計のみで、技術確認は未実施です。
+[S0確認計画](docs/design/13-s0-verification-plan.md)に、隔離・鍵・変換の必須確認、暫定資源上限、fixture/証拠と8〜14時間の停止枠を定義しました。S0は両arch・最終CI・暗号化したnative目視証拠まで確認済みです。製品実装の完了ではありません。
 
 ## ローカルで試す
 
@@ -73,7 +73,7 @@ python3 scripts/e2e.py
 - [AWS・GCP・AzureのIaCサンプル設計](docs/design/08-cloud-examples.md)
 - [LP・ガイド・利用文書の要件と目次](docs/design/09-documentation.md)
 - [PDF/XLSX・AV・全フォーム保存/復元の追加設計](docs/design/10-resumes-and-autosave.md)
-- [S0の確認条件・停止条件（未実施）](docs/design/13-s0-verification-plan.md)
+- [S0の確認条件・停止条件（実施記録へリンク）](docs/design/13-s0-verification-plan.md)
 - [署名付き・暗号化アップロードと安全な閲覧（v0.5・未実装）](docs/design/12-secure-document-pipeline.md)
 - [クラウドサイン導入ガイド・連携方針（未実装）](docs/design/11-cloudsign.md)
 

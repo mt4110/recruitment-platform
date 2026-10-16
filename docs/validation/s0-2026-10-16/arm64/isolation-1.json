@@ -1,0 +1,43 @@
+{
+  "checks": {
+    "relay_reachable": true,
+    "broker_blocked": true,
+    "viewer_blocked": true,
+    "external_blocked": true,
+    "api_blocked": true,
+    "db_blocked": true,
+    "other_job_blocked": true,
+    "relay_actual_bytes": true,
+    "original_key_inaccessible": true,
+    "artifact_key_inaccessible": true,
+    "docker_socket_inaccessible": true,
+    "host_proc_inaccessible": true,
+    "nonroot": true,
+    "no_new_privs": true,
+    "no_capabilities": true,
+    "seccomp": true,
+    "no_secrets_in_environment": true,
+    "fresh_job_tmpfs": true
+  },
+  "uid": 2103,
+  "pid_namespace": "pid:[4026533419]",
+  "mount_namespace": "mnt:[4026533416]",
+  "fds": [
+    {
+      "fd": "0",
+      "target": "/dev/null"
+    },
+    {
+      "fd": "1",
+      "target": "pipe:[1097150]"
+    },
+    {
+      "fd": "2",
+      "target": "pipe:[1097151]"
+    }
+  ],
+  "seconds": 0.016813827000078163,
+  "rss_kib": 21956,
+  "child_rss_kib": 0,
+  "cgroup_peak_bytes": 15855616
+}

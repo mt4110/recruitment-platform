@@ -1,0 +1,26 @@
+{
+  "scope": "authenticated owner decryption of native CI visual proof",
+  "images": [
+    {
+      "name": "twenty-20.png",
+      "sha256": "5ed45348124c9514d8cfd643405066e0fa3fb62b10c08ad99e92afc9be0ec37f"
+    },
+    {
+      "name": "japanese-1.png",
+      "sha256": "2d7e20c27675436e9ca10e0ac648ee3de32bd15a3ab7d4cbe2ebfa16e7ab6131"
+    },
+    {
+      "name": "sheets-career-history.xlsx.png",
+      "sha256": "c8f9b08c42b346b1deac7da820f2ecdc2a5746be85f398dac1de4a08804de504"
+    },
+    {
+      "name": "sheets-resume.xlsx.png",
+      "sha256": "f1a3674c0505218b7efeed83dce9e34f0c096ca1e125fa2fe356fb938b9b9b8d"
+    },
+    {
+      "name": "types.xlsx.png",
+      "sha256": "e7f895d33693eb0c22c04b5d2ecfece3d90c212f6d4a00567d2d176cc287f0cd"
+    }
+  ],
+  "count": 5
+}

@@ -1,0 +1,146 @@
+{
+  "source": "R1-qualified fictional Sheets-derived exports with corrected synthetic PNG from e2e/fixtures; unchanged R0 bad-PNG files retained as negative cases; controlled OOXML mutations. No real Excel compatibility claim",
+  "xlsx_expected": {
+    "types.xlsx": {
+      "A2": "12345678901234567890.123",
+      "A3": "はい",
+      "A4": "いいえ",
+      "A6": "3",
+      "A7": "保存値なし",
+      "A8": "#DIV/0!"
+    },
+    "dates1900.xlsx": {
+      "A1": "0",
+      "A2": "1900-02-28",
+      "A3": "60",
+      "A4": "1900-03-01",
+      "A5": "1.5"
+    },
+    "dates1904.xlsx": {
+      "A1": "1904-01-01",
+      "A2": "1904-01-02"
+    },
+    "merged.xlsx": {
+      "A1": "10"
+    },
+    "hidden.xlsx": {
+      "A1": "10",
+      "A2": "20"
+    },
+    "legacy-sheets-resume.xlsx": "FORMAT_UNSUPPORTED_STRUCTURE",
+    "legacy-sheets-career-history.xlsx": "FORMAT_UNSUPPORTED_STRUCTURE",
+    "crossed.xlsx": "MERGE",
+    "unknown.xlsx": "CELL_TYPE",
+    "bad-reference.xlsx": "REFERENCE",
+    "bad-bool.xlsx": "BOOLEAN",
+    "too-long-cell.xlsx": "CELL_LIMIT",
+    "too-many-cells.xlsx": "CELLS_LIMIT",
+    "too-much-text.xlsx": "TEXT_LIMIT"
+  },
+  "files": {
+    "bad-bool.xlsx": {
+      "sha256": "cb8e1cbfe7f36ac07b6e515f02763a4945851f320b8710bc625d2871ab11378b",
+      "bytes": 10550
+    },
+    "bad-reference.xlsx": {
+      "sha256": "f08751a59b807782935f839ff57d66810f0b17273489242957213d4090a5f054",
+      "bytes": 10553
+    },
+    "broken.pdf": {
+      "sha256": "92e8fd481d1d52cde4876971b85af16f6265a0d0a4b76d97104e3f54118b8b42",
+      "bytes": 18
+    },
+    "crossed.xlsx": {
+      "sha256": "e7f6319d22ecd6addd10a553456b811b69705c2e497f4eba19286d3560725e8a",
+      "bytes": 10576
+    },
+    "dates1900.xlsx": {
+      "sha256": "3f1397d204c9ec37df508ac6ec6c79edbdad47f75a9825a5f1ac6b0d93754843",
+      "bytes": 10591
+    },
+    "dates1904.xlsx": {
+      "sha256": "a9ab4861a48459161d10f342309ec606a7062655adc764cba2bdf83ac0b857e7",
+      "bytes": 10559
+    },
+    "hidden.xlsx": {
+      "sha256": "f7bb331d74e87c4d8343ca76525aebb6a70aa5863a92cc29f31fc6be55dcde0a",
+      "bytes": 10564
+    },
+    "huge.pdf": {
+      "sha256": "949c840c49bd83311bf6fcaf0bfc662f9f67afbe5aa3f3f047ca48e2fe7a4628",
+      "bytes": 1427
+    },
+    "image-noise.pdf": {
+      "sha256": "86c295d54cf02911e845dfb77e4d3e4de77a3bf31b837bab3167a7374ac22bd6",
+      "bytes": 9243622
+    },
+    "image-only.pdf": {
+      "sha256": "9e8cb923d80f615e0739643c99fed76a455128c639d9ca410e1602975c14d408",
+      "bytes": 804
+    },
+    "japanese.pdf": {
+      "sha256": "d3043ba6429cb46b902f3ea3908f0bd072785289ee63c29963dcfa1454d0a0ac",
+      "bytes": 1423
+    },
+    "javascript.pdf": {
+      "sha256": "9b988340776073fb2a499fcb42cdeac5131bb5740e033ad1ddd923233210cebb",
+      "bytes": 1472
+    },
+    "legacy-sheets-career-history.xlsx": {
+      "sha256": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+      "bytes": 14352
+    },
+    "legacy-sheets-resume.xlsx": {
+      "sha256": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9",
+      "bytes": 14343
+    },
+    "m5-invoice.pdf": {
+      "sha256": "49db258ae4921ada69d228bdfef7b6b9bd0e75ffd3aabb4a17d370961411a709",
+      "bytes": 99904
+    },
+    "merged.xlsx": {
+      "sha256": "11cceadddb097f7727d3d07019bf2a3673c11c817be31f5cc36651ade1cb691f",
+      "bytes": 10573
+    },
+    "sheets-career-history.xlsx": {
+      "sha256": "dd8a2c9b637b306395c55318cfd32a952d561ca8d0c7d3154c66d7cbbcc3cbcd",
+      "bytes": 14355
+    },
+    "sheets-resume.xlsx": {
+      "sha256": "b27b31bf905d7d56170fa80670d9127a4dfdd1c5cf628228fd3452414868fc34",
+      "bytes": 14344
+    },
+    "tagged.pdf": {
+      "sha256": "dbeeea2928c042d9ccfdf2847a275196fdaff02976ff51c090c0c53efb6fde31",
+      "bytes": 1630
+    },
+    "too-long-cell.xlsx": {
+      "sha256": "923cfc05a006c0bfe419dafa3a763adfeda8db48fa7ea07186d57615e13dbf40",
+      "bytes": 10654
+    },
+    "too-many-cells.xlsx": {
+      "sha256": "c2fd2733bd54346328da94fb63ca4731b2d2633d3ee7a17a1d804aadf271dc08",
+      "bytes": 176775
+    },
+    "too-much-text.xlsx": {
+      "sha256": "27e28920378b686f1c7bee2b81a3f9b79d916553b2493aeb5d5d4567974ca762",
+      "bytes": 12223
+    },
+    "twenty-one.pdf": {
+      "sha256": "8d6d2e5665f5876468810b6f22c4b4c6b306505d4bc4d8f30a43f97c28c865af",
+      "bytes": 13379
+    },
+    "twenty.pdf": {
+      "sha256": "95fa569fb777be52d5a5b6add2174ed49c6ef810c21ad45f0b4d727f0da86a61",
+      "bytes": 17283
+    },
+    "types.xlsx": {
+      "sha256": "192f7b801aa8216f38ffc0186f6dc171043072d01d3aeb41f1eafdad1632409b",
+      "bytes": 10723
+    },
+    "unknown.xlsx": {
+      "sha256": "d8cbaa7f18ae685e5e3f9fbe218b155b5c6191aa5d2e615acf69059828446f34",
+      "bytes": 10558
+    }
+  }
+}

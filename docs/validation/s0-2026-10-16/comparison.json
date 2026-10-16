@@ -1,0 +1,21 @@
+{
+  "source_commit": "67a22db020fcae630396f8207ca6c67d222ad455",
+  "checks": {
+    "source_files_equal": true,
+    "source_unchanged_arm64": true,
+    "source_unchanged_amd64": true,
+    "arm64_passed": true,
+    "amd64_passed": true,
+    "test_names_equal": true,
+    "native_sheets_hash_equal": true,
+    "case_verdicts_equal": true,
+    "arm64_candidate_gate": true,
+    "arm64_no_observed_oom": true,
+    "amd64_candidate_gate": true,
+    "amd64_no_observed_oom": true,
+    "amd64_visual_decrypted": true
+  },
+  "source_files": 12,
+  "generated_fixture_note": "Only native/legacy XLSX byte hashes are compared; synthesized PDF/ZIP include per-run metadata. Verdicts/golden values are compared instead.",
+  "normalized_hash_note": "cases.normalized_sha256 hashes the complete worker result including timings, not a cross-arch pure-content digest."
+}

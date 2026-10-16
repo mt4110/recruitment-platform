@@ -1,0 +1,29 @@
+{
+  "scope": "new sandbox process each sample; image cache warm after first; not production latency or p95",
+  "samples": [
+    {
+      "sample": 0,
+      "cold_process": true,
+      "seconds": 0.23075655799999595,
+      "rss_kib": 31004
+    },
+    {
+      "sample": 1,
+      "cold_process": true,
+      "seconds": 0.23311387000001105,
+      "rss_kib": 31264
+    },
+    {
+      "sample": 2,
+      "cold_process": true,
+      "seconds": 0.22592738299999837,
+      "rss_kib": 31100
+    },
+    {
+      "sample": 3,
+      "cold_process": true,
+      "seconds": 0.2285284719999936,
+      "rss_kib": 31116
+    }
+  ]
+}
