@@ -1,6 +1,12 @@
 name: S4 encrypted document migration and recovery and browser regression
 on:
   workflow_dispatch:
+    inputs:
+      scope:
+        description: Full regression or S4 verification of an unchanged application runtime
+        type: choice
+        options: [full, s4]
+        default: full
 permissions:
   contents: read
 jobs:
@@ -26,7 +32,14 @@ jobs:
           rustup override set 1.95.0
           python3 scripts/check.py
       - name: Verify S4 and existing product regression in an isolated project
-        run: python3 scripts/e2e.py
+        env:
+          S4_CHECK_SCOPE: ${{ inputs.scope }}
+        run: |
+          if [ "$S4_CHECK_SCOPE" = s4 ]; then
+            python3 scripts/e2e.py --test-file z-s4.spec.cjs
+          else
+            python3 scripts/e2e.py
+          fi
       - name: Preserve redacted build failure diagnostics
         if: failure()
         run: |

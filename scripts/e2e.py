@@ -115,7 +115,9 @@ try:
         if found: code = 1; summary['status'] = 'failed'
 
 except subprocess.CalledProcessError:
-    print('E2E setup/build failed; inspect the private operations.log. No existing demo services were changed.')
+    code = 1
+    summary['status'] = 'failed'
+    print('E2E setup or verification failed; inspect the retained evidence/private operations.log. No existing demo services were changed.')
 finally:
     # Persist only fixed, structured startup phases. No raw errors, headers, env or tokens.
     startup=subprocess.run(['docker','logs',f'recruitment-{instance}-api-1'],env=env,capture_output=True)

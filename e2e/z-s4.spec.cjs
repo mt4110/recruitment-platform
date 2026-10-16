@@ -19,7 +19,7 @@ async function assertViews(){
  for(const who of ['a','b','x','y'])expect((await call(who,'/documents/'+D+'/content')).status()).toBe(410);
 }
 test.beforeAll(async({browser})=>{for(const [who,name] of [['a','agency-a'],['b','agency-b'],['x','employer-x'],['y','employer-y']]){const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',()=>issues.push('PAGE_ERROR'));page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/^Failed to load resource: the server responded with a status of (400|401|403|404|409|413|422|429|503)\b/.test(m.text()))issues.push('CONSOLE_ERROR');});expect((await signIn(page,name)).status()).toBe(303);actors[who]={context,page,me:await identity(context)};}});
-test.afterAll(async()=>{for(const a of Object.values(actors))await a.context.close();if(target){const r=host('scripts/local.py',['stop']);expect(r.status).toBe(0);}process.env.RP_INSTANCE=source;expect(issues).toEqual([]);});
+test.afterAll(async()=>{for(const a of Object.values(actors))await a.context.close();if(target){process.env.RP_INSTANCE=target;try{const r=host('scripts/local.py',['stop']);expect(r.status).toBe(0);}finally{process.env.RP_INSTANCE=source;}}process.env.RP_INSTANCE=source;expect(issues).toEqual([]);});
 test('S4 inventory preserves old PDF/shared selection and rejects unprepared views',async()=>{
  before=state();expect((await call('a','/documents/'+D+'/view')).status()).toBe(404);expect((await call('x',`/applications/${A}/documents/${D}/view`)).status()).toBe(404);
  const cand=await call('a','/candidates','POST',{name:'S4架空候補者',summary:'既存XLSXの暗号化移行',fictional_confirmed:true});expect(cand.status()).toBe(201);const id=(await cand.json()).id;
