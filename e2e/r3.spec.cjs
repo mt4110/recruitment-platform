@@ -33,7 +33,7 @@ test('R3 multiple PDF XLSX register sequentially with kinds versions and mobile 
  await p.route(pattern,async route=>{current++;count++;max=Math.max(max,current);try{const r=await route.fetch();await route.fulfill({response:r});}finally{current--;}});
  try{await select(p,[file('架空一.pdf'),file('架空二.xlsx','xlsx')]);await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'}).getByText('履歴書 · 登録完了',{exact:true})).toHaveCount(2);expect(count).toBe(2);expect(max).toBe(1);
  await expect(p.getByRole('region',{name:'履歴書の版一覧'})).toContainText('第2版 · XLSX');await shot(p,'r3-multiple-desktop');
- await p.setViewportSize({width:390,height:844});await expect.poll(()=>p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await p.getByLabel('書類の種類',{exact:true}).focus();await expect(p.getByLabel('書類の種類',{exact:true})).toBeFocused();await shot(p,'r3-multiple-mobile');await p.setViewportSize({width:1280,height:900});
+ await p.setViewportSize({width:390,height:844});await expect.poll(()=>p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(p.getByLabel('書類の種類',{exact:true})).toBeEnabled();await p.getByLabel('書類の種類',{exact:true}).focus();await expect(p.getByLabel('書類の種類',{exact:true})).toBeFocused();await shot(p,'r3-multiple-mobile');await p.setViewportSize({width:1280,height:900});
  }finally{await p.unroute(pattern);}
 });
 test('R3 eleven files are rejected before POST and one rejected file does not prevent the next valid file',async()=>{
