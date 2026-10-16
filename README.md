@@ -8,6 +8,12 @@
 
 **v0.4のR4まで実装・両arch検証済みです（各88件）。** [R4の実装・検証・残工数](docs/validation/2026-10-16-r4-report.md)を参照してください。PDF/XLSXの実AV・版管理・受付復帰に加え、ログイン以外の現行全フォームに本人用の暗号化下書き・サーバー自動保存/復元を追加しました。本人/組織分離、期限切れ、競合、業務確定後の復活拒否を確認済みです。復元はサーバー保存成功分が対象で、通信断中の端末永続化はR5に残します。未送信ファイルは再選択が必要です。[残計画は38〜68時間の条件付き仮積算](docs/design/07-delivery.md)。R5・M5へは進まず停止しています。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。下書きの復旧にはGit外の`.local/local.env`内`DRAFT_MASTER_KEY`とDBをセットで保全してください。
 
+## 現段階の画面を見る
+
+先方向けの[PC版操作ガイド・スクリーンショット13枚](docs/demo/2026-10-16-pc/README.md)で、求人登録→候補者/書類登録→推薦→選考→採用決定、下書き復元・共有失効の動きを確認できます。R4までの実装を使った架空データの画面です。
+
+[クラウドサインの導入方法・連携方針](docs/design/11-cloudsign.md)も設計に追加しました。手動運用からAPI導入までの準備・誤送信防止・状態照合を整理したもので、連携は未実装です。
+
 ## ローカルで試す
 
 必要環境は稼働中のDocker Engine/Desktop（Compose pluginまたはdocker-compose）とPython 3.11以上。Node/Rustのホストへのインストールは不要です。loopbackの3000/18080が空いていることを確認してください。
@@ -63,6 +69,7 @@ python3 scripts/e2e.py
 - [AWS・GCP・AzureのIaCサンプル設計](docs/design/08-cloud-examples.md)
 - [LP・ガイド・利用文書の要件と目次](docs/design/09-documentation.md)
 - [PDF/XLSX・AV・全フォーム保存/復元の追加設計](docs/design/10-resumes-and-autosave.md)
+- [クラウドサイン導入ガイド・連携方針（未実装）](docs/design/11-cloudsign.md)
 
 ## 利用上の前提
 

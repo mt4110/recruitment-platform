@@ -1,0 +1,248 @@
+{
+  "date": "2026-10-16",
+  "source_commit": "d0feb10d90637cc39fb8b6a7521fac5d0a39a4a2",
+  "runtime_validation_commit": "b8e7c8f2eafdb18878979329fa65b2121ae629ef",
+  "status": "passed",
+  "scope": "PC screenshot walkthrough only; no CloudSign integration or R5",
+  "browser": "Browser plugin not available; Playwright Chromium",
+  "origin": "http://localhost:3001",
+  "instance": "e2e-20261016-023238-4d4e62",
+  "existing_isolated_r4_database_reused": true,
+  "real_document_validation": true,
+  "no_api_mock": true,
+  "issues": [],
+  "results": [
+    {
+      "name": "01-workspace",
+      "role": "agency",
+      "path": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "02-job-entry",
+      "role": "employer",
+      "path": "/jobs/new",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "03-job-published",
+      "role": "employer",
+      "path": "/jobs/8999e017-a2cc-4514-bcc1-5b2adf3ea571",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "04-job-search",
+      "role": "agency",
+      "path": "/jobs",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "05-candidate-autosave",
+      "role": "agency",
+      "path": "/candidates/new",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "06-candidate-restored",
+      "role": "agency",
+      "path": "/candidates/new",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "07-resume-pdf-xlsx",
+      "role": "agency",
+      "path": "/candidates/24ab296b-f72a-428c-80e4-c9aee8b566ee",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "08-recommendation-review",
+      "role": "agency",
+      "path": "/applications/a5a30d24-a508-4508-b7db-81dbe67f0d96",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "09-recommendation-submitted",
+      "role": "agency",
+      "path": "/applications/a5a30d24-a508-4508-b7db-81dbe67f0d96",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "native section screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "10-employer-screening",
+      "role": "employer",
+      "path": "/applications/a5a30d24-a508-4508-b7db-81dbe67f0d96",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "native section screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "11-hired",
+      "role": "employer",
+      "path": "/applications/a5a30d24-a508-4508-b7db-81dbe67f0d96",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "native section screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "12-sharing-revoked",
+      "role": "employer",
+      "path": "/applications/a5a30d24-a508-4508-b7db-81dbe67f0d96",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    },
+    {
+      "name": "13-other-organization-denied",
+      "role": "other",
+      "path": "/candidates/24ab296b-f72a-428c-80e4-c9aee8b566ee",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "screenshot_mode": "viewport screenshot",
+      "checks": {
+        "title": true,
+        "meaningful_content": true,
+        "no_framework_overlay": true,
+        "no_horizontal_overflow": true
+      }
+    }
+  ],
+  "runtime_source_files_verified": 82,
+  "runtime_source_unchanged": true,
+  "image_sha256": {
+    "01-workspace.png": "3befcc470c19228f9f3e998115439d98643084ec30283f6e8b45ec19d14806f9",
+    "02-job-entry.png": "c54a727cbbd96de6c400e49803b981575070f0325be21a172c1c0d7e5ffa9301",
+    "03-job-published.png": "0dcc4e39c2176d2c82912bc2f1fb0bf018d2c8af852de6d558a98caa3cea847f",
+    "04-job-search.png": "fda9e787955f60e7f6b1f35e66cce6f81d6052074c91d09ae4228f4f9e42f9a8",
+    "05-candidate-autosave.png": "62c8159a2cce79f5813030f8527d6094de79bbc7ef761cc0292622b46e02dd13",
+    "06-candidate-restored.png": "026321677517005102bdda783c6e9684b0440e1a235b2621071051986181a180",
+    "07-resume-pdf-xlsx.png": "79ad62efab46b8b9f59ea4cb14aa1d63ea7eec227f6144af4f85fa9b4115a1d6",
+    "08-recommendation-review.png": "5619fea886626d7ac71b696b570b851efab1e06a40ec6e890c26b1b56754a21a",
+    "09-recommendation-submitted.png": "d41e54e8bef769e3b31fbbf3872ef43ef76c659e5861c4eef82c065dcdbe66d8",
+    "10-employer-screening.png": "9e75bc7dd40fa879090936d80d92e00e3c37a11ec9bca783d67d6734c6adface",
+    "11-hired.png": "fb2fdd81a9d09e32da78d4fccd9e07efea4d1ec9478aaafc91317a766fa21ce9",
+    "12-sharing-revoked.png": "89b4df0d039ad0a3d70005039471dbba2c9134d9224e4edd16bbe81a0fea8a0e",
+    "13-other-organization-denied.png": "9c81bd250abac9d388a515f94d9a95557683eade27a351090e77850f4ef3c065"
+  },
+  "services_stopped_after_capture": true,
+  "normal_demo": {
+    "port": 3000,
+    "updated": false,
+    "healthy_services": 7,
+    "http_status": 200
+  }
+}
