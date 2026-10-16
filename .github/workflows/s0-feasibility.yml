@@ -1,6 +1,11 @@
 name: S0 isolated document feasibility
 on:
   workflow_dispatch:
+    inputs:
+      proof_public_key:
+        description: Owner RSA3072 public SPKI DER in base64 for encrypted visual evidence
+        type: string
+        required: true
 permissions:
   contents: read
 jobs:
@@ -29,6 +34,12 @@ jobs:
         run: |
           python -c "import platform; assert platform.system() == 'Linux' and platform.machine() == 'x86_64'"
           python validation/s0/run.py --base-image recruitment-s0-base:ci --out .local/s0-amd64
+      - name: Seal private visual proof for owner only
+        env:
+          PROOF_PUBLIC_KEY: ${{ inputs.proof_public_key }}
+        run: |
+          python -c "import os,pathlib; pathlib.Path('.local/s0-proof-public.txt').write_text(os.environ['PROOF_PUBLIC_KEY'])"
+          node validation/s0/visual-proof.cjs .local/s0-amd64 .local/s0-proof-public.txt
       - name: Audit exact S0 image and dependency path
         if: always()
         run: |
