@@ -2,7 +2,7 @@ FROM python:3.13-slim-bookworm@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803
 WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --only-binary=:all: --require-hashes -r requirements.txt
-FROM mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+FROM mcr.microsoft.com/playwright:v1.64.1-noble@sha256:7852dc5a7d72f5fe458a597d690f6c42fbc8e9e26ddfa95f8e6ef552558d9bbf
 USER root
 RUN apt-get update && apt-get upgrade -y --no-remove && apt-get install -y --no-install-recommends fonts-noto-cjk poppler-utils
 # Preserve the qualified Python/Expat inspector; do not substitute the browser image's system Python.

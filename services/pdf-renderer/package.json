@@ -1,6 +1,6 @@
 {
-  "name": "recruitment-platform-m0-validation",
+  "name": "recruitment-pdf-renderer",
   "private": true,
   "version": "0.0.0",
-  "dependencies": { "playwright": "1.62.1" }
+  "dependencies": { "playwright": "1.64.1" }
 }
