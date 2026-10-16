@@ -27,6 +27,29 @@ jobs:
           python3 scripts/check.py
       - name: Verify M1 through M5 and R1/R2/R3/R4 in an isolated project
         run: python3 scripts/e2e.py
+      - name: Preserve redacted build failure diagnostics
+        if: failure()
+        run: |
+          python3 - <<'PYCODE'
+          import json, pathlib, re
+          for folder in pathlib.Path('.local').glob('e2e-*'):
+              report=folder/'artifacts/run.json'
+              if not report.exists(): continue
+              state=json.loads(report.read_text())
+              if state.get('phase') not in ('setup','build/start'): continue
+              log=folder/'operations.log'
+              if not log.exists(): continue
+              values=[]
+              env=folder/'local.env'
+              if env.exists(): values += [line.partition('=')[2] for line in env.read_text().splitlines() if '=' in line and len(line.partition('=')[2])>=8]
+              accounts=folder/'demo-accounts.json'
+              if accounts.exists(): values += list(json.loads(accounts.read_text()).values())
+              text='\n'.join(log.read_text(errors='replace').splitlines()[-100:])
+              for value in sorted(values,key=len,reverse=True): text=text.replace(value,'<redacted>')
+              forbidden=r'(?:eyJ[A-Za-z0-9_-]+\.eyJ|(?:[?&](?:code|access_token|id_token)=)|-----BEGIN .*PRIVATE KEY-----|github_pat_|ghp_)'
+              if re.search(forbidden,text): text='Diagnostics withheld: residual sensitive pattern.'
+              (folder/'artifacts/build-failure.json').write_text(json.dumps({'phase':state['phase'],'redacted_tail':text},indent=2)+'\n')
+          PYCODE
       - name: Prepare pinned audit tools
         run: |
           mkdir -p .local/audit-tools
