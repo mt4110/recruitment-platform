@@ -1,0 +1,3 @@
+test drafts::tests::hkdf_rfc5869_prefix ... ok
+test drafts::crypto_tests::aes_gcm_integrity_and_aad_binding ... ok
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

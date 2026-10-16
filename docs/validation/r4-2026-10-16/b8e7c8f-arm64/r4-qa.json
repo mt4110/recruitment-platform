@@ -1,0 +1,28 @@
+{
+  "scope": "Additional browser QA using the validated source; server draft only, no business commit",
+  "status": "passed",
+  "origin": "http://localhost:3001",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": {
+    "identity": true,
+    "meaningful_content": true,
+    "no_framework_overlay": true,
+    "console_errors_or_warnings": [],
+    "page_errors": [],
+    "screenshot": true,
+    "restore": true,
+    "confirmation_unchecked": true,
+    "mobile_no_horizontal_overflow": true,
+    "keyboard_focus": true
+  },
+  "browser": "Browser plugin not available; Playwright Chromium"
+}

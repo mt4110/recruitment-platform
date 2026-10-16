@@ -1,0 +1,19 @@
+{
+  "source_commit": "b8e7c8f2eafdb18878979329fa65b2121ae629ef",
+  "ci_run": "https://github.com/mt4110/recruitment-platform/actions/runs/38840762657",
+  "runtime_source_file_count": 82,
+  "all_source_sha256_equal": true,
+  "both_source_clean": true,
+  "both_unchanged_during_run": true,
+  "both_stopped": true,
+  "browser_each": 88,
+  "r4_added_tests": 12,
+  "unit_cases_in_build_each": 2,
+  "unit_evidence": {
+    "arm64": "captured stdout",
+    "amd64": "successful Docker build gate; individual stdout not exported"
+  },
+  "xlsx_worker_each": 67,
+  "unit_source": "API Docker build layer, final source",
+  "source_scope": "runtime/services/migrations/fixtures/e2e/local tooling; final documentation-only commit does not change these sources"
+}

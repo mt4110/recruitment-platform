@@ -1,0 +1,8 @@
+{
+  "source_commit": "b8e7c8f2eafdb18878979329fa65b2121ae629ef",
+  "ci_run": "https://github.com/mt4110/recruitment-platform/actions/runs/38840762657",
+  "command": "cargo test --locked --release drafts::",
+  "confirmation": "Successful API image build gates on this command. The two unit cases are unconditional across architectures. Individual stdout remains in private operations.log, outside the sanitized artifact.",
+  "dockerfile_sha256": "6510eabe5dbb856493629f612e52a073a2173c79e71206d3bc4c6bbb4e134c21",
+  "individual_stdout_exported": false
+}
