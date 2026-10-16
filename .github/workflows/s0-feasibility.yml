@@ -1,0 +1,49 @@
+name: S0 isolated document feasibility
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24'
+      - name: Prepare qualified browser only in S0 scratch
+        run: |
+          mkdir -p .local/s0-browser
+          cp services/pdf-renderer/package.json services/pdf-renderer/package-lock.json .local/s0-browser/
+          npm ci --prefix .local/s0-browser --ignore-scripts
+          npx --prefix .local/s0-browser playwright install --with-deps chromium --only-shell
+      - name: Build existing qualified PDF dependency image
+        run: docker build --rm=false -t recruitment-s0-base:ci services/pdf-renderer
+      - name: Require native amd64 and run S0 only
+        env:
+          S0_PLAYWRIGHT: ${{ github.workspace }}/.local/s0-browser/node_modules/playwright
+        run: |
+          python -c "import platform; assert platform.system() == 'Linux' and platform.machine() == 'x86_64'"
+          python validation/s0/run.py --base-image recruitment-s0-base:ci --out .local/s0-amd64
+      - name: Audit exact S0 image and dependency path
+        if: always()
+        run: |
+          mkdir -p .local/s0-tools
+          curl --fail --silent --show-error --location https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.tar.gz -o .local/s0-tools/trivy.tar.gz
+          echo 'e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7  .local/s0-tools/trivy.tar.gz' | sha256sum --check
+          tar -xzf .local/s0-tools/trivy.tar.gz -C .local/s0-tools trivy
+          python validation/s0/qualify.py --run .local/s0-amd64 --trivy .local/s0-tools/trivy
+      - name: Preserve bounded evidence, never private keys or source documents
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: s0-amd64-evidence
+          path: |
+            .local/s0-amd64/*.json
+            .local/s0-amd64/crypto-status.png
+            .local/s0-amd64/dependency-path.txt
+          include-hidden-files: true
