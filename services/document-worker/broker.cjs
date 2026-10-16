@@ -8,7 +8,7 @@ let job;
 // Fixed phase names and numeric durations only; never log document or key material.
 const phaseDurations={};
 async function measured(phase,work){const start=performance.now();try{return await work();}finally{phaseDurations[phase]=Math.round((performance.now()-start)*1000)/1000;}}
-function emitTimings(){console.log(JSON.stringify({event:'timings',milliseconds:phaseDurations}));}
+function emitTimings(){console.log(JSON.stringify({event:'timings',milliseconds:phaseDurations,rss_bytes:process.memoryUsage().rss}));}
 async function bounded(url,options={},limit=524288,ms=30000){
  const r=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(ms)});
  const n=Number(r.headers.get('content-length'));if(n>limit)throw Error('RESPONSE_LIMIT');
