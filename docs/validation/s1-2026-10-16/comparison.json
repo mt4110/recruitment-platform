@@ -1,0 +1,12 @@
+{
+  "tested_commit": "c60de45f22061f36ffce449feeef92e648dcdd3d",
+  "native_conclusion": "success",
+  "native_tests": 110,
+  "native_s1_tests": 13,
+  "all_passed": true,
+  "source_hashes_equal": true,
+  "source_file_count": 98,
+  "native_source_unchanged": true,
+  "native_services_stopped": true,
+  "native_log_secrets_absent": true
+}

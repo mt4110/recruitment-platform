@@ -1,0 +1,167 @@
+{
+  "scope": "M6 regression: M1 through M5 + R1/R2/R3/R4; stop before R5/M7/publication",
+  "instance": "e2e-20261016-075343-662062",
+  "app_port": 3001,
+  "idp_port": 18082,
+  "phase": "complete",
+  "status": "passed",
+  "test_selection": "full",
+  "test_subnets": [
+    "10.253.0.0/27",
+    "10.253.0.32/27",
+    "10.253.0.64/27",
+    "10.253.0.96/27"
+  ],
+  "source_sha256": {
+    "apps/web/.dockerignore": "8ff7534b0a3db87f8c20796d98c3b580924a987b1c458d5e6a6ab38d967ebf14",
+    "apps/web/Dockerfile": "31383aec918b1b4ca25acf30002884aa856bed0e564040f384d265515fe75b74",
+    "apps/web/app/api/health/route.ts": "a63940a9457ad3f8797904b056ed2ff6615ac74413e529b455c4d5034595a414",
+    "apps/web/app/applications.tsx": "e68e291ad9c60c61e636e2470be00dc3b10863f5db4b932a15b636883ccd6782",
+    "apps/web/app/applications/[[...path]]/page.tsx": "80009601b3bf1db0daa64078c7c528d3a608a54232ec64333574e46846b2b3a0",
+    "apps/web/app/business.tsx": "28b41007fbcef5caff5ea6de01037400d27a448b73b04b7cabd20d83b8e3dc40",
+    "apps/web/app/candidates/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+    "apps/web/app/document-info.ts": "5a3188303b02bbb264032292e3ff0e57a6d7fa647e88690597410128cc8c0361",
+    "apps/web/app/documents.tsx": "a44a75326e8f0ca5091d37b019b9327c6de0befd8e6fa6845141a48c20111b1e",
+    "apps/web/app/drafts.tsx": "f7d393019803a3e27bd9c3bc203e34e09e65571e55570605aa2044a6ed6afb11",
+    "apps/web/app/encrypted-upload.ts": "f895b43d95b926c0abbc3d8656f4ed22f701585dcd65e378fd3b32f3ddb3f5bb",
+    "apps/web/app/icon.svg": "5493d33c01164d524b52107ca1c5e93a11d36a08682778fafa43e24520b69162",
+    "apps/web/app/jobs/[[...path]]/page.tsx": "151835c46d7ac588d7c093b476919d2ef4c2970e62a40e54365cacbed6c2d5d0",
+    "apps/web/app/layout.tsx": "76629e59ff2a05f6beb370722c6281d7edf41c86e7c7e0433f01479de41a9261",
+    "apps/web/app/login/page.tsx": "779fb1568e832468a4dcb06136fa3dfc9adea3e78c91ca1d88a9da50127a1e68",
+    "apps/web/app/notifications/page.tsx": "af154fb4bef129df318c5a19ac11c79362bc6ecf3ef019e58fbcc32f90b537af",
+    "apps/web/app/page.tsx": "09386be2c977c289c42a3de6661369c5c1d01848cc1ec7ac96cd0ed5ee3ca361",
+    "apps/web/app/previews.tsx": "5f0001387dd072920f9fd3972f69810a063bd8f34116c8bac92d2a668ddbec2e",
+    "apps/web/app/style.css": "d2eb725b1e845b65a2fd5936184c79ac6ba8c27c019656b136e5e258f5c031ad",
+    "apps/web/next-env.d.ts": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b",
+    "apps/web/package-lock.json": "3a5f015decd9b2a3d236e855c3c3ff394e4b4f9220c7a80bc3254b2710ba395e",
+    "apps/web/package.json": "7759bb99af82bc58fef4b3c35825f37731b4ef89bd8f2d950547e8bd18377076",
+    "apps/web/public/sample-resume.pdf": "1e003121a36e62dcd79f5a96e6fb023dadb527695297ba2cb0ef250a6e412d78",
+    "apps/web/tsconfig.json": "5f13aa76dff2e63afa46e3ecdb80369b94d5007a15ff9edc91b4eecf6c609435",
+    "e2e/README.md": "324b5ea34e37147ea0a5e856284aa5778aae8a7372870694ff69068e37534955",
+    "e2e/auth.spec.cjs": "5dbaceff76a0dcb51f2520a396d66a1cfd26458e3fec54c0fa7f0f2558c89454",
+    "e2e/av_isolation.py": "df964e2ebd567808f3b7d44a2962484f5872fdcfcffd435428b1721e65067f44",
+    "e2e/business.spec.cjs": "3896c5bf965c3ad0fd9a83fb6405b332ea8a76f157ac34d7825c63a9ba34616d",
+    "e2e/check_xlsx.py": "0186ae69b9f32d87405d21ed8c2a1cff74e2ed30073ca839647a5b04e1f64b91",
+    "e2e/documents.spec.cjs": "4564e7ca1c6b991781cf856ac59ba982f83da54357becc5185f82960bdb73709",
+    "e2e/fixtures/provenance.json": "37cade2ce213b721d116c984312b28bad6a6926e4af1ea145924f05ba56d1013",
+    "e2e/fixtures/sheets-career-history.xlsx": "dd8a2c9b637b306395c55318cfd32a952d561ca8d0c7d3154c66d7cbbcc3cbcd",
+    "e2e/fixtures/sheets-resume.xlsx": "b27b31bf905d7d56170fa80670d9127a4dfdd1c5cf628228fd3452414868fc34",
+    "e2e/helpers.cjs": "b7b5e95ebf78c073ca7e5139542a0f0552711657b07d7f5c04f0fd3c5bf21f9e",
+    "e2e/legacy_migration.py": "47b38fabc3f167b2de0bf2d9219b43969dfe523e9509768484ee7fc039d4e4b4",
+    "e2e/m5.spec.cjs": "65a56517a8af1fa78942512192634dbaf493b9b35ae044836b29490877d8dce9",
+    "e2e/make_pdf_fixtures.py": "f256271016c5c4f36cd8cab571c7d1ab93d162b74eb48102089c39fdb92d5e48",
+    "e2e/package-lock.json": "3bd6ead6c5bd2ebc808f8c643218afc30b6782b0a3ce6f7ad7f65882c2d1c626",
+    "e2e/package.json": "fb2f035421df1c0248735aa4d0191e0871725b517dffab5bcc245cd7e683a802",
+    "e2e/playwright.config.cjs": "85a79059ec5040784427bf9d850a231893e030c9ff64833894ae703cc1fd9270",
+    "e2e/r1.spec.cjs": "50e055cf15fc8ff3b032f5ed804e15b90c093b0c1b568d63f57d05fa3a1458ab",
+    "e2e/r2.spec.cjs": "c6fbc985591f44156755935c6059f99cb4643aa5884897d30c6b0eda4023ddf5",
+    "e2e/r3.spec.cjs": "37693d6c9ff4925f65fc04815ffc1f8ddcbbfde60656ab0f077ca422edf23b7f",
+    "e2e/r4.spec.cjs": "566e85c070be95f5321beb06f44ab9b71673c72a7376049e73bc3816e594729d",
+    "e2e/reporter.cjs": "9877f64fec8da24519b3a310a185518f9266a2d601901e92e28539cac9d40275",
+    "e2e/s1.spec.cjs": "f4bcfb05a15b0064986444af3aa558d064057c109e6f0f1a20edf1f1e1600c3c",
+    "e2e/synthetic_av.cjs": "c8a95fa4ec20511c51c17f7736446599552011e24b3113b1256defdcd1c916cd",
+    "e2e/workflow.spec.cjs": "a9dfd0626dd092137156b359a9b83ece2731e23861c577907fae610f9116bf07",
+    "fixtures/0001_auth.sql": "f47ee02c67efa5897e092f4f8663894750c199a50e181d41255784bad430bdd0",
+    "fixtures/0002_jobs_candidates.sql": "ed5c18eecd8eb86f5d46a970ce2c233ea68524fca507c56e460485ed952c3568",
+    "infra/local/compose.yaml": "2779fc41bcc0462c905d9173afd36ba0f5bf312092a1e6d6454be4e0fb793f0a",
+    "infra/local/db-init.sh": "0995f83755372b02b213ccea8fac9265264dbedafb7a1791208257a63e5221c2",
+    "infra/local/nginx.conf": "24368df02627240cb121821b9ad5828b97f80bb0bb24d00c5489ecb215c02e20",
+    "infra/local/pdf-seccomp.json": "cc3e61cabda6bbc1e53e54d27ba4d55a9d3be829b6dd1a596f4a7b31b1cc7849",
+    "migrations/0001_auth.sql": "e266b163eb1980214210808efef61590444539edbd6018363a70cd8876fbafb5",
+    "migrations/0002_jobs_candidates.sql": "6856bff59f8e25045b834629dcde2b895a12c265dccf632d5aa130020734200c",
+    "migrations/0003_documents.sql": "090f37b6dbe6c2813c718312df8007967e066fd81492d90cb921755b3d3dc5e4",
+    "migrations/0004_applications.sql": "19c46b8b7aef9b77dfe92e44da49fea5abdb89e2846ca39f22d59058bf50efbe",
+    "migrations/0005_snapshot_validation.sql": "2162c7eaff926080aaa7abc40f4ab522256f9c4b68795bbe2e7c37539a9ad0a3",
+    "migrations/0006_document_formats.sql": "09fdd77407a006cb64c17e38474b7e4c00073859ab8ecf819174a2168af758a5",
+    "migrations/0007_document_av.sql": "ee41b5475caff39e26c4fac3a0a2a199c4bd8e4dd08b6fc4a179120d05129a3f",
+    "migrations/0008_document_versions.sql": "b5276ca02af1c09903ee8bf88f2da047e3d5cb60f9b154b764fd6d1751b3f5b9",
+    "migrations/0009_form_drafts.sql": "974207bff40e2af52e1ad9170ec077ae3f81a53c2f3501c24bec930ef49dc42c",
+    "migrations/0010_encrypted_uploads.sql": "067779fb24e52ba2c72b6253841463b70f2c00b73b2541e0bca3fb628bf12f79",
+    "migrations/0011_upload_context_constraints.sql": "8fa85f3cead2fc97959cb93e3f691a3eee7d86b84ef127bc81eff1f141768a16",
+    "scripts/audit.py": "fb7ce516f6a34dbbc691c72e46868b1f523a6a70c4f99316ac1feb973c0e9493",
+    "scripts/check.py": "cafd1a709fd1c3dec2f53c8235d7cf52a531dc21a032b5943d9aab6d6c8451a2",
+    "scripts/e2e.py": "a4423ade82e73965658a078f81962e70fdb04a89587f6f88be769b516f11e655",
+    "scripts/local.py": "164293939bee83d989b4a188728cb93b6524862840aaa12f222c6bbfc12e6af7",
+    "services/api/.dockerignore": "5999c1b55c0e789196772bc812ca50b9d59a97edba5811f313463a9be5d76b5f",
+    "services/api/Cargo.lock": "7e2acdbc3ccc0603a1aeeb5827066b47d53368eadb8af8923ce14ee4ce071aa9",
+    "services/api/Cargo.toml": "f26553273acdb23c2a25c4289083dacf1cb2c0fa3d1740c0aa152080c3d14e4a",
+    "services/api/Dockerfile": "55f9c33dd8d41e60d5c9b8e2f6f73e025256dc33383b641c09782fbb9265401f",
+    "services/api/src/applications.rs": "6d736bcc5627a0e753277b6e4ce0b4b54e62b2fd68077854f3bd6abaf72839be",
+    "services/api/src/auth.rs": "30cdd2f0aa5e7fe7afe38bba6d35f402c2f039fba1ceb66098c335598bc54baa",
+    "services/api/src/business.rs": "ea1a10ec99f8c5829d2347bfa9f5b7b17507d960b0c298d9a252b89cd5aa9eff",
+    "services/api/src/documents.rs": "67eeb0c4039016f6b3d57d8a14315f6bca08dab24cece1cdbd233f0f8dc6404a",
+    "services/api/src/drafts.rs": "a4f9173efe709998cef4718d0f2ae499624fed2a0a938061b645d45c005a6550",
+    "services/api/src/main.rs": "cd500025dcfa6864d110708d4d4a8550061a4b4dba25ff78ebeff28daa5891cd",
+    "services/api/src/previews.rs": "f2af4ff58fbcf8d02c50d3ddd7bf1bbfc52b3df97d5da4a79eb5b032e07cc907",
+    "services/api/src/scanner.rs": "5c034e43d227d2ae60ee8bb78b110244db2690b3a2962f91f0b6f059f68129fa",
+    "services/api/src/uploads.rs": "23889a3628c2eee942f79b232a69273f227a75c82a0a1632185ad7e488b5fc41",
+    "services/av/Dockerfile": "b408fa0efe4be02334d4ab7a78ef12e1464ec0dd55bbd4453206faf981197345",
+    "services/av/common.py": "a76cc41f1c5ebec6299e9fb3da5cd00b8a317b9b285a826134217e07d0f9d39f",
+    "services/av/scanner.py": "b8b1f6a42cca2acb11467c23ed2d0052e6b3478e0972edc5c6925b3cd67d7c2e",
+    "services/av/updater.py": "8581ebb6943ea26cf22650307a95d78a0e87353331b391e0eeef2f8f002529cb",
+    "services/pdf-renderer/.dockerignore": "5bd16068ae321100c18ec9b41b008668933831a8988ef756e82731caa8b7464c",
+    "services/pdf-renderer/Dockerfile": "1c4ad9f3cff34dc7bc7da23530f4b7d44937e020bf7ce7e2d88170b3c0e3cf26",
+    "services/pdf-renderer/invoice.mjs": "7499ae02aa58ba8bb9494d80105503287780765c5abdb845014a44c1d1c848db",
+    "services/pdf-renderer/package-lock.json": "9cb6016c2d56c404f284cbe6f0dc9006ca35f22951a3f0dceee01f56098054e0",
+    "services/pdf-renderer/package.json": "ab0efd252577e89a682357a1cc3f322d9b0c2e8a8e653d9051548189c9df52d0",
+    "services/pdf-renderer/requirements.txt": "d2189265adfe5898436bb5ec2d7668e439bf8a6cad0599cd5d5722516d1681b1",
+    "services/pdf-renderer/server.py": "b0c2e2cb85453b1ee76331e9d3998ed815bf9422a888ad7131d7919b56e2868b",
+    "services/pdf-renderer/validator.py": "886a1560d32f65fdcd8f1ff1dbf21e4dd4a09aecf26421883db956923a6fc335",
+    "services/pdf-renderer/xlsx_validator.py": "45d1a86bc87408581aded60e4b9a68a5da966f8b6adad1f6b54732c351419675",
+    "services/postgres/Dockerfile": "49a87e70d82057df4ce97ad638395a0d3a7e57ebd80992e72dece7075ab93ddf",
+    "validation/r0/fixtures/sheets-career-history.xlsx": "5a0481bd25be042293d293cde9f22e8033635b7da71064634f2cafa72ef24435",
+    "validation/r0/fixtures/sheets-resume.xlsx": "3aae8e313188d263c86c36882a2e999f9d2fc9a0279922b154f7e73f77b9eee9"
+  },
+  "source_commit": "c60de45f22061f36ffce449feeef92e648dcdd3d",
+  "source_dirty": false,
+  "source_unchanged_during_run": true,
+  "docker": "28.0.4 / x86_64",
+  "av_runtime": {
+    "scan": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 1117020160
+    },
+    "updater": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 1007497216
+    },
+    "pdf-renderer": {
+      "running": true,
+      "oom_killed": false,
+      "memory_peak_bytes": 417210368
+    }
+  },
+  "log_scan": {
+    "gateway": {
+      "secret_pattern_found": false
+    },
+    "web": {
+      "secret_pattern_found": false
+    },
+    "api": {
+      "secret_pattern_found": false
+    },
+    "db": {
+      "secret_pattern_found": false
+    },
+    "idp": {
+      "secret_pattern_found": false
+    },
+    "idp-db": {
+      "secret_pattern_found": false
+    },
+    "pdf-renderer": {
+      "secret_pattern_found": false
+    },
+    "scan": {
+      "secret_pattern_found": false
+    },
+    "updater": {
+      "secret_pattern_found": false
+    }
+  },
+  "services_stopped": true,
+  "elapsed_seconds": 1006.792
+}

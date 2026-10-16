@@ -1,0 +1,85 @@
+{
+  "scope": "M1 through M5 and R1 through R4 browser E2E",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S1 reservation replay, fixed scope, no auth/CSRF and metadata bounds",
+      "status": "passed",
+      "duration_ms": 322,
+      "errors": []
+    },
+    {
+      "name": "S1 authorized immutable envelope, tampered expired wrong-purpose tickets and current login",
+      "status": "passed",
+      "duration_ms": 189,
+      "errors": []
+    },
+    {
+      "name": "S1 two PUTs and complete attach only once; uninspected ciphertext stays unavailable",
+      "status": "passed",
+      "duration_ms": 1040,
+      "errors": []
+    },
+    {
+      "name": "S1 checksum failure closes old attempt, preserves orphan and creates fresh AAD",
+      "status": "passed",
+      "duration_ms": 197,
+      "errors": []
+    },
+    {
+      "name": "S1 interrupted stream reconciles after process restart without overwriting bytes",
+      "status": "passed",
+      "duration_ms": 11100,
+      "errors": []
+    },
+    {
+      "name": "S1 durable manifest restores a lost stored commit; lost complete response keeps same ID",
+      "status": "passed",
+      "duration_ms": 11106,
+      "errors": []
+    },
+    {
+      "name": "S1 concurrent organization quota allows ten reservations only, and storage refuses admission",
+      "status": "passed",
+      "duration_ms": 1146,
+      "errors": []
+    },
+    {
+      "name": "S1 original reservation and authorization deadlines plus seven-day replay tombstone",
+      "status": "passed",
+      "duration_ms": 650,
+      "errors": []
+    },
+    {
+      "name": "S1 actual browser PDF XLSX encryption, draft restart and no plaintext network body",
+      "status": "passed",
+      "duration_ms": 1157,
+      "errors": []
+    },
+    {
+      "name": "S1 full 10MiB ciphertext admission and route-only maximum size refusal",
+      "status": "passed",
+      "duration_ms": 237,
+      "errors": []
+    },
+    {
+      "name": "S1 lost browser PUT response resumes by receipt after reload, without another PUT",
+      "status": "passed",
+      "duration_ms": 620,
+      "errors": []
+    },
+    {
+      "name": "S1 retained ciphertext gets a fresh attempt after authorization window expires",
+      "status": "passed",
+      "duration_ms": 725,
+      "errors": []
+    },
+    {
+      "name": "S1 composite foreign keys reject cross-context reference injection",
+      "status": "passed",
+      "duration_ms": 586,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}
