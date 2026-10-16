@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run M1/M2/M3/M4/R1 browser E2E in a new local Compose project; retain all evidence/data."""
+"""Run M1/M2/M3/M4/R1/R2/R3 browser E2E in a new local Compose project; retain all evidence/data."""
 import argparse, hashlib, json, os, re, secrets, socket, subprocess, time, io, tarfile, ipaddress
 from pathlib import Path
 
@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',choices=['workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs'],help='Development subset; final CI always runs the full suite.')
+parser.add_argument('--test-file',choices=['workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs'],help='Development subset; final CI always runs the full suite.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')
@@ -21,7 +21,7 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'M1 through M4 + R1/R2; stop before R3/M5', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'M1 through M4 + R1/R2/R3; stop before R4/M5', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
     tracked = ['scripts/local.py','scripts/e2e.py','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
@@ -113,5 +113,5 @@ finally:
     if stopped.returncode != 0: code = 1; summary['status'] = 'failed'
     summary['elapsed_seconds'] = round(time.monotonic() - start, 3)
     (artifacts/'run.json').write_text(json.dumps(summary, indent=2)+'\n')
-    print(f"M1/M2/M3/M4/R1/R2 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
+    print(f"M1/M2/M3/M4/R1/R2/R3 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
 raise SystemExit(code)

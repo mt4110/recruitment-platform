@@ -158,6 +158,12 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
     .fetch_one(&mut *tx)
     .await
     .map_err(db_error)?;
+    let version: i32 =
+        sqlx::query_scalar("SELECT version FROM document_versions WHERE document_id=$1")
+            .bind(d.id)
+            .fetch_one(&mut *tx)
+            .await
+            .map_err(db_error)?;
     let available: bool = sqlx::query_scalar("SELECT $3 AND document_usable($1,$2,$4)")
         .bind(d.id)
         .bind(&d.sha256)
@@ -167,7 +173,7 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
         .await
         .map_err(db_error)?;
     Ok(
-        json!({"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
+        json!({"document_version":version,"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
     )
 }
 pub(crate) async fn list(tx: &mut PgConnection, candidate: Uuid) -> Result<Value, ApiError> {

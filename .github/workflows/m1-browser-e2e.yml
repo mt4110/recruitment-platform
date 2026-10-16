@@ -1,4 +1,4 @@
-name: M1/M2/M3/M4/R1/R2 browser E2E
+name: M1/M2/M3/M4/R1/R2/R3 browser E2E
 on:
   workflow_dispatch:
 permissions:
@@ -19,13 +19,13 @@ jobs:
         run: |
           npm ci --prefix e2e
           npx --prefix e2e playwright install --with-deps chromium --only-shell
-      - name: Verify M1 through M4 and R1/R2 in an isolated project
+      - name: Verify M1 through M4 and R1/R2/R3 in an isolated project
         run: python3 scripts/e2e.py
       - name: Preserve sanitized results only
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: r2-browser-results
+          name: r3-browser-results
           path: |
             .local/e2e-*/artifacts/*.json
             .local/e2e-*/artifacts/*.png

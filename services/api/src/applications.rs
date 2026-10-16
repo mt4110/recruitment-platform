@@ -184,7 +184,7 @@ async fn read(tx: &mut PgConnection, id: Uuid, u: &Identity) -> Result<Value, Ap
         if let Some(snapshot) = snapshot {
             out["candidate_snapshot"] = snapshot;
         }
-        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot,'file_format',file_format_snapshot,'document_kind',document_kind_snapshot,'available',document_usable(document_id,sha256_snapshot,file_format_snapshot)) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
+        let docs:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',document_id,'original_name',original_name_snapshot,'size_bytes',size_bytes_snapshot,'file_format',file_format_snapshot,'document_kind',document_kind_snapshot,'document_version',(SELECT version FROM document_versions v WHERE v.document_id=application_documents.document_id),'available',document_usable(document_id,sha256_snapshot,file_format_snapshot)) FROM application_documents WHERE application_id=$1 ORDER BY document_id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
         out["documents"] = json!(docs);
     }
     let mut events:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'event_type',event_type,'from_status',from_status,'to_status',to_status,'reason',reason,'created_at',created_at) FROM selection_events WHERE application_id=$1 ORDER BY created_at,id").bind(id).fetch_all(&mut *tx).await.map_err(db_error)?;
