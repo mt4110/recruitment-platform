@@ -463,8 +463,16 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     } else {
         None
     };
-    if let Some((resource, status)) =
-        crate::drafts::replay(&mut tx, &u, operation.as_ref(), &method, &normalized, &body).await?
+    if let Some((resource, status)) = crate::drafts::replay(
+        &mut tx,
+        &u,
+        operation.as_ref(),
+        &method,
+        &normalized,
+        &body,
+        key,
+    )
+    .await?
     {
         let value = read(&mut tx, resource, &u).await?;
         tx.commit().await.map_err(db_error)?;

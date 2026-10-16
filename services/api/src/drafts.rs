@@ -942,8 +942,39 @@ pub async fn replay(
     method: &Method,
     path: &str,
     body: &Value,
+    legacy_key: Option<Uuid>,
 ) -> Result<Option<(Uuid, StatusCode)>, ApiError> {
-    let Some(o) = o else { return Ok(None) };
+    let Some(o) = o else {
+        if let Some(key) = legacy_key {
+            lock(
+                tx,
+                lock_key(
+                    "draft-operation",
+                    &[
+                        u.organization_id.to_string(),
+                        u.user_id.to_string(),
+                        key.to_string(),
+                    ],
+                ),
+            )
+            .await?;
+            let valid: Option<bool> = sqlx::query_scalar(
+                "SELECT result_expires_at>now() FROM draft_operations WHERE operation_id=$1",
+            )
+            .bind(key)
+            .fetch_optional(&mut *tx)
+            .await
+            .map_err(db_error)?;
+            if let Some(valid) = valid {
+                return Err(conflict(if valid {
+                    "IDEMPOTENCY_MISMATCH"
+                } else {
+                    "OPERATION_RESULT_EXPIRED"
+                }));
+            }
+        }
+        return Ok(None);
+    };
     lock(
         tx,
         lock_key(

@@ -503,8 +503,16 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
         path.clone()
     };
     let request_hash = Sha256::digest(serde_json::to_vec(&body).map_err(|_| invalid())?).to_vec();
-    if let Some((resource, status)) =
-        crate::drafts::replay(&mut tx, &u, operation.as_ref(), &method, &normalized, &body).await?
+    if let Some((resource, status)) = crate::drafts::replay(
+        &mut tx,
+        &u,
+        operation.as_ref(),
+        &method,
+        &normalized,
+        &body,
+        idem,
+    )
+    .await?
     {
         let value = read(&mut tx, jobs, resource).await?;
         tx.commit().await.map_err(db_error)?;
