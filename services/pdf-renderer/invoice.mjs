@@ -33,6 +33,6 @@ try{
  const layout=await page.evaluate(()=>{const sheet=document.querySelector('.sheet').getBoundingClientRect(),footer=document.querySelector('.footer').getBoundingClientRect();return document.fonts.check('12px "Noto Sans CJK JP"')&&[...document.querySelectorAll('.name')].every(x=>x.getBoundingClientRect().height<=44.5&&x.scrollWidth<=x.clientWidth+1)&&!document.querySelector('script,img,iframe')&&footer.bottom<=sheet.bottom+1;});
  if(!layout)throw Error('PDF_LAYOUT_ERROR');
  const pdf=await page.pdf({format:'A4',preferCSSPageSize:true,printBackground:true});
- execFileSync('/opt/pdf-venv/bin/python',['-c','import sys,io,pikepdf; p=pikepdf.Pdf.open(io.BytesIO(sys.stdin.buffer.read())); assert len(p.pages)==1; b=p.pages[0].mediabox; assert abs(float(b[2])-595.28)<2 and abs(float(b[3])-841.89)<2'],{input:pdf,timeout:1000,stdio:['pipe','pipe','pipe']});
+ execFileSync('/usr/local/bin/python',['-c','import sys,io,pikepdf; p=pikepdf.Pdf.open(io.BytesIO(sys.stdin.buffer.read())); assert len(p.pages)==1; b=p.pages[0].mediabox; assert abs(float(b[2])-595.28)<2 and abs(float(b[3])-841.89)<2'],{input:pdf,timeout:1000,stdio:['pipe','pipe','pipe']});
  if(pdf.length>524288)throw Error('PDF_LAYOUT_ERROR');process.stdout.write(pdf);
 }catch(e){process.stderr.write(e.message==='PDF_LAYOUT_ERROR'?'PDF_LAYOUT_ERROR':'PDF_UNAVAILABLE');process.exitCode=1;}finally{await browser?.close();}

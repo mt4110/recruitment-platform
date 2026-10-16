@@ -194,7 +194,17 @@ async fn pdf(
     {
         return Err(unavailable());
     }
-    let bytes = response.bytes().await.map_err(|_| unavailable())?;
+    let bytes = response.bytes().await.map_err(|e| {
+        if e.is_timeout() {
+            error(
+                StatusCode::GATEWAY_TIMEOUT,
+                "PDF_TIMEOUT",
+                "PDFの生成が時間内に完了しませんでした。再試行してください。",
+            )
+        } else {
+            unavailable()
+        }
+    })?;
     if bytes.len() > 524288 || !bytes.starts_with(b"%PDF-") {
         return Err(unavailable());
     }
