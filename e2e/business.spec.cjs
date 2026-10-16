@@ -146,7 +146,10 @@ test('M2 browser resolves a lost creation response with the same operation and n
  try {
   await page.route('**/api/v1/candidates',async route=>{if(route.request().method()!=='POST')return route.continue();firstKey=route.request().headers()['idempotency-key'];const body=route.request().postDataJSON();expect(body.operation_id).toBe(firstKey);draftId=body.draft_id;const response=await route.fetch();expect(response.status()).toBe(201);createdId=(await response.json()).id;await route.abort();},{times:1});
   await page.getByRole('button',{name:'保存する',exact:true}).click();await expect(page.locator('.workspace').getByRole('alert')).toContainText('接続が途切れました');
-  const outcome=page.waitForResponse(r=>r.request().method()==='GET'&&r.url()===origin+`/api/v1/drafts/${draftId}/outcome?operation_id=${firstKey}`);await page.getByRole('button',{name:'保存する',exact:true}).click();const result=await outcome;expect(result.status()).toBe(200);expect(await result.json()).toMatchObject({state:'committed',resource_type:'candidate',resource_id:createdId,result_status:201});
+  let captured;
+  const outcomeUrl=origin+`/api/v1/drafts/${draftId}/outcome?operation_id=${firstKey}`;
+  await page.route(outcomeUrl,async route=>{expect(route.request().method()).toBe('GET');expect(route.request().url()).toBe(outcomeUrl);const response=await route.fetch();expect(response.status()).toBe(200);captured=await response.json();await route.fulfill({response});},{times:1});
+  await page.getByRole('button',{name:'保存する',exact:true}).click();await expect.poll(()=>captured).toMatchObject({state:'committed',resource_type:'candidate',resource_id:createdId,result_status:201});
   await expect(page.getByRole('heading',{name:'架空 応答喪失',exact:true})).toBeVisible();expect(page.url().endsWith('/'+createdId)).toBe(true);expect(sql(`SELECT count(*) FROM candidates WHERE id='${createdId}';SELECT count(*) FROM audit_events WHERE resource_id='${createdId}' AND action='create';`)).toBe('1\n1');
   expect(posts).toBe(1);
  } finally {page.off('request',observe);await page.unrouteAll({behavior:'wait'});allowNetworkFailure=false;}

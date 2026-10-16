@@ -72,8 +72,8 @@ test('S2 rotation retains old original and artifact keys and restores encrypted 
  const old=await upload();
  for(const purpose of ['original','artifact'])expect(host('scripts/document_key.py',[purpose,'rotate','--version',purpose+'-v2']).status).toBe(0);
  try{
-  expect(launch().events).toEqual(['checked']);expect(state(old)).toBe('checked|');
-  const current=await upload();expect(current.wrap_key_version).toBe('original-v2');expect(launch().events).toEqual(['checked']);
+  await avReady();expect(launch().events).toEqual(['checked']);expect(state(old)).toBe('checked|');
+  const current=await upload();expect(current.wrap_key_version).toBe('original-v2');await avReady();expect(launch().events).toEqual(['checked']);
   const rows=JSON.parse(sql(`SELECT json_agg(json_build_object('id',id,'envelope',envelope)) FROM document_artifacts WHERE document_id IN ('${old.document_id}','${current.document_id}') AND state='stored';`));
   for(const row of rows){const e=row.envelope;expect(e.key_version).toBe('artifact-v2');const backup=fs.readFileSync(path.join(dir,'keyring/artifact-v2.pem'));const raw=cp.execFileSync('docker',['exec',`recruitment-${process.env.RP_INSTANCE}-api-1`,'cat','/data/resumes/encrypted/artifacts/'+row.id+'.cipher'],{env:process.env});const dek=c.privateDecrypt({key:c.createPrivateKey(backup),oaepHash:'sha256'},Buffer.from(e.wrapped_dek,'base64url'));const d=c.createDecipheriv('aes-256-gcm',dek,Buffer.from(e.nonce,'base64url'));d.setAAD(Buffer.from(e.aad));d.setAuthTag(raw.subarray(-16));expect(JSON.parse(Buffer.concat([d.update(raw.subarray(0,-16)),d.final()])).phase).toBe('ready');}
   expect(fs.existsSync(path.join(dir,'upload-private.pem'))).toBe(true);expect(fs.existsSync(path.join(dir,'artifact-private.pem'))).toBe(true);

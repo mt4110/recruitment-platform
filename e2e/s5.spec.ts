@@ -53,6 +53,8 @@ async function avFault(change:string,work:()=>Promise<void>):Promise<void>{
 
 test.describe.configure({mode:'serial'});
 test.beforeAll(async({browser})=>{
+ // Prior suites intentionally retain many drafts. Expire only isolated test fixtures; never delete or relax quotas.
+ sql("UPDATE form_drafts SET expires_at=now()-interval '1 second',revision=revision+1 WHERE state='active' AND expires_at>now();");
  for(const [who,name] of [['a','agency-a'],['b','agency-b'],['x','employer-x'],['y','employer-y']]){
   const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',()=>issues.push('PAGE_ERROR'));
   page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/^Failed to load resource: the server responded with a status of (400|401|403|404|409|413|422|429|503)\b/.test(m.text())&&!/net::ERR_FAILED/.test(m.text()))issues.push('CONSOLE_ERROR');});

@@ -18,6 +18,8 @@ let context: BrowserContext, p: Page, profile: string, me: {
     csrf_token: string;
 };
 test.describe.configure({ mode: 'default' });
+// Independent isolated fixture boundary: preserve ciphertext, keep all product quotas unchanged.
+test.beforeAll(() => sql("UPDATE form_drafts SET expires_at=now()-interval '1 second',revision=revision+1 WHERE state='active' AND expires_at>now();"));
 async function envelopes(page = p) {
     return page.evaluate(async () => {
         const db = await new Promise<IDBDatabase>((resolve, reject) => { const r = indexedDB.open('recruitment-private-drafts-v1', 1); r.onsuccess = () => resolve(r.result); r.onerror = () => reject(Error('IDB')); });
