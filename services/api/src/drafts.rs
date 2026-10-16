@@ -777,6 +777,7 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     .await?;
     if let Some(d) = &old {
         d.live()?;
+        d.plaintext(&app)?;
         if d.form_type != save.form_type
             || d.target_id != save.target_id
             || d.context_id != save.context_id

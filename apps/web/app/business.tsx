@@ -60,7 +60,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     } | null>(null);
     const allowed = jobs || agency;
     const draft=useDraft({me,paused:busy,enabled:signedIn&&allowed&&editing&&!loading,kind:jobs?(id?'job_edit':'job_new'):(id?'candidate_edit':'candidate_new'),target:id,base:id?record?.version:null,payload:form,restore:p=>{setForm({...Object.fromEntries((jobs?['title','description','location','employment_type']:['name','summary']).map(k=>[k,String((record as Record<string,unknown>|null)?.[k]??(k==='employment_type'?'full_time':''))])),...Object.fromEntries(Object.entries(p).filter(([k])=>k!=='view'))} as Record<string,string>);setConfirmed(false);},unauthorized:onUnauthorized});
-    const filterDraft=useDraft({me,enabled:signedIn&&allowed&&!editing&&!detail&&!loading,kind:jobs?'job_filters':'candidate_filters',payload:{...filters,cursor:cursor||''},restore:p=>{const next={...emptyFilters,...Object.fromEntries(Object.entries(p).filter(([k])=>!['view','cursor'].includes(k)))} as Filters;setFilters(next);setApplied(next);setCursor(typeof p.cursor==='string'?p.cursor||null:null);},unauthorized:onUnauthorized});
+    const filterDraft=useDraft({me,enabled:signedIn&&allowed&&!editing&&!detail,kind:jobs?'job_filters':'candidate_filters',payload:{...filters,cursor:cursor||''},restore:p=>{const next={...emptyFilters,...Object.fromEntries(Object.entries(p).filter(([k])=>!['view','cursor'].includes(k)))} as Filters;setFilters(next);setApplied(next);setCursor(typeof p.cursor==='string'?p.cursor||null:null);},unauthorized:onUnauthorized});
 
     useEffect(() => { if (!signedIn) {
         mutation.current?.abort();
@@ -198,9 +198,10 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
                 }
             }
         }
-        catch {
-            if (alive.current && !abort.signal.aborted)
-                setError('接続が途切れました。結果を一覧で確認するか、同じボタンで再試行してください。POSTは同じ操作キーを使います。');
+        catch (e) {
+            if (alive.current && !abort.signal.aborted) {
+                const code=(e as {code?:string}).code;if(code){setError(e instanceof Error?e.message:'下書きを確認してください。');if(['DRAFT_VERSION_CONFLICT','DRAFT_CONTEXT_CHANGED'].includes(code))setConflict(true);}else
+                setError('接続が途切れました。結果を一覧で確認するか、同じボタンで再試行してください。POSTは同じ操作キーを使います。');}
         }
         finally {
             if (alive.current)
@@ -217,7 +218,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     return <section className="workspace" aria-labelledby="workspace-title">
     {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}<a href="/applications">推薦</a></nav>}
     <div className="section-title"><h2 id="workspace-title">{editing ? (id ? '編集する' : jobs ? '求人を登録する' : '候補者を登録する') : detail ? (record?.title || record?.name || '詳細') : title}</h2>{!id && !editing && allowed && (!jobs || !agency) && <a className="button" href={base + '/new'}>{jobs ? '求人を登録する' : '候補者を登録する'}</a>}</div>
-    {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => setReload(v => v + 1)}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
+    {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => {if(conflict)draft.prepareFresh();setReload(v => v + 1);}}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
     {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}><DraftStatus draft={draft}/>
       <fieldset disabled={busy || !draft.ready || expired || !!record?.archived_at || record?.status === 'closed'}><legend>{jobs ? '求人の内容' : '架空候補者の情報'}</legend>
       {(jobs ? [['title', '求人名', 200], ['description', '仕事内容', 10000], ['location', '勤務地', 200]] : [['name', '架空氏名', 100], ['summary', '経歴の概要', 10000]]).map(([key, label, max]) => <label key={key}> {label}<span className="hint">必須・{max}文字以内</span>{key === 'description' || key === 'summary' ? <textarea name={String(key)} required maxLength={Number(max)} rows={7} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/> : <input name={String(key)} required maxLength={Number(max)} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/>}</label>)}

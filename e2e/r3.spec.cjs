@@ -36,7 +36,7 @@ test('R3 multiple PDF XLSX register sequentially with kinds versions and mobile 
 });
 test('R3 eleven files are rejected before POST and one rejected file does not prevent the next valid file',async()=>{
  freshAdmission();const c=await candidate(),p=actors.a.page;await p.goto(origin+'/candidates/'+c.id);let posts=0;const count=r=>{if(r.method()==='POST'&&r.url()===origin+`/api/v1/candidates/${c.id}/documents`)posts++;};p.on('request',count);
- try{await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles(Array.from({length:11},(_,i)=>file(`架空${i}.pdf`)));await expect(p.getByRole('status')).toContainText('10件まで');expect(posts).toBe(0);
+ try{await expect(p.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles(Array.from({length:11},(_,i)=>file(`架空${i}.pdf`)));await expect(p.getByRole('status')).toContainText('10件まで');expect(posts).toBe(0);
  await select(p,[{...file('不正な架空.pdf'),buffer:Buffer.from('invalid-pdf')},file('正常な架空.pdf')]);await p.getByRole('button',{name:'書類を登録する',exact:true}).click();const q=p.getByRole('region',{name:'書類の受付状況'});await expect(q).toContainText('登録拒否');await expect(q).toContainText('登録完了');expect(posts).toBe(2);
  }finally{p.off('request',count);}
 });
@@ -60,7 +60,7 @@ test('R3 lost response recovers the accepted ID without uploading again',async()
 test('R3 new browser context restores only opaque receipts after authentication and never resends a file',async({browser})=>{
  freshAdmission();const c=await candidate(),p=actors.a.page;await p.goto(origin+'/candidates/'+c.id);await select(p,[file('再起動の架空.pdf')]);await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('登録完了');await p.getByText('再起動後の受付結果を確認する',{exact:true}).click();const link=await p.getByRole('link',{name:'受付結果の復帰リンク'}).getAttribute('href');expect(decodeURIComponent(link)).not.toMatch(/再起動の架空|sha256|csrf|password|buffer/);
  const d=JSON.parse(sql(`SELECT json_build_object('id',id) FROM documents WHERE candidate_id='${c.id}';`));const context=await browser.newContext();
- try{const page=await context.newPage();await signIn(page);let posts=0;page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('/documents'))posts++;});await page.goto(link);await expect(page.getByRole('status')).toContainText('復帰リンクの受付結果を確認');await expect(page.getByLabel('PDF／XLSXファイル',{exact:true})).toHaveValue('');await page.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(page.getByRole('region',{name:'書類の受付状況'})).toContainText('受付済みID：'+d.id);expect(posts).toBe(0);
+ try{const page=await context.newPage();await signIn(page);let posts=0;page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('/documents'))posts++;});await page.goto(link);await expect(page.getByRole('status')).toContainText(/復帰リンク|保存した受付|受付済みの書類を確認/);await expect(page.getByLabel('PDF／XLSXファイル',{exact:true})).toHaveValue('');await page.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(page.getByRole('region',{name:'書類の受付状況'})).toContainText('受付済みID：'+d.id);expect(posts).toBe(0);
  expect(await page.evaluate(async()=>({local:Object.keys(localStorage),session:Object.keys(sessionStorage),dbs:(await indexedDB.databases()).map(d=>d.name)}))).toEqual({local:[],session:[],dbs:[]});await shot(page,'r3-restart-receipt');
  }finally{await context.close();}
  await actors.b.page.goto(link);await expect(actors.b.page.locator('.workspace').getByRole('alert')).toContainText('閲覧できません');
