@@ -1,0 +1,20 @@
+{
+  "scope": "Additional visual QA after successful full native run; no business data change",
+  "source_commit": "d323598bc6bf58895ca9fb55467208a6db656c49",
+  "origin": "http://localhost:3001",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "status": "passed",
+  "checks": {
+    "title": true,
+    "meaningful_content": true,
+    "no_framework_overlay": true,
+    "no_horizontal_overflow": true,
+    "pdf_response_and_object": true,
+    "keyboard_focus": true,
+    "notifications_desktop_and_mobile": true,
+    "console_and_page_errors": []
+  }
+}

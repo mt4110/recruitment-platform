@@ -1,0 +1,14 @@
+{
+  "source_commit": "d323598bc6bf58895ca9fb55467208a6db656c49",
+  "ci_run": "https://github.com/mt4110/recruitment-platform/actions/runs/38847662700",
+  "runtime_source_file_count": 90,
+  "all_source_sha256_equal": true,
+  "browser_each": 97,
+  "m5_added_cases": 9,
+  "xlsx_worker_each": 67,
+  "both_clean": true,
+  "both_stopped": true,
+  "both_unchanged_during_run": true,
+  "resource_scope": "memory.peak at final collection; service restarts reset cgroups, not whole-run maximum",
+  "unit_evidence": "Two existing Rust draft unit cases gate successful API image build; per-case CI stdout is not in sanitized artifact."
+}
