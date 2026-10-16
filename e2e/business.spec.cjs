@@ -148,9 +148,9 @@ test('M2 browser retries a lost creation response with the same key and no dupli
  } finally {await page.unrouteAll({behavior:'wait'});allowNetworkFailure=false;}
 });
 
-test('M2 expired browser session retains only the unsaved form and refuses writes',async()=>{
+test('R4 expired browser session clears plaintext form and refuses writes',async()=>{
  const page=actors.a.page;await page.goto(origin+'/candidates/new');await page.getByRole('textbox',{name:/架空氏名/}).fill('架空 期限切れ入力');
  const cookie=(await actors.a.context.cookies(origin)).find(v=>v.name==='rp_session');const hash=crypto.createHash('sha256').update(cookie.value).digest('hex');sql(`UPDATE sessions SET expires_at=now()-interval '1 second' WHERE token_hash=decode('${hash}','hex');`);
- await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page.getByRole('link',{name:'ログインする',exact:true})).toBeVisible();await expect(page.getByRole('textbox',{name:/架空氏名/})).toHaveValue('架空 期限切れ入力');await expect(page.getByRole('button',{name:'保存する',exact:true})).toBeDisabled();await expect(page.getByText('架空紹介会社A',{exact:true})).toHaveCount(0);
- await expect(page.locator('.workspace').getByRole('alert')).toContainText('再ログイン後は再入力が必要');expect((await call('a','POST','/candidates',{name:'架空',summary:'架空',fictional_confirmed:true})).status()).toBe(401);
+ await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page.getByRole('link',{name:'ログインする',exact:true})).toBeVisible();await expect(page.getByRole('textbox',{name:/架空氏名/})).toHaveValue('');await expect(page.getByRole('button',{name:'保存する',exact:true})).toBeDisabled();await expect(page.getByText('架空紹介会社A',{exact:true})).toHaveCount(0);
+ await expect(page.locator('.workspace').getByRole('alert')).toContainText('保存済みの下書きは再ログイン後に復元できます');expect((await call('a','POST','/candidates',{name:'架空',summary:'架空',fictional_confirmed:true})).status()).toBe(401);
 });

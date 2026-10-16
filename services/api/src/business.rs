@@ -324,6 +324,7 @@ pub async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Res
 }
 async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Response, ApiError> {
     let method = request.method().clone();
+    let draft_headers = request.headers().clone();
     let write = method != Method::GET;
     let u = auth::authorize(&app, request.headers(), write).await?;
     let path = request.uri().path().to_owned();
@@ -371,7 +372,7 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
     } else {
         None
     };
-    let body = if write && action != "favorite" {
+    let mut body = if write && action != "favorite" {
         if request
             .headers()
             .get("content-type")
@@ -408,6 +409,7 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
             "JSONオブジェクトで入力してください。",
         ));
     }
+    let operation = crate::drafts::take(&mut body, &draft_headers, &method)?;
     // Validate the canonical shape before any idempotency or resource queries.
     if write && action != "favorite" {
         if id.is_none() {
@@ -501,6 +503,13 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
         path.clone()
     };
     let request_hash = Sha256::digest(serde_json::to_vec(&body).map_err(|_| invalid())?).to_vec();
+    if let Some((resource, status)) =
+        crate::drafts::replay(&mut tx, &u, operation.as_ref(), &method, &normalized, &body).await?
+    {
+        let value = read(&mut tx, jobs, resource).await?;
+        tx.commit().await.map_err(db_error)?;
+        return Ok((status, Json(value)).into_response());
+    }
     let resource = id.unwrap_or_else(Uuid::new_v4);
     if let Some(key) = idem {
         lock(
@@ -518,6 +527,9 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
         )
         .await?;
         let existing=sqlx::query_as::<_,Replay>("SELECT request_hash,resource_id,result_status,state,coalesce(expires_at>now(),false) AS valid FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(&normalized).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
+        if operation.is_some() && existing.is_some() {
+            return Err(conflict("IDEMPOTENCY_MISMATCH"));
+        }
         if existing
             .as_ref()
             .is_some_and(|previous| previous.state == "processing")
@@ -659,8 +671,20 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
     )
     .await?;
     if let Some(key) = idem {
-        sqlx::query("UPDATE idempotency_records SET state='completed',result_status=$6,expires_at=now()+interval '24 hours' WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(normalized).bind(key).bind(status.as_u16() as i32).execute(&mut *tx).await.map_err(db_error)?;
+        sqlx::query("UPDATE idempotency_records SET state='completed',result_status=$6,expires_at=now()+interval '24 hours' WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(&normalized).bind(key).bind(status.as_u16() as i32).execute(&mut *tx).await.map_err(db_error)?;
     }
+    crate::drafts::consume(
+        &mut tx,
+        &app,
+        &u,
+        operation.as_ref(),
+        &method,
+        &normalized,
+        &body,
+        resource,
+        status,
+    )
+    .await?;
     let value = read(&mut tx, jobs, resource).await?;
     tx.commit().await.map_err(db_error)?;
     Ok((status, Json(value)).into_response())

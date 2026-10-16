@@ -30,6 +30,12 @@ def setup():
         for name in ('PDF_SHARED_KEY','SCAN_SHARED_KEY'):
             if name not in values:
                 with ENV.open('a') as f:f.write(name+'='+secrets.token_urlsafe(32)+'\n')
+        if 'DRAFT_MASTER_KEY' not in values:
+            # Upgrade only a known pre-draft DB. Never replace a lost encryption key.
+            checked=subprocess.run(['docker','exec',values['COMPOSE_PROJECT_NAME']+'-db-1','psql','-U','postgres','-d','recruitment','-Atc',"SELECT to_regclass('form_drafts') IS NULL AND to_regclass('draft_keys') IS NULL"],capture_output=True,text=True)
+            if checked.returncode!=0:raise SystemExit('Start the known existing DB before upgrading setup. No draft key generated.')
+            if checked.stdout.strip()!='t':raise SystemExit('Draft key missing for an existing draft database; restore the original private configuration. No replacement key generated.')
+            with ENV.open('a') as f:f.write('DRAFT_MASTER_KEY='+secrets.token_urlsafe(32)+'\n')
         if not (LOCAL/'realm.json').is_file() or not (LOCAL/'demo-accounts.json').is_file():raise SystemExit('Incomplete local config; retain files and inspect before continuing.')
         print('Existing local configuration retained.');return
     app_port,idp_port=ports()
@@ -41,7 +47,7 @@ def setup():
     # Directory is private (0700); only this individual file is mounted read-only.
     (LOCAL/'realm.json').write_text(json.dumps(realm,ensure_ascii=False));(LOCAL/'realm.json').chmod(0o644)
     (LOCAL/'demo-accounts.json').write_text(json.dumps(accounts,indent=2)+'\n')
-    values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','SCAN_SHARED_KEY')}
+    values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','SCAN_SHARED_KEY','DRAFT_MASTER_KEY')}
     values.update(APP_PORT=str(app_port),IDP_PORT=str(idp_port),COMPOSE_PROJECT_NAME='recruitment-local' if INSTANCE=='default' else 'recruitment-'+INSTANCE,LOCAL_CONFIG_DIR=str(LOCAL))
     ENV.write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
     print('Created private .local/local.env and .local/demo-accounts.json. No credential values are printed.')

@@ -97,6 +97,7 @@ pub struct App {
     pub oidc: Oidc,
     pub pdf_key: String,
     pub scan_key: String,
+    pub draft_key: [u8; 32],
     pub uploads: std::sync::Arc<tokio::sync::Semaphore>,
 }
 pub async fn discover(config: &Config, http: &reqwest::Client) -> anyhow::Result<Oidc> {

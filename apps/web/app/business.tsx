@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import Documents, {type DocumentData} from './documents';
+import {useDraft,DraftStatus} from './drafts';
 export type Member = {
     user: {
         id: string;
@@ -55,16 +56,22 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     const generation = useRef(0), alive = useRef(true), mutation = useRef<AbortController | null>(null), idem = useRef<{
         body: string;
         key: string;
+        request?:object;
     } | null>(null);
     const allowed = jobs || agency;
+    const draft=useDraft({me,paused:busy,enabled:signedIn&&allowed&&editing&&!loading,kind:jobs?(id?'job_edit':'job_new'):(id?'candidate_edit':'candidate_new'),target:id,base:id?record?.version:null,payload:form,restore:p=>{setForm({...Object.fromEntries((jobs?['title','description','location','employment_type']:['name','summary']).map(k=>[k,String((record as Record<string,unknown>|null)?.[k]??(k==='employment_type'?'full_time':''))])),...Object.fromEntries(Object.entries(p).filter(([k])=>k!=='view'))} as Record<string,string>);setConfirmed(false);},unauthorized:onUnauthorized});
+    const filterDraft=useDraft({me,enabled:signedIn&&allowed&&!editing&&!detail&&!loading,kind:jobs?'job_filters':'candidate_filters',payload:{...filters,cursor:cursor||''},restore:p=>{const next={...emptyFilters,...Object.fromEntries(Object.entries(p).filter(([k])=>!['view','cursor'].includes(k)))} as Filters;setFilters(next);setApplied(next);setCursor(typeof p.cursor==='string'?p.cursor||null:null);},unauthorized:onUnauthorized});
+
     useEffect(() => { if (!signedIn) {
         mutation.current?.abort();
         generation.current += 1;
         setExpired(true);
         setItems([]);
+        setForm({});
+        setFilters(emptyFilters);setApplied(emptyFilters);setCursor(null);idem.current=null;
         setRecord(null);
         setBusy(false);
-        setError('ログインを確認できません。入力を控えてください。再ログイン後は再入力が必要です。');
+        setError('ログインを確認できません。入力を非表示にしました。保存済みの下書きは再ログイン後に復元できます。');
     } }, [signedIn]);
     useEffect(() => { alive.current = true; return () => { alive.current = false; mutation.current?.abort(); }; }, []);
     useEffect(() => {
@@ -152,7 +159,9 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
         const abort = new AbortController();
         mutation.current = abort;
         try {
-            const r = await fetch('/api/v1' + path, { method, credentials: 'same-origin', signal: abort.signal, headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': me.csrf_token, ...(method === 'POST' ? { 'Idempotency-Key': idem.current.key } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
+            if(editing&&body&&!idem.current.request){const meta=await draft.flush();idem.current.request={...body,...meta,operation_id:idem.current.key};}
+            const submitted=editing?idem.current.request:body;
+            const r = await fetch('/api/v1' + path, { method, credentials: 'same-origin', signal: abort.signal, headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': me.csrf_token, ...(method === 'POST' ? { 'Idempotency-Key': idem.current.key } : {}) }, ...(body ? { body: JSON.stringify(submitted) } : {}) });
             if (!alive.current || abort.signal.aborted)
                 return;
             if (!r.ok) {
@@ -160,7 +169,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
                 if (r.status === 401) {
                     setExpired(true);
                     void onUnauthorized();
-                    setError('ログインを確認できません。入力を控えてください。再ログイン後は再入力が必要です。');
+                    setError('ログインを確認できません。入力を非表示にしました。保存済みの下書きは再ログイン後に復元できます。');
                 }
                 else if (r.status === 409) {
                     setConflict(true);
@@ -171,6 +180,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
                 return;
             }
             idem.current = null;
+            if(editing)draft.consumed();
             if (r.status === 204) {
                 setRecord(previous => previous ? { ...previous, favorited: method === 'PUT' } : previous);
                 setError(method === 'PUT' ? '求人を保存しました。' : '保存を解除しました。');
@@ -208,8 +218,8 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     {signedIn && <nav aria-label="業務メニュー"><a href="/jobs" aria-current={jobs ? 'page' : undefined}>{agency ? '求人' : '自社求人'}</a>{agency && <a href="/candidates" aria-current={!jobs ? 'page' : undefined}>候補者</a>}<a href="/applications">推薦</a></nav>}
     <div className="section-title"><h2 id="workspace-title">{editing ? (id ? '編集する' : jobs ? '求人を登録する' : '候補者を登録する') : detail ? (record?.title || record?.name || '詳細') : title}</h2>{!id && !editing && allowed && (!jobs || !agency) && <a className="button" href={base + '/new'}>{jobs ? '求人を登録する' : '候補者を登録する'}</a>}</div>
     {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => setReload(v => v + 1)}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
-    {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}>
-      <fieldset disabled={busy || expired || !!record?.archived_at || record?.status === 'closed'}><legend>{jobs ? '求人の内容' : '架空候補者の情報'}</legend>
+    {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}><DraftStatus draft={draft}/>
+      <fieldset disabled={busy || !draft.ready || expired || !!record?.archived_at || record?.status === 'closed'}><legend>{jobs ? '求人の内容' : '架空候補者の情報'}</legend>
       {(jobs ? [['title', '求人名', 200], ['description', '仕事内容', 10000], ['location', '勤務地', 200]] : [['name', '架空氏名', 100], ['summary', '経歴の概要', 10000]]).map(([key, label, max]) => <label key={key}> {label}<span className="hint">必須・{max}文字以内</span>{key === 'description' || key === 'summary' ? <textarea name={String(key)} required maxLength={Number(max)} rows={7} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/> : <input name={String(key)} required maxLength={Number(max)} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/>}</label>)}
       {jobs && <label>雇用形態<select name="employment_type" value={form.employment_type || 'full_time'} onChange={e => setForm(v => ({ ...v, employment_type: e.target.value }))}>{['full_time', 'contract', 'part_time'].map(v => <option key={v} value={v}>{labels[v]}</option>)}</select></label>}
       {!jobs && !id && <label className="check"><input type="checkbox" required checked={confirmed} onChange={e => setConfirmed(e.target.checked)}/>氏名・経歴はすべて架空のデータです</label>}
@@ -225,7 +235,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
             void change(base + '/' + id + '/archive', 'POST', { version: record.version }); }}>アーカイブする</button>}
       <a href={base}>一覧へ戻る</a></div>
     </article> : !id ? <>
-      <form className="filters" onSubmit={e => { e.preventDefault(); setCursor(null); setApplied({ ...filters }); }}><label>検索<input name="q" maxLength={100} value={filters.q} onChange={e => setFilters(v => ({ ...v, q: e.target.value }))} placeholder={jobs ? '求人名・仕事内容' : '氏名・経歴'}/></label>
+      <DraftStatus draft={filterDraft}/><form className="filters" onSubmit={e => { e.preventDefault(); void filterDraft.flush().then(()=>{setCursor(null);setApplied({...filters});}).catch(()=>undefined); }}><label>検索<input name="q" maxLength={100} value={filters.q} onChange={e => setFilters(v => ({ ...v, q: e.target.value }))} placeholder={jobs ? '求人名・仕事内容' : '氏名・経歴'}/></label>
         {jobs && <><label>勤務地<input maxLength={100} value={filters.location} onChange={e => setFilters(v => ({ ...v, location: e.target.value }))}/></label><label>雇用形態<select value={filters.employment_type} onChange={e => setFilters(v => ({ ...v, employment_type: e.target.value }))}><option value="">すべて</option>{['full_time', 'contract', 'part_time'].map(v => <option key={v} value={v}>{labels[v]}</option>)}</select></label></>}
         {(agency || !jobs) && <label className="check"><input type="checkbox" checked={jobs ? filters.favorited : filters.archived} onChange={e => setFilters(v => ({ ...v, [jobs ? 'favorited' : 'archived']: e.target.checked }))}/>{jobs ? '保存した求人のみ' : 'アーカイブ済みのみ'}</label>}
         <div className="actions"><button type="submit">検索する</button><button className="secondary" type="button" onClick={() => { setFilters(emptyFilters); setApplied({ ...emptyFilters }); setCursor(null); }}>条件を解除</button></div>

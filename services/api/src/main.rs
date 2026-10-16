@@ -2,6 +2,7 @@ mod applications;
 mod auth;
 mod business;
 mod documents;
+mod drafts;
 mod scanner;
 
 use auth::{ApiError, App, Config};
@@ -68,6 +69,7 @@ async fn start() -> anyhow::Result<()> {
         oidc,
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
         scan_key: std::env::var("SCAN_SHARED_KEY")?,
+        draft_key: drafts::master_key()?,
         uploads: Arc::new(tokio::sync::Semaphore::new(2)),
     });
     let router = Router::new()
@@ -80,6 +82,7 @@ async fn start() -> anyhow::Result<()> {
         .merge(business::routes())
         .merge(applications::routes())
         .merge(documents::routes())
+        .merge(drafts::routes())
         .fallback(|| async {
             ApiError::new(
                 StatusCode::NOT_FOUND,

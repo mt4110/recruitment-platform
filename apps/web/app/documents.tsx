@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import type {Member} from './business';
+import {useDraft,DraftStatus} from './drafts';
 import {kinds,documentTime,type Kind} from './document-info';
 export type DocumentData={inspection_state:string;id:string;original_name:string;size_bytes:number;status:'pending'|'ready'|'rejected';rejection_code:string|null;retry_allowed:boolean;available:boolean;format_checked:boolean;file_format:'pdf'|'xlsx';document_kind:Kind;document_version:number;created_at:string};
 type Stage='waiting'|'sending'|'checking'|'pending'|'complete'|'rejected'|'uncertain'|'unrecorded'|'expired';
@@ -14,12 +15,13 @@ async function fingerprint(file:File){const hash=await crypto.subtle.digest('SHA
 export default function Documents({candidate,initial,archived,me,signedIn,onUnauthorized}:{candidate:string;initial:DocumentData[];archived:boolean;me:Member;signedIn:boolean;onUnauthorized:()=>Promise<void>}){
  const [items,setItems]=useState(initial),[queue,setQueue]=useState<Upload[]>([]),[kind,setKind]=useState<Kind>('other'),[confirmed,setConfirmed]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[recovery,setRecovery]=useState('');
  const active=useRef(true),working=useRef(false),jobs=useRef<Upload[]>([]),controller=useRef<AbortController|null>(null),input=useRef<HTMLInputElement|null>(null),rechecks=useRef(new Map<string,string>());
+ const uploadDraft=useDraft({me,paused:busy,enabled:signedIn,kind:'document_upload',target:candidate,payload:{operations:queue.filter(q=>q.name&&q.hash).map(q=>({key:q.key,kind:q.kind,name:q.name,hash:q.hash,state:q.stage,...(q.document?{document_id:q.document.id}:{})}))},restore:p=>{const ops=p.operations;if(Array.isArray(ops)){update(()=>ops.map((o:any)=>({key:o.key,kind:o.kind,name:o.name,hash:o.hash,stage:'checking'})));setConfirmed(false);setMessage('保存した受付を照合してください。未送信ファイルは再選択が必要です。');}else{update(()=>[]);setConfirmed(false);}},unauthorized:onUnauthorized});
  function update(fn:(q:Upload[])=>Upload[]){const next=fn(jobs.current);jobs.current=next;if(active.current)setQueue(next);}
  function patch(key:string,next:Partial<Upload>){update(q=>q.map(v=>v.key===key?{...v,...next}:v));}
  function addDocument(d:DocumentData){if(active.current)setItems(v=>[d,...v.filter(x=>x.id!==d.id)]);}
  useEffect(()=>{active.current=true;return()=>{active.current=false;controller.current?.abort();};},[]);
  useEffect(()=>{setItems(initial);},[initial]);
- useEffect(()=>{if(!signedIn){controller.current?.abort();setItems([]);setConfirmed(false);update(q=>q.map(v=>({key:v.key,kind:v.kind,stage:'checking'})));}},[signedIn]);
+ useEffect(()=>{if(!signedIn){controller.current?.abort();setItems([]);setConfirmed(false);update(()=>[]);setRecovery('');setMessage('');rechecks.current.clear();}},[signedIn]);
  // Only opaque operation identifiers live in the fragment. No File, original
  // name, hash, auth token or personal form payload is persisted by R3.
  useEffect(()=>{
@@ -48,9 +50,9 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
   const batch=Array.from(files);if(batch.length>10){setMessage('1回に選べるファイルは10件までです。');if(input.current)input.current.value='';return;}
   if(batch.some(f=>!f.size||f.size>10*1024*1024||!/\.(pdf|xlsx)$/i.test(f.name))){setMessage('空でないPDF／XLSXを10MiB以内で選んでください。');if(input.current)input.current.value='';return;}
   const previous=jobs.current.every(v=>['complete','rejected','expired'].includes(v.stage))?[]:jobs.current;
-  if(previous.length+batch.length>10){setMessage('現在の受付は10件までです。処理中の受付を確認してから追加してください。');if(input.current)input.current.value='';return;}
+  if(previous.some(q=>!q.file&&(q.stage==='checking'||q.stage==='unrecorded'&&(!q.name||!q.hash)))){setMessage('先に元の受付結果を照合してください。元ファイル情報のない受付は一覧から確認してください。');if(input.current)input.current.value='';return;}
   working.current=true;setBusy(true);setMessage('');
-  try{const next:Upload[]=[];for(const file of batch)next.push({key:crypto.randomUUID(),kind,file,name:file.name,hash:await fingerprint(file),stage:'waiting'});if(active.current){const all=[...previous,...next];update(()=>all);remember(all);setConfirmed(false);}}
+  try{let all=[...previous];for(const file of batch){const hash=await fingerprint(file);const old=all.find(q=>q.stage==='unrecorded'&&!q.file&&q.hash===hash&&q.name===file.name&&q.kind===kind);if(old){all=all.map(q=>q.key===old.key?{...q,file,stage:'waiting',message:undefined}:q);}else{all.push({key:crypto.randomUUID(),kind,file,name:file.name,hash,stage:'waiting'});}}if(all.length>10){setMessage('現在の受付は10件までです。受付結果を確認してから追加してください。');return;}if(active.current){update(()=>all);remember(all);setConfirmed(false);}}
   catch{if(active.current)setMessage('ファイルを準備できませんでした。選び直してください。');}
   finally{working.current=false;if(active.current)setBusy(false);}
  }
@@ -87,6 +89,7 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
   finally{working.current=false;if(active.current)setBusy(false);}
  }
  async function sendBatch(e:FormEvent){e.preventDefault();if(!confirmed||archived)return;await action(async signal=>{
+  await uploadDraft.flush();
   for(const job of jobs.current.filter(v=>v.stage==='waiting')){
    try{if(!await sendOne(job,signal))break;}
    catch(e){patch(job.key,{stage:'uncertain',message:'応答を確認できません。元の操作キーで受付結果を照合してください。'});throw e;}
@@ -111,10 +114,11 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
  return <section className="documents" aria-labelledby="documents-title"><h3 id="documents-title">履歴書・職務経歴書</h3>
  <p className="hint">架空情報のみ。PDF／XLSXは各10MiB以内、1回10件まで順番に登録します。PDFは1〜20ページ、XLSXはSheets由来が初期対応です。旧版・提出済みの書類は上書きしません。</p>
  <p><a href="/sample-resume.pdf" download>架空レジュメのサンプルPDF</a></p>
+ <DraftStatus draft={uploadDraft}/>
  {message&&<p className="notice" role="status">{message}</p>}
  {items.length===0?<p>書類はまだ登録されていません。</p>:(Object.keys(kinds) as Kind[]).map(k=><section key={k} aria-label={kinds[k]+'の版一覧'}><h4>{kinds[k]}</h4>{!items.some(d=>d.document_kind===k)?<p className="hint">まだ登録されていません。</p>:<ul className="records">{items.filter(d=>d.document_kind===k).sort((a,b)=>b.document_version-a.document_version).map(d=><li key={d.id}><strong className="prose">{d.original_name}</strong><p>第{d.document_version}版 · {d.file_format.toUpperCase()} · {Math.ceil(d.size_bytes/1024)}KiB · {documentTime(d.created_at)}</p><p>{d.available?'登録完了':d.inspection_state==='blocked'?'利用停止':d.status==='rejected'?'登録拒否':d.status==='ready'?'追加検査待ち':'処理中'}</p>{d.rejection_code&&<p>{reasons[d.rejection_code]||reasons.PDF_REJECTED}</p>}<div className="actions">{d.available&&<a className="button secondary" href={`/api/v1/documents/${d.id}/content`}>{d.file_format.toUpperCase()}をダウンロード</a>}{d.status==='pending'&&d.retry_allowed&&<button type="button" disabled={busy} onClick={()=>void action(signal=>retryDocument(d,false,signal))}>処理を再試行する</button>}{d.status==='ready'&&!d.available&&d.inspection_state!=='blocked'&&<button type="button" disabled={busy} onClick={()=>void action(signal=>retryDocument(d,true,signal))}>追加検査を実行する</button>}</div></li>)}</ul>}</section>)}
  {queue.length>0&&<section aria-label="書類の受付状況"><h4>書類の受付状況</h4><p className="hint">確認後の再試行も元の操作キーを使います。送信前のファイルは、この画面を閉じると保持できません。</p><ol className="records">{queue.map(q=><li key={q.key}><strong>受付：{q.name||q.document?.original_name||q.key.slice(0,8)}</strong><p>{kinds[q.kind]} · {stages[q.stage]}</p>{q.message&&<p>{q.message}</p>}{q.document&&<p>受付済みID：{q.document.id}</p>}{!['waiting','sending','complete','rejected','expired'].includes(q.stage)&&<div className="actions"><button type="button" disabled={busy} onClick={()=>void recover(q)}>受付結果を確認する</button>{(q.document?.retry_allowed||q.file)&&<button type="button" disabled={busy||(!q.document&&!confirmed)} onClick={()=>void recover(q,true)}>受付結果を確認して再試行する</button>}</div>}</li>)}</ol><button type="button" disabled={busy} onClick={()=>void action(async signal=>{for(const q of jobs.current)await reconcile(q,signal);})}>受付結果をまとめて確認する</button></section>}
  {recovery&&<details><summary>再起動後の受付結果を確認する</summary><p className="hint">このリンクを保存し、再ログイン後に開いて受付結果を確認してください。リンクだけでは書類を取得できません。未送信ファイル・入力内容の自動保存は後続段階です。</p><a href={recovery}>受付結果の復帰リンク</a></details>}
- {!archived&&<form onSubmit={sendBatch}><fieldset disabled={busy}><legend>架空の書類を登録する</legend><label htmlFor="document-kind">書類の種類</label><select id="document-kind" value={kind} onChange={e=>setKind(e.target.value as Kind)}>{Object.entries(kinds).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select><label>PDF／XLSXファイル<input ref={input} type="file" multiple accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" onChange={e=>void choose(e.target.files)}/></label><label className="check"><input type="checkbox" checked={confirmed} required onChange={e=>setConfirmed(e.target.checked)}/>書類の内容はすべて架空の情報です</label><button disabled={!queue.some(q=>q.stage==='waiting')||!confirmed||busy} type="submit">{busy?'処理中…':'書類を登録する'}</button></fieldset></form>}
+ {!archived&&<form onSubmit={sendBatch}><fieldset disabled={busy||!uploadDraft.ready}><legend>架空の書類を登録する</legend><label htmlFor="document-kind">書類の種類</label><select id="document-kind" value={kind} onChange={e=>setKind(e.target.value as Kind)}>{Object.entries(kinds).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select><label>PDF／XLSXファイル<input ref={input} type="file" multiple accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" onChange={e=>void choose(e.target.files)}/></label><label className="check"><input type="checkbox" checked={confirmed} required onChange={e=>setConfirmed(e.target.checked)}/>書類の内容はすべて架空の情報です</label><button disabled={!queue.some(q=>q.stage==='waiting')||!confirmed||busy} type="submit">{busy?'処理中…':'書類を登録する'}</button></fieldset></form>}
  </section>;
 }

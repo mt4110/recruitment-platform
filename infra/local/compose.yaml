@@ -42,6 +42,7 @@ services:
       CSRF_KEY: ${CSRF_KEY:?Run setup}
       PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
       SCAN_SHARED_KEY: ${SCAN_SHARED_KEY:?Run setup}
+      DRAFT_MASTER_KEY: ${DRAFT_MASTER_KEY:?Run setup}
     networks: [default,pdf,scan]
     volumes: ['resumes:/data/resumes']
     read_only: true

@@ -352,6 +352,7 @@ fn input(body: &Value, id: Option<Uuid>, action: &str) -> Result<(), ApiError> {
 }
 async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Response, ApiError> {
     let method = request.method().clone();
+    let draft_headers = request.headers().clone();
     let write = method != Method::GET;
     let u = auth::authorize(&app, request.headers(), write).await?;
     let parts: Vec<_> = request
@@ -405,7 +406,7 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     } else {
         None
     };
-    let body = if write {
+    let mut body = if write {
         if request
             .headers()
             .get("content-type")
@@ -439,11 +440,14 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
                 "JSONオブジェクトで入力してください。",
             ));
         }
-        input(&v, id, &action)?;
         v
     } else {
         json!({})
     };
+    let operation = crate::drafts::take(&mut body, &draft_headers, &method)?;
+    if write {
+        input(&body, id, &action)?;
+    }
     let mut tx = begin(&app, &u).await?;
     if !write {
         let out = if let Some(id) = id {
@@ -459,6 +463,13 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     } else {
         None
     };
+    if let Some((resource, status)) =
+        crate::drafts::replay(&mut tx, &u, operation.as_ref(), &method, &normalized, &body).await?
+    {
+        let value = read(&mut tx, resource, &u).await?;
+        tx.commit().await.map_err(db_error)?;
+        return Ok((status, Json(value)).into_response());
+    }
     let (candidate, job) = if let Some(a) = &initial {
         (a.candidate_id, a.job_id)
     } else {
@@ -491,6 +502,9 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         )
         .await?;
         let previous:Option<Replay>=sqlx::query_as("SELECT request_hash,resource_id,result_status,state,coalesce(expires_at>now(),false) AS valid FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(&normalized).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
+        if operation.is_some() && previous.is_some() {
+            return Err(conflict("IDEMPOTENCY_MISMATCH"));
+        }
         if let Some(p) = previous
             .as_ref()
             .filter(|p| p.valid || p.state == "processing")
@@ -643,8 +657,20 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         StatusCode::OK
     };
     if let Some(key) = key {
-        sqlx::query("UPDATE idempotency_records SET state='completed',result_status=$6,expires_at=now()+interval '24 hours' WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(normalized).bind(key).bind(status.as_u16()as i32).execute(&mut *tx).await.map_err(db_error)?;
+        sqlx::query("UPDATE idempotency_records SET state='completed',result_status=$6,expires_at=now()+interval '24 hours' WHERE org_id=$1 AND user_id=$2 AND http_method=$3 AND normalized_path=$4 AND key=$5").bind(u.organization_id).bind(u.user_id).bind(method.as_str()).bind(&normalized).bind(key).bind(status.as_u16()as i32).execute(&mut *tx).await.map_err(db_error)?;
     }
+    crate::drafts::consume(
+        &mut tx,
+        &app,
+        &u,
+        operation.as_ref(),
+        &method,
+        &normalized,
+        &body,
+        resource,
+        status,
+    )
+    .await?;
     let out = read(&mut tx, resource, &u).await?;
     tx.commit().await.map_err(db_error)?;
     tracing::info!(event="application_operation",resource_id=%resource,request_id=%request_id,changed);
