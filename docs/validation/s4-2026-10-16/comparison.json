@@ -1,0 +1,19 @@
+{
+  "source_files": 125,
+  "full_to_final_differences": [
+    "e2e/z-s4.spec.cjs",
+    "scripts/e2e.py"
+  ],
+  "application_runtime_unchanged": true,
+  "local_pre_final_differences": [
+    "e2e/z-s4.spec.cjs",
+    "scripts/document_snapshot.py",
+    "scripts/e2e.py"
+  ],
+  "local_browser_tests_only": 9,
+  "earlier_full_browser_tests_only": 146,
+  "existing_regression_browser_tests_reused": 137,
+  "final_native_browser_tests": 9,
+  "final_native_postchecks_complete": true,
+  "prior_runs_final_acceptance": false
+}

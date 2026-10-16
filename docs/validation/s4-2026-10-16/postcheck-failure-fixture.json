@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "fixture": "Source-derived CalledProcessError handler after a successful browser exit",
+  "initial_browser_exit": 0,
+  "result_exit": 1,
+  "result_status": "failed"
+}

@@ -1,0 +1,12 @@
+{
+  "expected_commit": "e5e37b0dc205d31afed598d3362817f559c952cc",
+  "files": 125,
+  "mismatches": [
+    "e2e/z-s4.spec.cjs",
+    "scripts/document_snapshot.py",
+    "scripts/e2e.py"
+  ],
+  "source_unchanged_during_run": true,
+  "classification": "Browser results retained; post-run inspection incomplete, not final acceptance",
+  "postcheck_complete": false
+}

@@ -1,7 +1,18 @@
 # アーキテクチャと実装配置
 
-> **2026-10-16：設計v0.5の追加契約（未実装）**
-> 以下のLocalBlobStore、API受信、検査/請求の同一サービスは現行構成。新方式は署名付き暗号文受信、復号/検査/変換ワーカー、請求生成分離を追加する。 正本は[署名付き・暗号化アップロードと安全な閲覧](12-secure-document-pipeline.md)。以下の実装済み機能が新方式へ変更済みという意味ではない。
+> **2026-10-16：現行構成への案内**
+> 署名付き暗号化受付・隔離ワーカー・安全な閲覧はS1〜S3で実装済み。S4の移行・復旧の受入状況は[S4記録](../validation/2026-10-16-s4-report.md)を参照。以下の構成図・同居するPDF検査／請求・LocalBlobStoreの説明は旧構成の履歴であり、現行の文書保護経路を表さない。現行契約は[正本設計](12-secure-document-pipeline.md)、[S2](14-s2-worker-contract.md)、[S3](15-s3-safe-view-contract.md)、[S4](16-s4-migration-contract.md)を優先する。
+
+## 現行の責務と言語
+
+| 部分 | 実装と責務 |
+| --- | --- |
+| Web | Next.js / TypeScript（strict）。画面・フォーム・暗号化受付・安全な閲覧 |
+| 業務API | Rust / Axum / SQLx。認証・認可・取引・保管制御 |
+| 文書ワーカー | Node.js CJSのbroker／relay／viewer／crypto、Python sandbox。隔離検査と成果物生成・暗号化 |
+| 請求 | APIの認可済みデータからHTMLプレビュー。旧請求PDF配信は閉鎖 |
+
+現状はサービス責務と機能別モジュールを分けた構成。RustのHTTP・業務判断・SQLには結合があり、domain/usecaseとadapterの依存逆転を徹底した厳密なClean Architectureではない。本体Node CJSは構文検査と実行時検証・E2Eを持つが、TypeScriptの型検査対象外である。境界DTOの型・実行時検証の整合と、変更する業務規則の分離は保守上の改善対象。全面TS化・全面再編はS4の範囲に追加しない。
 
 ## 選ぶ構成
 

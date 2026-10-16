@@ -1,0 +1,61 @@
+{
+  "scope": "S4 migration/recovery and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S4 inventory preserves old PDF/shared selection and rejects unprepared views",
+      "status": "passed",
+      "duration_ms": 885,
+      "errors": []
+    },
+    {
+      "name": "S4 backup crypto preserves large pipe output and rejects tag or context tampering",
+      "status": "passed",
+      "duration_ms": 413,
+      "errors": []
+    },
+    {
+      "name": "S4 cold backup authenticates DB original files old keys and AV definitions",
+      "status": "passed",
+      "duration_ms": 66016,
+      "errors": []
+    },
+    {
+      "name": "S4 mapping adds ciphertext then resumes after old original key loss and worker failure",
+      "status": "passed",
+      "duration_ms": 30491,
+      "errors": []
+    },
+    {
+      "name": "S4 migrated selected version renders with no raw fallback or framework errors",
+      "status": "passed",
+      "duration_ms": 334,
+      "errors": []
+    },
+    {
+      "name": "S4 current key policy denies migrated views and shares without rewriting snapshots",
+      "status": "passed",
+      "duration_ms": 1103,
+      "errors": []
+    },
+    {
+      "name": "S4 cutover drains old admission and explicitly quarantines unmigrated records",
+      "status": "passed",
+      "duration_ms": 24392,
+      "errors": []
+    },
+    {
+      "name": "S4 tampered backup refuses authentication before creating a restore target",
+      "status": "passed",
+      "duration_ms": 806,
+      "errors": []
+    },
+    {
+      "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+      "status": "passed",
+      "duration_ms": 193326,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "source_commit": "1bd31fa4ad868337767cc32767eb50a107989a08",
+  "fixed_paths_accepted": 9,
+  "unexpected_paths_rejected": 6,
+  "original_key_excluded_from_viewer": true,
+  "scope": "Final host operator path predicates only; not a browser or restored-runtime run"
+}

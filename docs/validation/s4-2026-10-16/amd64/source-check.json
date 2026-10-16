@@ -1,0 +1,7 @@
+{
+  "expected_commit": "e5e37b0dc205d31afed598d3362817f559c952cc",
+  "files": 125,
+  "mismatches": [],
+  "source_unchanged_during_run": true,
+  "classification": "native final acceptance"
+}
