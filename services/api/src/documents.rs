@@ -377,6 +377,13 @@ async fn upload(
     request: Request,
 ) -> Result<Response, ApiError> {
     let u = checked(&app, request.headers(), true).await?;
+    let open: bool = sqlx::query_scalar("SELECT legacy_upload_open()")
+        .fetch_one(&app.db)
+        .await
+        .map_err(db_error)?;
+    if !open {
+        return Ok(crate::views::gone().await);
+    }
     let candidate = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let key = Uuid::parse_str(
         request
@@ -560,6 +567,13 @@ async fn retry(
     headers: HeaderMap,
 ) -> Result<Response, ApiError> {
     let u = checked(&app, &headers, true).await?;
+    let open: bool = sqlx::query_scalar("SELECT legacy_upload_open()")
+        .fetch_one(&app.db)
+        .await
+        .map_err(db_error)?;
+    if !open {
+        return Ok(crate::views::gone().await);
+    }
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     let d = doc(&mut tx, id).await?;
@@ -963,6 +977,13 @@ async fn recheck(
     headers: HeaderMap,
 ) -> Result<Response, ApiError> {
     let u = checked(&app, &headers, true).await?;
+    let open: bool = sqlx::query_scalar("SELECT legacy_upload_open()")
+        .fetch_one(&app.db)
+        .await
+        .map_err(db_error)?;
+    if !open {
+        return Ok(crate::views::gone().await);
+    }
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let operation_key = Uuid::parse_str(
         headers

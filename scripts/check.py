@@ -14,7 +14,7 @@ run('npm','run','typecheck','--prefix','apps/web')
 for folder in ('scripts','services/av','services/pdf-renderer','services/document-worker','e2e'):
     for path in sorted((ROOT/folder).glob('*.py')):
         ast.parse(path.read_text(), filename=str(path))
-for folder,pattern in (('e2e','*.cjs'),('services/document-worker','*.cjs'),('services/pdf-renderer','*.mjs')):
+for folder,pattern in (('scripts','*.cjs'),('e2e','*.cjs'),('services/document-worker','*.cjs'),('services/pdf-renderer','*.mjs')):
     for path in sorted((ROOT/folder).glob(pattern)):
         run('node','--check',str(path))
 print('Rust format/lint/tests, TypeScript and Python/Node syntax: passed')

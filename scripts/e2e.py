@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs'],help='Development subset; final CI always runs the full suite.')
+parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs'],help='Development subset; final CI always runs the full suite.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')
@@ -21,9 +21,9 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'S3 safe viewing + existing regression; stop before S4/R5/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'S4 encrypted legacy migration and recovery + regression; stop before S5/R5/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
-    tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/e2e.py','scripts/check.py','scripts/audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
+    tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/document_migrate.py','scripts/document_snapshot.py','scripts/document_operator.py','scripts/document_crypto.cjs','scripts/e2e.py','scripts/check.py','scripts/audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file() and '__pycache__' not in p.parts]
     for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','services/document-worker','services/postgres','e2e/fixtures','validation/r0/fixtures']:
@@ -73,7 +73,7 @@ try:
             name=Path(entry.name).name
             if not entry.isfile() or not re.fullmatch(r'(?:[a-z-]+\.pdf|manifest\.json)',name) or entry.size>12*1024*1024:raise RuntimeError('Invalid fixture archive')
             with (local/'pdf-fixtures'/name).open('xb') as output:output.write(archive.extractfile(entry).read())
-    if not args.test_file or any(f in args.test_file for f in ['s2.spec.cjs','s3.spec.cjs']):
+    if not args.test_file or any(f in args.test_file for f in ['s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs']):
         with (local/'operations.log').open('a') as log:subprocess.run(['python3','scripts/local.py','compose','build','document-broker','document-sandbox'],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
     if not args.test_file or 's3.spec.cjs' in args.test_file:
         subprocess.run(['python3','scripts/local.py','compose','exec','-T','pdf-renderer','python','-c',(ROOT/'e2e/make_safe_view_fixtures.py').read_text(),(ROOT/'e2e/fixtures/sheets-resume.xlsx').read_bytes().hex()],cwd=ROOT,env=env,text=True,check=True,stdout=subprocess.DEVNULL)

@@ -3,7 +3,7 @@ const c=require('node:crypto');
 const MAX=10489876,sha=b=>c.createHash('sha256').update(b).digest('hex');
 function unwrap(job,raw,privateKey){
  if(raw.length!==job.ciphertext_size||raw.length>MAX||sha(raw)!==job.ciphertext_hash)throw Error('CRYPTO_REJECTED');
- const e=job.envelope,expected=`rp-upload-v1|${e.key_version}|${job.upload_id}|${job.document_id}|${job.attempt_id}|${job.org_id}|${job.file_format}`;
+ const e=job.envelope,expected=job.source==='migration'?`rp-migration-v1|${e.key_version}|${job.migration_id}|${job.document_id}|${job.org_id}|${job.file_format}`:`rp-upload-v1|${e.key_version}|${job.upload_id}|${job.document_id}|${job.attempt_id}|${job.org_id}|${job.file_format}`;
  if(e.schema!==1||!/^original-v[1-9][0-9]{0,3}$/.test(e.key_version)||e.aad!==expected)throw Error('CRYPTO_REJECTED');
  const key=c.privateDecrypt({key:privateKey,oaepHash:'sha256',padding:c.constants.RSA_PKCS1_OAEP_PADDING},Buffer.from(e.wrapped_dek,'base64url'));
  let plain;

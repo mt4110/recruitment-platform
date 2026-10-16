@@ -1,0 +1,12 @@
+'use strict';
+// Operator helper only. AEAD authenticates fully before emitting restored plaintext.
+const fs=require('node:fs'),c=require('node:crypto');
+(async()=>{let n=0,chunks=[];for await(const b of process.stdin){n+=b.length;if(n>536870912)throw Error('INPUT_LIMIT');chunks.push(b);}const raw=Buffer.concat(chunks),mode=process.argv[2];
+if(mode==='migration'){
+ const p=JSON.parse(raw),bytes=Buffer.from(p.bytes,'base64');if(bytes.length!==p.size_bytes||c.createHash('sha256').update(bytes).digest('hex')!==p.sha256||bytes.length>10485760)throw Error('SOURCE_MISMATCH');
+ const key=c.randomBytes(32),nonce=c.randomBytes(12),aad=`rp-migration-v1|${p.version}|${p.migration_id}|${p.id}|${p.agency_org_id}|${p.file_format}`;
+ try{const m=Buffer.from(JSON.stringify({original_name:p.original_name})),len=Buffer.alloc(4);len.writeUInt32BE(m.length);if(m.length>4096)throw Error('METADATA_LIMIT');const cipher=c.createCipheriv('aes-256-gcm',key,nonce);cipher.setAAD(Buffer.from(aad));const b=Buffer.concat([cipher.update(Buffer.concat([len,m,bytes])),cipher.final(),cipher.getAuthTag()]);process.stdout.write(JSON.stringify({bytes:b.toString('base64'),envelope:{schema:1,key_version:p.version,wrapped_dek:c.publicEncrypt({key:c.createPublicKey({key:Buffer.from(p.public_spki,'base64'),format:'der',type:'spki'}),oaepHash:'sha256'},key).toString('base64url'),nonce:nonce.toString('base64url'),aad},ciphertext_hash:c.createHash('sha256').update(b).digest('hex'),ciphertext_size:b.length}));}finally{key.fill(0);bytes.fill(0);}
+}else{
+ const key=fs.readFileSync(process.argv[3]),aad=Buffer.from(process.argv[4]);if(key.length!==32)throw Error('BACKUP_KEY_UNAVAILABLE');try{if(mode==='seal'){const nonce=c.randomBytes(12),cipher=c.createCipheriv('aes-256-gcm',key,nonce);cipher.setAAD(aad);process.stdout.write(Buffer.concat([nonce,cipher.update(raw),cipher.final(),cipher.getAuthTag()]));}else if(mode==='open'){if(raw.length<28)throw Error('INVALID_BACKUP');const d=c.createDecipheriv('aes-256-gcm',key,raw.subarray(0,12));d.setAAD(aad);d.setAuthTag(raw.subarray(-16));const p=Buffer.concat([d.update(raw.subarray(12,-16)),d.final()]);await new Promise((resolve,reject)=>process.stdout.write(p,e=>e?reject(e):resolve()));p.fill(0);}else throw Error('INVALID_OPERATION');}finally{key.fill(0);}
+}raw.fill(0);
+})().catch(()=>{process.stderr.write('Operator crypto refused the input.\n');process.exitCode=1;});
