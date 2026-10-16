@@ -14,6 +14,8 @@
 
 [クラウドサインの導入方法・連携方針](docs/design/11-cloudsign.md)も設計に追加しました。手動運用からAPI導入までの準備・誤送信防止・状態照合を整理したもので、連携は未実装です。
 
+**新しい書類保護方針は設計v0.5へ反映済み・未実装です。** [署名付き暗号化upload・隔離検査・安全な閲覧・追加工数](docs/design/12-secure-document-pipeline.md)を参照してください。既存の原本ダウンロード/請求PDF表示が既に変更されたわけではありません。追加58〜102時間、既存分を合わせた残計画86〜150時間＋未積算のM6監査残件（任意ツール接続・公開は別枠）。S0・製品実装・外部公開へは進んでいません。
+
 ## ローカルで試す
 
 必要環境は稼働中のDocker Engine/Desktop（Compose pluginまたはdocker-compose）とPython 3.11以上。Node/Rustのホストへのインストールは不要です。loopbackの3000/18080が空いていることを確認してください。
@@ -69,6 +71,7 @@ python3 scripts/e2e.py
 - [AWS・GCP・AzureのIaCサンプル設計](docs/design/08-cloud-examples.md)
 - [LP・ガイド・利用文書の要件と目次](docs/design/09-documentation.md)
 - [PDF/XLSX・AV・全フォーム保存/復元の追加設計](docs/design/10-resumes-and-autosave.md)
+- [署名付き・暗号化アップロードと安全な閲覧（v0.5・未実装）](docs/design/12-secure-document-pipeline.md)
 - [クラウドサイン導入ガイド・連携方針（未実装）](docs/design/11-cloudsign.md)
 
 ## 利用上の前提

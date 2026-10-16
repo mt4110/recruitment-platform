@@ -1,5 +1,8 @@
 # API契約
 
+> **2026-10-16：設計v0.5の追加契約（未実装）**
+> 以下のmultipart、原本/content、invoice-preview.pdf、署名URL不使用は現行APIの契約。新API/7日照合・旧配信閉鎖は追加設計に従う。署名認可はupload用に限定し、閲覧用署名GET URLは導入しない。 正本は[署名付き・暗号化アップロードと安全な閲覧](12-secure-document-pipeline.md)。以下の実装済み機能が新方式へ変更済みという意味ではない。
+
 ## 共通契約
 
 業務APIは/api/v1、JSONはsnake_case。認証なし401、組織種別の不許可403、存在しない/無関係/共有閲覧失効のresourceは同じ404。構造不正400、列挙値/UUID/項目不正422、競合409、容量超過413、回数超過429、処理待ち503、内部障害500。失敗JSONはerror.code/message/request_id/field_errors（入力時のみ）。

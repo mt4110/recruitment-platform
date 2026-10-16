@@ -1,5 +1,8 @@
 # 認証・権限・ファイル保護
 
+> **2026-10-16：設計v0.5の追加契約（未実装）**
+> 以下の原本配信/署名URL不使用、同期検査/復旧は現行実装の境界。新方式の暗号化・鍵分離・署名認可・非同期隔離・安全な閲覧を追加契約で定義する。旧PDF内部暗号化禁止と転送envelope暗号化は別の条件。 正本は[署名付き・暗号化アップロードと安全な閲覧](12-secure-document-pipeline.md)。以下の実装済み機能が新方式へ変更済みという意味ではない。
+
 ## 認証と組織
 
 OIDC Authorization Code + PKCEをAPIで処理し、issuer/audience/署名/nonce/state/期限/固定redirect URIを検証する。auth attemptは5分・単回消費。M1ではstate hashと短期cookieのbinding hashをDBで照合して原子的に消費し、PKCE verifierはAES-256-GCMで暗号化する。stateとcookie原文をAADへ関連付ける。ブラウザとコンテナから同じissuerを解決できるネットワーク設定にし、ローカル環境でも検証を省略しない。
