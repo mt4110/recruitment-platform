@@ -1,0 +1,85 @@
+{
+  "scope": "S3 safe views and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S3 encrypted PDF becomes PNG and alternate text; browser never receives the original",
+      "status": "passed",
+      "duration_ms": 5415,
+      "errors": []
+    },
+    {
+      "name": "S3 Sheets actual output renders saved values without formulas or active links",
+      "status": "passed",
+      "duration_ms": 10254,
+      "errors": []
+    },
+    {
+      "name": "S3 immutable selected version, current participant access and shared page authorization",
+      "status": "passed",
+      "duration_ms": 10005,
+      "errors": []
+    },
+    {
+      "name": "S3 original and artifact revocation reject manifest/image and clear an open browser view",
+      "status": "passed",
+      "duration_ms": 1261,
+      "errors": []
+    },
+    {
+      "name": "S3 missing artifact secret, invalid AAD and viewer outage fail closed without original fallback",
+      "status": "passed",
+      "duration_ms": 21567,
+      "errors": []
+    },
+    {
+      "name": "S3 current AV outage denies every new view and page request",
+      "status": "passed",
+      "duration_ms": 19822,
+      "errors": []
+    },
+    {
+      "name": "S3 artifact key rotation retains old viewing and grants only artifact key material to viewer",
+      "status": "passed",
+      "duration_ms": 5895,
+      "errors": []
+    },
+    {
+      "name": "S3 share revoke removes open pages/text and denies subsequent image and manifest requests",
+      "status": "passed",
+      "duration_ms": 292,
+      "errors": []
+    },
+    {
+      "name": "S3 old original and invoice PDF endpoints return empty 410 to every actor and anonymous user",
+      "status": "passed",
+      "duration_ms": 57,
+      "errors": []
+    },
+    {
+      "name": "S3 fixed XLSX type date merge hidden and stale-cache expectations from S0 remain true",
+      "status": "passed",
+      "duration_ms": 24946,
+      "errors": []
+    },
+    {
+      "name": "S3 unrepresentable XLSX refs types merges and quotas never become ready or truncated views",
+      "status": "passed",
+      "duration_ms": 36383,
+      "errors": []
+    },
+    {
+      "name": "S3 Japanese twenty-page order and image-only text alternative, geometry never silently downscaled",
+      "status": "passed",
+      "duration_ms": 19176,
+      "errors": []
+    },
+    {
+      "name": "S3 session expiry removes already open text and image",
+      "status": "passed",
+      "duration_ms": 5590,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

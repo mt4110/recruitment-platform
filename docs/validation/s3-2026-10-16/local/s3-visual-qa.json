@@ -1,0 +1,26 @@
+{
+  "browser": "Chromium",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "checks": [
+    {
+      "format": "pdf",
+      "title_valid": true,
+      "route_valid": true,
+      "meaningful_content": true,
+      "overlay_absent": true,
+      "interaction_passed": true
+    },
+    {
+      "format": "xlsx",
+      "title_valid": true,
+      "route_valid": true,
+      "meaningful_content": true,
+      "overlay_absent": true,
+      "interaction_passed": true
+    }
+  ],
+  "unexpected_console_or_page_errors": []
+}
