@@ -5,7 +5,7 @@ on:
       scope:
         description: Full regression or R5 development subset
         type: choice
-        options: [full, r5, r5-regression, r5-conflict]
+        options: [full, r5, r5-regression, r5-conflict, r5-notification]
         default: full
 permissions:
   contents: read
@@ -49,6 +49,8 @@ jobs:
             python3 scripts/e2e.py --test-file m5.spec.cjs r5.spec.ts s5.spec.ts workflow.spec.cjs z-s4.spec.cjs
           elif [ "$R5_CHECK_SCOPE" = r5-conflict ]; then
             python3 scripts/e2e.py --test-file business.spec.cjs r2.spec.cjs r5.spec.ts
+          elif [ "$R5_CHECK_SCOPE" = r5-notification ]; then
+            python3 scripts/e2e.py --test-file m5.spec.cjs
           else
             python3 scripts/e2e.py
           fi
