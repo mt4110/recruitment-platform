@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-10-16T04:59:52.283724+00:00",
+  "local_markdown_links": "passed",
+  "json_parse": "passed",
+  "git_diff_check": "passed",
+  "trivy_final_working_tree_secret_findings": 0,
+  "scope": "Final documentation and sanitized artifacts; not a new browser regression run"
+}

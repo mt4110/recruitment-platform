@@ -1,0 +1,16 @@
+{
+  "tested_source_commit": "2d46f4ec634482199e35709975f4636e1a7867bd",
+  "ci": "https://github.com/mt4110/recruitment-platform/actions/runs/38851224395",
+  "source_sha256_match": true,
+  "source_files": 93,
+  "both_e2e_passed": true,
+  "tests_per_arch": 97,
+  "xlsx_cases_per_arch": 67,
+  "both_audit_status": "findings",
+  "overall_ci_conclusion": "failure",
+  "current_tree_differences_in_test_inventory": [
+    "e2e/README.md"
+  ],
+  "current_runtime_tooling_files_unchanged": 92,
+  "final_changes": "Documentation and sanitized evidence only; e2e/README.md instructions updated."
+}

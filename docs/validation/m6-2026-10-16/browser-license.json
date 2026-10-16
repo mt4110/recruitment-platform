@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-10-16",
+  "browser": "Google Chrome for Testing 156.0.8078.4",
+  "source": "/ms-playwright/chromium-1248/chrome-linux-arm64/ABOUT",
+  "raw_evidence_sha256": "03277c259c7d6995939324956c0b3ed1f6a572eb32a650aef59384f0ac194564",
+  "summary": "Googleの実行バイナリ用追加規約とthird-party creditsがあり、PlaywrightのApache-2.0とは別に扱う。独自imageの再配布条件の最終判断は未実施。",
+  "official_terms": "https://www.google.com/chrome/terms/",
+  "terms_last_modified": "2025-09-30"
+}

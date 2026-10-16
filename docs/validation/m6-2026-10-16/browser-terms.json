@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-10-16",
+  "browser": "Google Chrome for Testing 156.0.8078.4",
+  "source": "chrome://terms/",
+  "raw_evidence_sha256": "779b7ed531fbff550af63c0805e78bd2d6ac28d08da0cfff8e48098e535664de",
+  "summary": "Googleの実行バイナリ用追加規約とthird-party creditsがあり、PlaywrightのApache-2.0とは別に扱う。独自imageの再配布条件の最終判断は未実施。",
+  "official_terms": "https://www.google.com/chrome/terms/",
+  "terms_last_modified": "2025-09-30"
+}

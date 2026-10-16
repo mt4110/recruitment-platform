@@ -1,0 +1,143 @@
+{
+  "checked_at": "2026-10-16T04:54:40.382014+00:00",
+  "source_commit": "2d46f4ec634482199e35709975f4636e1a7867bd",
+  "trivy": "Version: 0.76.0",
+  "images": {
+    "gateway": {
+      "image_id": "sha256:0d831f5435ede3eeaba5768270c9e6f542d58306f69bb61f148e5c2374b57c56",
+      "packages": 71,
+      "findings": {
+        "MEDIUM": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "web": {
+      "image_id": "sha256:2b17e9af531d08121fc0006e4e40a50a6f8914e2f52c6a9f8f2c037834d8ab80",
+      "packages": 253,
+      "findings": {
+        "LOW": 84,
+        "HIGH": 60,
+        "MEDIUM": 94,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "fixable_high_critical": 3
+    },
+    "api": {
+      "image_id": "sha256:8caec275039ab75e02d0eef84ab525c98780f4c331a5dc33a660ad6777e1ad2d",
+      "packages": 106,
+      "findings": {
+        "LOW": 152,
+        "HIGH": 69,
+        "MEDIUM": 128,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "db": {
+      "image_id": "sha256:3a1fc1a9e13bc670fcd6e3d8c3b157828a2452d8ca94042c61d2a51ec699122f",
+      "packages": 148,
+      "findings": {
+        "LOW": 173,
+        "HIGH": 95,
+        "MEDIUM": 194,
+        "UNKNOWN": 6,
+        "CRITICAL": 4
+      },
+      "fixable_high_critical": 25
+    },
+    "idp": {
+      "image_id": "sha256:817e41712252d6d3a2a61ac5d2a011be561d7942cee8227ee418ababa5f52b9a",
+      "packages": 562,
+      "findings": {
+        "MEDIUM": 25,
+        "LOW": 25
+      },
+      "fixable_high_critical": 0
+    },
+    "idp-db": {
+      "image_id": "sha256:3a1fc1a9e13bc670fcd6e3d8c3b157828a2452d8ca94042c61d2a51ec699122f",
+      "same_as": "db"
+    },
+    "pdf-renderer": {
+      "image_id": "sha256:9f21a9b724ae49fc355060fe3277cdcc0f097b85ef30b7e32e6e539a3e057007",
+      "packages": 694,
+      "findings": {
+        "LOW": 84,
+        "MEDIUM": 576,
+        "HIGH": 10
+      },
+      "fixable_high_critical": 7
+    },
+    "scan": {
+      "image_id": "sha256:33864cc0ea12028ab23e7a7119d2773db06222b86e7c7411bc0d34b917b766c2",
+      "packages": 125,
+      "findings": {
+        "LOW": 144,
+        "HIGH": 79,
+        "MEDIUM": 120,
+        "CRITICAL": 1,
+        "UNKNOWN": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "updater": {
+      "image_id": "sha256:33864cc0ea12028ab23e7a7119d2773db06222b86e7c7411bc0d34b917b766c2",
+      "same_as": "scan"
+    }
+  },
+  "locks": {
+    "web": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "e2e": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "pdf": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "rustsec": {
+      "count": 1,
+      "database": {
+        "advisory-count": 1329,
+        "last-commit": "edb58f5974b83eb8302332821cb6d389777aa351",
+        "last-updated": "2026-10-14T22:18:32+02:00"
+      }
+    }
+  },
+  "scope": "Known vulnerability and license inventory; not release approval",
+  "unknown_or_missing_license_packages": 535,
+  "secret_findings": 0,
+  "scanner_databases": {
+    "Version": "0.76.0",
+    "VulnerabilityDB": {
+      "Version": 2,
+      "NextUpdate": "2026-10-17T01:13:54.947090202Z",
+      "UpdatedAt": "2026-10-16T01:13:54.947090392Z",
+      "DownloadedAt": "2026-10-16T04:54:45.481510738Z"
+    },
+    "JavaDB": {
+      "Version": 1,
+      "NextUpdate": "2026-10-19T01:00:20.589203Z",
+      "UpdatedAt": "2026-10-16T01:00:20.589203513Z",
+      "DownloadedAt": "2026-10-16T04:55:14.232479157Z"
+    }
+  },
+  "status": "findings"
+}

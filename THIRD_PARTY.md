@@ -1,6 +1,6 @@
 # 依存物のライセンスと確認範囲
 
-2026-10-15。プロジェクト本体はApache-2.0。第三者の権利・ライセンスはそれぞれに従う。依存を改変して再配布する場合は、対象のLICENSE/NOTICE/source提供条件を再確認する。
+2026-10-16更新。各導入段階の履歴を含み、現在の監査結果は末尾のM6節を参照。プロジェクト本体はApache-2.0。第三者の権利・ライセンスはそれぞれに従う。依存を改変して再配布する場合は、対象のLICENSE/NOTICE/source提供条件を再確認する。
 
 | 主な製品依存 | 固定版 | 表記 |
 | --- | --- | --- |
@@ -36,3 +36,11 @@ multipart仕様は[Axum 0.8.9の実装](https://github.com/tokio-rs/axum/blob/ax
 M4は既存SQLx 0.9.0のjson featureを有効化し、既存serde_jsonでPostgreSQL JSONをdecodeする。Cargo.lockのpackage/versionは変更していない。RustSecの既知1件を引き続き記録し、新しい本体依存を追加していない。
 
 R2では公式ClamAV 1.5.4 Debian 13 slimをmultiarch index digest `sha256:9a96980b265cb2b51a20bdcca921dc80aa55ed0e56cdfb076198ee27a9171927`で固定し、clamd/FreshClam/sigtoolのライセンス・著作権表示を保持する。ClamAVはGPL-2.0、署名DBは別の利用条件に従う。Python wrapperは標準ライブラリのみで、Debianのpython3 security packageをaptで導入する。OS packageの版は実行証拠へ記録するが、apt repositoryのsnapshot固定や配布image全体の脆弱性監査を完了した意味ではない。独自imageを配布する際の対応ソース提供・再配布条件の確認はM7に残る。[ClamAV配布ソース](https://github.com/Cisco-Talos/clamav/tree/clamav-1.5.4)、[ClamAV署名管理](https://docs.clamav.net/manual/Usage/SignatureManagement.html)。
+
+## M6の更新・機械監査（2026-10-16）
+
+製品Nodeを24.22.0、nginxを1.30.6へ更新しdigest固定。PostgreSQL17.11、ClamAV1.5.4、Python/wheel固定版は維持し、独自imageのOSに取得可能な更新を適用する。apt repositoryのsnapshotは固定せず、実image ID/package版を証拠へ保存する。
+
+PDF製品workerはPlaywright1.64.1（Apache-2.0）と公式v1.64.1-noble digestへ更新。実runtimeはChrome for Testing156.0.8078.4で、Chromium151だったM0/M5と区別する。`ABOUT`とsandbox付き`chrome://terms`表示を実imageで確認し、[観測metadata](docs/validation/m6-2026-10-16/browser-terms.json)を保存した。[Playwright release notes](https://playwright.dev/docs/release-notes)と[Googleの実行バイナリ用追加規約](https://www.google.com/chrome/terms/)も参照。ブラウザ全体をPlaywrightと同じApache-2.0とは表記しない。Noto/Poppler/各OSのcopyright/license文書を保持し、独自imageの一般再配布条件の最終確認はM7に残す。製品imageの公開は行っていない。
+
+[M6記録](docs/validation/2026-10-16-m6-report.md)とpackage/license inventoryを参照。Trivy0.76.0・同日更新DBで独立7image（9サービス）を検査し、Web/E2E/PDFのnpm lockは既知指摘0、RustSecは従前1件、OS/同梱ツールには指摘が残った。arm64 534/amd64 535 packageのlicenseが未知または未取得であり、全配布物の適合・脆弱性0件を確認した一覧ではない。修正版ありの同梱CLI/PythonやGo補助ツール、未修正のOSライブラリは監査残件へ明記し、ignoreしていない。
