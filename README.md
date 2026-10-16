@@ -14,7 +14,7 @@
 
 [クラウドサインの導入方法・連携方針](docs/design/11-cloudsign.md)も設計に追加しました。手動運用からAPI導入までの準備・誤送信防止・状態照合を整理したもので、連携は未実装です。
 
-**書類保護方針v0.5のS4（既存書類・共有選択版の暗号化移行）は完了しました。** Linux/amd64の最終S4 9件＋実行後検査を確認し、同じアプリケーション実行コードで成功した既存137件のブラウザ回帰結果を再利用しました。[S4記録](docs/validation/2026-10-16-s4-report.md)、[実装契約](docs/design/16-s4-migration-contract.md)を参照してください。原本ID・版・共有snapshotを維持し、旧鍵・DB・blobの別環境復旧とアクセス拒否を確認しました。旧平文は保持し、通常のlocalhost:3000は未更新です。残計画は40〜70時間＋未積算M6監査残件（全面TS化・責務再編は含めない）。S5・R5・外部公開へは進みません。[S3記録](docs/validation/2026-10-16-s3-report.md)は履歴です。
+**書類保護方針v0.5のS5（新しい書類経路の横断検証）は完了しました。** 基準commitの全体155件ずつと、最終API返答修正後のS2＋S5 23件ずつがLinux/amd64・Linux/arm64で成功しました（最終commitの全155件再実行ではありません）。[S5記録](docs/validation/2026-10-16-s5-report.md)、[検証契約](docs/design/17-s5-verification-contract.md)を参照してください。提出時のAV再照合・完了受付の復元・期限切れtombstone・完了結果APIを修正し、暗号化受付から採用・請求HTMLまで確認しました。通常のlocalhost:3000は旧デモを維持し、今回の確認は隔離環境です。残計画は28〜48時間、AV新世代のready再処理を加える場合30〜52時間＋未積算M6監査残件。全面TS化・責務再編は別途未積算です。R5・R6・M7・外部公開へは進まず停止します。[S4記録](docs/validation/2026-10-16-s4-report.md)は履歴です。
 
 [S0確認計画](docs/design/13-s0-verification-plan.md)に、隔離・鍵・変換の必須確認、暫定資源上限、fixture/証拠と8〜14時間の停止枠を定義しました。S0は両arch・最終CI・暗号化したnative目視証拠まで確認済みです。製品実装の完了ではありません。
 
@@ -77,6 +77,8 @@ python3 scripts/e2e.py
 - [S3閲覧の実装契約](docs/design/15-s3-safe-view-contract.md)
 - [S4暗号化移行・復旧の実装・検証記録](docs/validation/2026-10-16-s4-report.md)
 - [S4移行・復旧の実装契約](docs/design/16-s4-migration-contract.md)
+- [S5横断検証・性能・残計画の記録](docs/validation/2026-10-16-s5-report.md)
+- [S5横断検証の契約](docs/design/17-s5-verification-contract.md)
 - [S2鍵管理・隔離ワーカーの実装・検証記録](docs/validation/2026-10-16-s2-report.md)
 - [S1暗号化受付の実装・検証記録](docs/validation/2026-10-16-s1-report.md)
 - [S0の確認条件・停止条件（実施記録へリンク）](docs/design/13-s0-verification-plan.md)

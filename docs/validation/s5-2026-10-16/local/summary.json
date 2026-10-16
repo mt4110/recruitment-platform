@@ -1,0 +1,61 @@
+{
+  "scope": "S5 encrypted pipeline cross-cutting verification and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S5 encrypted PDF and XLSX browser journey reaches immutable sharing and invoice HTML",
+      "status": "passed",
+      "duration_ms": 19915,
+      "errors": []
+    },
+    {
+      "name": "S5 retained internal invoice PDF matches authorized HTML values without browser delivery",
+      "status": "passed",
+      "duration_ms": 1376,
+      "errors": []
+    },
+    {
+      "name": "S5 stale definitions load mismatch and update failure reject encrypted shared pages and submit",
+      "status": "passed",
+      "duration_ms": 2107,
+      "errors": []
+    },
+    {
+      "name": "S5 cross-document derivative substitution is refused without raw fallback",
+      "status": "passed",
+      "duration_ms": 440,
+      "errors": []
+    },
+    {
+      "name": "S5 browser context loss after stored response restores same receipt without a second PUT",
+      "status": "passed",
+      "duration_ms": 7748,
+      "errors": []
+    },
+    {
+      "name": "S5 browser loss before PUT requires file reselection and new attempt with the same document",
+      "status": "passed",
+      "duration_ms": 7977,
+      "errors": []
+    },
+    {
+      "name": "S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs",
+      "status": "passed",
+      "duration_ms": 7263,
+      "errors": []
+    },
+    {
+      "name": "S5 small batch and 10MiB browser uploads record bounded phase latency without a fabricated SLA",
+      "status": "passed",
+      "duration_ms": 53978,
+      "errors": []
+    },
+    {
+      "name": "S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload",
+      "status": "passed",
+      "duration_ms": 7316,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

@@ -1,0 +1,17 @@
+{
+  "baseline_commit": "c02f4f97c54c53454d752c7ec268ac73bd94cc6c",
+  "baseline_full_tests_per_arch": 155,
+  "final_commit": "c51825297ad7340621c0bc3f75f25a51920f5953",
+  "final_targeted_tests_per_arch": 23,
+  "final_test_selection": [
+    "s2.spec.cjs",
+    "s5.spec.ts"
+  ],
+  "source_files": 127,
+  "changed_source_files": [
+    "e2e/s5.spec.ts",
+    "services/api/src/uploads.rs"
+  ],
+  "qualification": "Full baseline on both native architectures reused for unchanged behavior; final five-line completed outcome metadata branch qualified by S2 worker and S5 completed/failed/expiry/browser recovery tests on both architectures. Final commit did not rerun all 155 tests. Workflow selection changed only; no schema, cryptography, key or upload receiving delta.",
+  "all_other_source_hashes_identical": true
+}

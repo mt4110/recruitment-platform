@@ -1,0 +1,12 @@
+{
+  "profile": "recruitment-m1",
+  "before_gib": 80,
+  "requested_gib": 256,
+  "status": "verified",
+  "all_existing_volumes_present": true,
+  "context_unchanged": true,
+  "application_http": 200,
+  "existing_volume_count": 284,
+  "healthy_demo_services": 7,
+  "after_filesystem": "/dev/vdb1       252G   75G  168G  31% /var/lib/postgresql/data"
+}

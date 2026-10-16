@@ -14,7 +14,9 @@
 
 推薦提出は保存済みclean判定だけでなく、その書類の検査証拠と実ロード中のAV状態を照合する。既存の組織RLS・候補者所有・不変hash・共有確定transactionは維持する。
 
-受付下書きの復元では書類の実状態からUI状態を決める。ready書類を再度pendingとして扱い、追加登録を妨げない。確認チェックは再度本人が行う。
+受付下書きの復元では書類の実状態からUI状態を決める。ready書類を再度pendingとして扱わず、追加登録を妨げない。確認チェックは再度本人が行う。
+
+正常完了の結果照合はcompleted・元の201・元の7日期限を返し、status_urlを維持する。
 
 期限後の受付APIは元のexpires_atを保ったtombstoneを同じtransactionで確定し、commit後に拒否を返す。結果照合の内部戻り値もFound／Expired／NotFoundで区別し、失効状態を保存せず終了しない。
 
@@ -32,7 +34,7 @@ brokerの計測ログは固定のphase名と数値だけに限定し、ホスト
 
 新しい`e2e/s5.spec.ts`は既存の固定済みTypeScript compilerでstrict型検査する。依存は追加しない。PlaywrightのCJS試験も回帰に含める。
 
-Linux/amd64とLinux/arm64のnative runnerで、同じcommitの全体試験を実行する。subsetは開発確認であり、最終受入にはしない。GitHubの標準arm64ラベルは[公式runner一覧](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)を確認した。
+Linux/amd64とLinux/arm64のnative runnerで、同じ基準commitの全体試験を実行する。開発subsetだけを全体受入にはしない。全体CI中に見つかった完了結果APIの返答修正は、基準c02f4f9から正常系の返答分岐5行のみを追加する限定差分とし、最終c518252のS2＋S5を両native環境で再実行する。S2の失敗／workerとS5の完了／期限切れ／ブラウザ復帰を含め、全体基準のhashと最終hashの差がuploads.rs・s5.spec.tsだけであることを照合する。schema・暗号・鍵・受信処理等へ差分が広がる場合はこの再利用を適用しない。全体基準155件と最終差分23件はcommit・件数を分け、最終commitで全155件を実行したとは扱わない。GitHubの標準arm64ラベルは[公式runner一覧](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)を確認した。
 
 ブラウザの終了コードだけでは受入にしない。source不変、AV稼働・OOMなし、全対象サービスのログ検査、主環境・復旧先・各ジョブの停止まで必要とする。失敗した検査を通過扱いにしない。復旧試験を最後に実行し、通常デモのDB・鍵・cookieへ触れない。
 

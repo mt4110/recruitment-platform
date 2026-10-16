@@ -1,0 +1,145 @@
+{
+  "scope": "S5 encrypted pipeline cross-cutting verification and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S2 real broker AV format sandbox, live isolation probes and encrypted manifest",
+      "status": "passed",
+      "duration_ms": 4999,
+      "errors": []
+    },
+    {
+      "name": "S2 native Sheets XLSX follows real AV and one job per fresh sandbox",
+      "status": "passed",
+      "duration_ms": 8700,
+      "errors": []
+    },
+    {
+      "name": "S2 corrupted GCM tag never reaches AV or parser; terminal outcome is retained",
+      "status": "passed",
+      "duration_ms": 4184,
+      "errors": []
+    },
+    {
+      "name": "S2 scanner outage refuses, retains accepted ID and recovers in a new generation",
+      "status": "passed",
+      "duration_ms": 27706,
+      "errors": []
+    },
+    {
+      "name": "S2 original/artifact revocation persists across restart, blocks leased decrypt and commit",
+      "status": "passed",
+      "duration_ms": 27981,
+      "errors": []
+    },
+    {
+      "name": "S2 ownership archive and stale lease fencing deny decryption; expired worker recovers",
+      "status": "passed",
+      "duration_ms": 3686,
+      "errors": []
+    },
+    {
+      "name": "S2 worker role cannot issue arbitrary DB queries; public gateway does not expose control",
+      "status": "passed",
+      "duration_ms": 1388,
+      "errors": []
+    },
+    {
+      "name": "S2 rotation retains old original and artifact keys and restores encrypted manifests",
+      "status": "passed",
+      "duration_ms": 11192,
+      "errors": []
+    },
+    {
+      "name": "S2 real malware and invalid format are terminal without making documents usable",
+      "status": "passed",
+      "duration_ms": 7831,
+      "errors": []
+    },
+    {
+      "name": "S2 browser encrypted intake becomes view-ready after checking and page reload",
+      "status": "passed",
+      "duration_ms": 4648,
+      "errors": []
+    },
+    {
+      "name": "S2 missing original key permission refuses and restored old material resumes same document",
+      "status": "passed",
+      "duration_ms": 7767,
+      "errors": []
+    },
+    {
+      "name": "S2 actual broker process loss is fenced and resumes after lease expiry without another upload",
+      "status": "passed",
+      "duration_ms": 9112,
+      "errors": []
+    },
+    {
+      "name": "S2 invoice and original inspection routes reject the opposite service purpose",
+      "status": "passed",
+      "duration_ms": 1287,
+      "errors": []
+    },
+    {
+      "name": "S2 idle worker has no job, performs no decryption and stops cleanly",
+      "status": "passed",
+      "duration_ms": 3607,
+      "errors": []
+    },
+    {
+      "name": "S5 encrypted PDF and XLSX browser journey reaches immutable sharing and invoice HTML",
+      "status": "passed",
+      "duration_ms": 15891,
+      "errors": []
+    },
+    {
+      "name": "S5 retained internal invoice PDF matches authorized HTML values without browser delivery",
+      "status": "passed",
+      "duration_ms": 2030,
+      "errors": []
+    },
+    {
+      "name": "S5 stale definitions load mismatch and update failure reject encrypted shared pages and submit",
+      "status": "passed",
+      "duration_ms": 14856,
+      "errors": []
+    },
+    {
+      "name": "S5 cross-document derivative substitution is refused without raw fallback",
+      "status": "passed",
+      "duration_ms": 604,
+      "errors": []
+    },
+    {
+      "name": "S5 browser context loss after stored response restores same receipt without a second PUT",
+      "status": "passed",
+      "duration_ms": 6195,
+      "errors": []
+    },
+    {
+      "name": "S5 browser loss before PUT requires file reselection and new attempt with the same document",
+      "status": "passed",
+      "duration_ms": 6753,
+      "errors": []
+    },
+    {
+      "name": "S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs",
+      "status": "passed",
+      "duration_ms": 6224,
+      "errors": []
+    },
+    {
+      "name": "S5 small batch and 10MiB browser uploads record bounded phase latency without a fabricated SLA",
+      "status": "passed",
+      "duration_ms": 41620,
+      "errors": []
+    },
+    {
+      "name": "S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload",
+      "status": "passed",
+      "duration_ms": 5756,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

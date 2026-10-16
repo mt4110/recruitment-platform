@@ -1,7 +1,7 @@
 # アーキテクチャと実装配置
 
 > **2026-10-16：現行構成への案内**
-> 署名付き暗号化受付・隔離ワーカー・安全な閲覧はS1〜S3で実装済み。S4の移行・復旧の受入状況は[S4記録](../validation/2026-10-16-s4-report.md)を参照。以下の構成図・同居するPDF検査／請求・LocalBlobStoreの説明は旧構成の履歴であり、現行の文書保護経路を表さない。現行契約は[正本設計](12-secure-document-pipeline.md)、[S2](14-s2-worker-contract.md)、[S3](15-s3-safe-view-contract.md)、[S4](16-s4-migration-contract.md)を優先する。
+> 署名付き暗号化受付・隔離ワーカー・安全な閲覧はS1〜S3で実装済み。S4の移行・復旧は[S4記録](../validation/2026-10-16-s4-report.md)、S5の両arch横断受入は[S5記録](../validation/2026-10-16-s5-report.md)を参照。以下の構成図・同居するPDF検査／請求・LocalBlobStoreの説明は旧構成の履歴であり、現行の文書保護経路を表さない。現行契約は[正本設計](12-secure-document-pipeline.md)、[S2](14-s2-worker-contract.md)、[S3](15-s3-safe-view-contract.md)、[S4](16-s4-migration-contract.md)を優先する。
 
 ## 現行の責務と言語
 

@@ -1,0 +1,7 @@
+{
+  "expected_commit": "c02f4f97c54c53454d752c7ec268ac73bd94cc6c",
+  "files": 127,
+  "mismatches": [],
+  "source_unchanged_during_run": true,
+  "classification": "native full regression"
+}

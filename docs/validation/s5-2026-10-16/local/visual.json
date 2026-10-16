@@ -1,0 +1,13 @@
+{
+  "scope": "Additional local PC invoice details check after S5 subset; no product/test source changes",
+  "page_identity": true,
+  "meaningful_content": true,
+  "no_overlay": true,
+  "no_console_or_page_error": true,
+  "html_invoice_amount": true,
+  "no_pdf_embed": true,
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  }
+}

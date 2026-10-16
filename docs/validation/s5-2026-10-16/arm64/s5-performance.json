@@ -1,0 +1,299 @@
+{
+  "units": "milliseconds unless named bytes",
+  "rows": [
+    {
+      "case": "small-pdf-cold-js",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "fresh browser context / first measured workload",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 0.10108200000831857,
+        "authorization": 0.042717000003904104,
+        "complete": 0.06696299999020994,
+        "admission_wall": 930.8842699999805,
+        "webcrypto": 0.2000000000698492,
+        "max_animation_frame_gap": 16.80000000000001,
+        "queue_until_claim": 2573.167,
+        "job_startup_processing_stop": 3615.5512190000154,
+        "first_manifest_and_page": 38.404188999993494
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 38.738,
+        "decrypt": 5.542626000000013,
+        "av": 6.659,
+        "validation_and_conversion": 329.178,
+        "artifact_encryption_and_storage": 127.30115699999999
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79593472,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 52117504,
+        "sandbox_cgroup_peak": 48062464
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "small-pdf-warm-1",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 0.03904500001226552,
+        "authorization": 0.028661999996984378,
+        "complete": 0.02619800000684336,
+        "admission_wall": 919.6279729999951,
+        "webcrypto": 0.19999999995343387,
+        "max_animation_frame_gap": 16.80000000000001,
+        "queue_until_claim": 2527.91,
+        "job_startup_processing_stop": 3565.8601440000057,
+        "first_manifest_and_page": 41.20387299999129
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 38.929,
+        "decrypt": 5.493636000000009,
+        "av": 6.643,
+        "validation_and_conversion": 330.821,
+        "artifact_encryption_and_storage": 129.43071400000008
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79863808,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 52232192,
+        "sandbox_cgroup_peak": 47951872
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "small-pdf-warm-2",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 0.03832500000135042,
+        "authorization": 0.025005999981658533,
+        "complete": 0.022486000001663342,
+        "admission_wall": 924.9665319999913,
+        "webcrypto": 0.19999999995343387,
+        "max_animation_frame_gap": 16.80000000000001,
+        "queue_until_claim": 2550.234,
+        "job_startup_processing_stop": 3523.271799000009,
+        "first_manifest_and_page": 42.235344999993686
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 38.937,
+        "decrypt": 5.464318999999989,
+        "av": 7.085,
+        "validation_and_conversion": 327.604,
+        "artifact_encryption_and_storage": 129.413139
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79638528,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 51982336,
+        "sandbox_cgroup_peak": 47812608
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "small-pdf-warm-3",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 0.11508899999898858,
+        "authorization": 0.02623899999889545,
+        "complete": 0.02377399997203611,
+        "admission_wall": 963.2682379999897,
+        "webcrypto": 0.2000000000698492,
+        "max_animation_frame_gap": 16.700000000000045,
+        "queue_until_claim": 2556.659,
+        "job_startup_processing_stop": 3569.518843000027,
+        "first_manifest_and_page": 37.4683129999903
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 40.267,
+        "decrypt": 5.623931999999996,
+        "av": 6.917,
+        "validation_and_conversion": 339.695,
+        "artifact_encryption_and_storage": 132.401924
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79900672,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 51929088,
+        "sandbox_cgroup_peak": 47890432
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "batch-pdf-xlsx",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 4.299293000018224,
+        "authorization": 0.055958000040845945,
+        "complete": 0.06274799999664538,
+        "admission_wall": 924.4637609999918,
+        "webcrypto": 0.5000000001164153,
+        "max_animation_frame_gap": 16.80000000000001,
+        "queue_until_claim": 2547.741,
+        "job_startup_processing_stop": 3571.9776560000028,
+        "first_manifest_and_page": 37.95608699999866
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 39.892,
+        "decrypt": 5.523515000000003,
+        "av": 6.92,
+        "validation_and_conversion": 328.973,
+        "artifact_encryption_and_storage": 130.01998300000002
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79806464,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 51945472,
+        "sandbox_cgroup_peak": 47857664
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "batch-pdf-xlsx",
+      "format": "xlsx",
+      "bytes": 14344,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 4.299293000018224,
+        "authorization": 0.055958000040845945,
+        "complete": 0.06274799999664538,
+        "admission_wall": 924.4637609999918,
+        "webcrypto": 0.5000000001164153,
+        "max_animation_frame_gap": 16.80000000000001,
+        "queue_until_claim": 6289.59,
+        "job_startup_processing_stop": 3613.340024999983,
+        "first_manifest_and_page": 20.362421999976505
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 41.481,
+        "decrypt": 5.518292000000002,
+        "av": 166.562,
+        "validation_and_conversion": 230.741,
+        "artifact_encryption_and_storage": 67.73629399999993
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79441920,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 52002816,
+        "sandbox_cgroup_peak": 36564992
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "max-10MiB",
+      "format": "pdf",
+      "bytes": 10485760,
+      "browser_cache": "same context / later workload, new navigation",
+      "outcome": "ready",
+      "timings_ms": {
+        "reservation": 0.03298899999936111,
+        "authorization": 0.02351899998029694,
+        "complete": 0.054708999989088625,
+        "admission_wall": 3512.205680999992,
+        "webcrypto": 36.29999999993015,
+        "max_animation_frame_gap": 983.4000000000001,
+        "queue_until_claim": 2994.028,
+        "job_startup_processing_stop": 4670.549583999993,
+        "first_manifest_and_page": 39.797051000001375
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 74.639,
+        "decrypt": 51.85297800000001,
+        "av": 844.267,
+        "validation_and_conversion": 734.898,
+        "artifact_encryption_and_storage": 129.336092
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 160563200,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 85790720,
+        "sandbox_cgroup_peak": 81006592
+      },
+      "worker_oom": false
+    },
+    {
+      "case": "invalid-format-small",
+      "format": "pdf",
+      "bytes": 744,
+      "browser_cache": "same context",
+      "outcome": "rejected",
+      "timings_ms": {
+        "job_startup_processing_stop": 3300.7762130000046
+      },
+      "worker_ms": {
+        "ciphertext_fetch": 39.243,
+        "decrypt": 5.458422000000013,
+        "av": 14.727,
+        "validation_and_conversion": 136.066
+      },
+      "memory_limits_bytes": {
+        "broker": 536870912,
+        "relay": 536870912,
+        "sandbox": 1073741824
+      },
+      "observed_memory_bytes": {
+        "broker_rss_at_completion": 79249408,
+        "broker_cgroup_peak": null,
+        "relay_cgroup_peak": 37416960,
+        "sandbox_cgroup_peak": 25128960
+      },
+      "worker_oom": false
+    }
+  ],
+  "small_pdf_admission": {
+    "n": 4,
+    "p50": 924.9665319999913,
+    "p95": 963.2682379999897,
+    "method": "nearest rank; descriptive small sample only"
+  },
+  "scope": "Real browser WebCrypto and local authenticated HTTP admission, real AV and fresh isolated parser per job. Every job is a fresh sandbox; browser context/cache cold/warm labels only; every navigation creates a new JS realm. No TLS/WAN/production load or commercial latency SLA. AV and validation+conversion measured at broker; full host job wall includes startup and stop. Request durations include network and response transfer. Memory includes configured limits, OOM absence, broker RSS at completion and relay/sandbox cgroup peaks. An exited broker cgroup peak is unavailable (null)."
+}
