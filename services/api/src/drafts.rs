@@ -201,7 +201,7 @@ fn payload_check(kind: &str, p: &Value) -> Result<(), ApiError> {
             ("to_status", "status", 20),
             ("reason", "s", 500),
         ],
-        "document_upload" => &[("operations", "uploads", 10)],
+        "document_upload" => &[("document_kind", "kind", 20), ("operations", "uploads", 10)],
         "job_filters" => &[
             ("q", "s", 100),
             ("location", "s", 100),
@@ -306,6 +306,12 @@ fn payload_check(kind: &str, p: &Value) -> Result<(), ApiError> {
                     "withdrawn",
                 ]
                 .contains(&v.as_str().ok_or_else(invalid)?)
+                {
+                    return Err(invalid());
+                }
+            }
+            "kind" => {
+                if !["resume", "career_history", "other"].contains(&v.as_str().ok_or_else(invalid)?)
                 {
                     return Err(invalid());
                 }
