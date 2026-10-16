@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run M1/M2/M3/M4/R1/R2/R3 browser E2E in a new local Compose project; retain all evidence/data."""
+"""Run M1 through M6 / R1 through R4 browser E2E in a new local Compose project; retain all evidence/data."""
 import argparse, hashlib, json, os, re, secrets, socket, subprocess, time, io, tarfile, ipaddress
 from pathlib import Path
 
@@ -21,12 +21,12 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'M1 through M4 + R1/R2/R3/R4; M5 demo previews; stop before R5/M6', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'M6 regression: M1 through M5 + R1/R2/R3/R4; stop before R5/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
-    tracked = ['scripts/local.py','scripts/e2e.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
+    tracked = ['scripts/local.py','scripts/e2e.py','scripts/check.py','scripts/audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file() and '__pycache__' not in p.parts]
-    for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','e2e/fixtures','validation/r0/fixtures']:
+    for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','services/postgres','e2e/fixtures','validation/r0/fixtures']:
         tracked += [str(p.relative_to(ROOT)) for p in (ROOT/folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts]
     return {name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sorted(set(tracked))}
 # Allocate only new test networks; retained previous environments are never pruned.
@@ -113,5 +113,5 @@ finally:
     if stopped.returncode != 0: code = 1; summary['status'] = 'failed'
     summary['elapsed_seconds'] = round(time.monotonic() - start, 3)
     (artifacts/'run.json').write_text(json.dumps(summary, indent=2)+'\n')
-    print(f"M1/M2/M3/M4/R1/R2/R3/R4 E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
+    print(f"M6 regression E2E: {summary['status']}; evidence: .local/{instance}/artifacts")
 raise SystemExit(code)

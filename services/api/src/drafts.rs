@@ -284,8 +284,8 @@ fn payload_check(kind: &str, p: &Value) -> Result<(), ApiError> {
             }
             "employment" | "filter_employment" => {
                 let s = v.as_str().ok_or_else(invalid)?;
-                if !(s.is_empty() && *ty == "filter_employment")
-                    && !["full_time", "contract", "part_time"].contains(&s)
+                if !(["full_time", "contract", "part_time"].contains(&s)
+                    || s.is_empty() && *ty == "filter_employment")
                 {
                     return Err(invalid());
                 }
@@ -389,16 +389,27 @@ async fn exists(tx: &mut PgConnection, q: &'static str, id: Uuid) -> Result<(), 
     }
     Ok(())
 }
-async fn context(
-    tx: &mut PgConnection,
-    u: &Identity,
-    kind: &str,
+type WrappedKeyRow = (i32, Vec<u8>, Vec<u8>, Option<DateTime<Utc>>);
+type OperationRow = (Uuid, i64, String, String, Vec<u8>, String, Uuid, i32, bool);
+struct DraftContext<'a> {
+    kind: &'a str,
     target: Option<Uuid>,
     ctx: Option<Uuid>,
     base: Option<i32>,
+}
+async fn context(
+    tx: &mut PgConnection,
+    u: &Identity,
+    scope: DraftContext<'_>,
     p: &Value,
     check_version: bool,
 ) -> Result<(), ApiError> {
+    let DraftContext {
+        kind,
+        target,
+        ctx,
+        base,
+    } = scope;
     if !TYPES.contains(&kind) {
         return Err(invalid());
     }
@@ -583,8 +594,7 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
             ),
         )
         .await?;
-        let row: Option<(i32, Vec<u8>, Vec<u8>, Option<DateTime<Utc>>)> = if let Some(v) = requested
-        {
+        let row: Option<WrappedKeyRow> = if let Some(v) = requested {
             sqlx::query_as("SELECT key_version,wrapped_key,nonce,revoked_at FROM draft_keys WHERE key_version=$1").bind(v as i32).fetch_optional(&mut *tx).await.map_err(db_error)?
         } else {
             sqlx::query_as("SELECT key_version,wrapped_key,nonce,revoked_at FROM draft_keys ORDER BY key_version DESC LIMIT 1").fetch_optional(&mut *tx).await.map_err(db_error)?
@@ -631,10 +641,12 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
             if context(
                 &mut tx,
                 &u,
-                &d.form_type,
-                d.target_id,
-                d.context_id,
-                d.base_resource_version,
+                DraftContext {
+                    kind: &d.form_type,
+                    target: d.target_id,
+                    ctx: d.context_id,
+                    base: d.base_resource_version,
+                },
                 &json!({}),
                 false,
             )
@@ -658,10 +670,12 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         context(
             &mut tx,
             &u,
-            &d.form_type,
-            d.target_id,
-            d.context_id,
-            d.base_resource_version,
+            DraftContext {
+                kind: &d.form_type,
+                target: d.target_id,
+                ctx: d.context_id,
+                base: d.base_resource_version,
+            },
             &json!({}),
             false,
         )
@@ -693,10 +707,12 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         context(
             &mut tx,
             &u,
-            &d.form_type,
-            d.target_id,
-            d.context_id,
-            d.base_resource_version,
+            DraftContext {
+                kind: &d.form_type,
+                target: d.target_id,
+                ctx: d.context_id,
+                base: d.base_resource_version,
+            },
             &payload,
             true,
         )
@@ -727,10 +743,12 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         context(
             &mut tx,
             &u,
-            &d.form_type,
-            d.target_id,
-            d.context_id,
-            d.base_resource_version,
+            DraftContext {
+                kind: &d.form_type,
+                target: d.target_id,
+                ctx: d.context_id,
+                base: d.base_resource_version,
+            },
             &json!({}),
             false,
         )
@@ -773,10 +791,12 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
     context(
         &mut tx,
         &u,
-        &save.form_type,
-        save.target_id,
-        save.context_id,
-        save.base_resource_version,
+        DraftContext {
+            kind: &save.form_type,
+            target: save.target_id,
+            ctx: save.context_id,
+            base: save.base_resource_version,
+        },
         &save.payload,
         true,
     )
@@ -993,7 +1013,7 @@ pub async fn replay(
         ),
     )
     .await?;
-    let prev:Option<(Uuid,i64,String,String,Vec<u8>,String,Uuid,i32,bool)>=sqlx::query_as("SELECT draft_id,revision,method,normalized_path,request_hash,result_resource_type,result_resource_id,result_status,result_expires_at>now() FROM draft_operations WHERE operation_id=$1").bind(o.id).fetch_optional(&mut *tx).await.map_err(db_error)?;
+    let prev:Option<OperationRow>=sqlx::query_as("SELECT draft_id,revision,method,normalized_path,request_hash,result_resource_type,result_resource_id,result_status,result_expires_at>now() FROM draft_operations WHERE operation_id=$1").bind(o.id).fetch_optional(&mut *tx).await.map_err(db_error)?;
     if let Some((draft, revision, m, p, h, kind, id, status, valid)) = prev {
         result_access(tx, &kind, id).await?;
         if !valid {
@@ -1014,18 +1034,22 @@ pub async fn replay(
     }
     Ok(None)
 }
+pub struct CommitRequest<'a> {
+    pub method: &'a Method,
+    pub path: &'a str,
+    pub body: &'a Value,
+}
 pub async fn consume(
     tx: &mut PgConnection,
     app: &App,
     u: &Identity,
     o: Option<&Operation>,
-    method: &Method,
-    path: &str,
-    body: &Value,
+    request: CommitRequest<'_>,
     resource: Uuid,
     status: StatusCode,
 ) -> Result<(), ApiError> {
     let Some(o) = o else { return Ok(()) };
+    let CommitRequest { method, path, body } = request;
     let d: Draft = sqlx::query_as("SELECT * FROM form_drafts WHERE id=$1 FOR UPDATE")
         .bind(o.draft)
         .fetch_optional(&mut *tx)

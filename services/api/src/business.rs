@@ -686,9 +686,11 @@ async fn execute(app: Arc<App>, request: Request, request_id: Uuid) -> Result<Re
         &app,
         &u,
         operation.as_ref(),
-        &method,
-        &normalized,
-        &body,
+        crate::drafts::CommitRequest {
+            method: &method,
+            path: &normalized,
+            body: &body,
+        },
         resource,
         status,
     )

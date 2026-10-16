@@ -1,4 +1,4 @@
-name: M1 through M5 and R1 through R4 browser E2E
+name: M6 regression and image audit
 on:
   workflow_dispatch:
 permissions:
@@ -6,7 +6,7 @@ permissions:
 jobs:
   authentication:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -19,17 +19,34 @@ jobs:
         run: |
           npm ci --prefix e2e
           npx --prefix e2e playwright install --with-deps chromium --only-shell
+      - name: Install fixed web dependencies and Rust checks
+        run: |
+          npm ci --prefix apps/web
+          rustup toolchain install 1.95.0 --profile minimal --component clippy,rustfmt
+          rustup override set 1.95.0
+          python3 scripts/check.py
       - name: Verify M1 through M5 and R1/R2/R3/R4 in an isolated project
         run: python3 scripts/e2e.py
+      - name: Prepare pinned audit tools
+        run: |
+          mkdir -p .local/audit-tools
+          curl --fail --silent --show-error --location https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.tar.gz -o .local/audit-tools/trivy.tar.gz
+          echo 'e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7  .local/audit-tools/trivy.tar.gz' | sha256sum --check
+          tar -xzf .local/audit-tools/trivy.tar.gz -C .local/audit-tools trivy
+          cargo install --locked cargo-audit --version 0.22.1
+      - name: Audit exact tested images and locks (findings fail this gate)
+        run: |
+          python3 scripts/audit.py --run "$(find .local -path '*/artifacts/run.json' -print -quit)" --trivy .local/audit-tools/trivy
       - name: Preserve sanitized results only
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: m5-browser-results
+          name: m6-browser-results
           path: |
             .local/e2e-*/artifacts/*.json
             .local/e2e-*/artifacts/*.png
             .local/e2e-*/artifacts/m5-invoice.pdf
+            .local/e2e-*/artifacts/audit/*.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

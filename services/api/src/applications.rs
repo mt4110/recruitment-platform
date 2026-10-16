@@ -672,9 +672,11 @@ async fn handle(State(app): State<Arc<App>>, request: Request) -> Result<Respons
         &app,
         &u,
         operation.as_ref(),
-        &method,
-        &normalized,
-        &body,
+        crate::drafts::CommitRequest {
+            method: &method,
+            path: &normalized,
+            body: &body,
+        },
         resource,
         status,
     )

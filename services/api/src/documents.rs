@@ -933,12 +933,12 @@ async fn mark_expired(tx: &mut PgConnection, id: Uuid) -> Result<(), ApiError> {
 async fn preflight(app: &App, u: &Identity, candidate: Uuid, key: Uuid) -> Result<(), ApiError> {
     let mut tx = begin(app, u).await?;
     let found:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(format!("/api/v1/candidates/{candidate}/documents")).bind(key).fetch_optional(&mut *tx).await.map_err(db_error)?;
-    if let Some(l) = found {
-        if expired(&l) {
-            mark_expired(&mut tx, l.resource_id).await?;
-            tx.commit().await.map_err(db_error)?;
-            return Err(result_expired());
-        }
+    if let Some(l) = found
+        && expired(&l)
+    {
+        mark_expired(&mut tx, l.resource_id).await?;
+        tx.commit().await.map_err(db_error)?;
+        return Err(result_expired());
     }
     tx.commit().await.map_err(db_error)?;
     Ok(())
