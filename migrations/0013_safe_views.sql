@@ -169,3 +169,10 @@ CREATE FUNCTION document_usable(d uuid,h text,f text) RETURNS boolean LANGUAGE s
 $$;
 REVOKE ALL ON FUNCTION document_usable(uuid,text,text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION document_usable(uuid,text,text) TO app_runtime;
+-- S3 ready is terminal for pending admission; keep physical bytes fully charged.
+-- A reserved/received session has no documents row yet and must still count.
+CREATE OR REPLACE FUNCTION encrypted_upload_org_capacity(n bigint) RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public AS $$ BEGIN
+ IF public.rp_kind()<>'agency' OR n<1 OR n>10485760 THEN RAISE EXCEPTION 'invalid admission';END IF;
+ PERFORM pg_advisory_xact_lock(hashtextextended('s1-org:'||public.rp_org()::text,72176310));
+ RETURN (SELECT count(*)<10 AND coalesce(sum(plain_length),0)+n<=104857600 FROM public.upload_sessions s WHERE org_id=public.rp_org() AND state IN ('reserved','received','attached') AND NOT EXISTS(SELECT 1 FROM public.documents d WHERE d.id=s.document_id AND d.status='ready'));
+END $$;
