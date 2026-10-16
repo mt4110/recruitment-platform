@@ -10,7 +10,7 @@ module.exports = class SafeReporter {
   }
   scrub(message) {
     for (const secret of this.secrets) message = message.split(secret).join('[redacted]');
-    return message.replace(/https?:\/\/[^\s<>]+/g,'[url]').replace(/eyJ[\w-]+\.eyJ[\w-]+\.[\w-]+/g,'[jwt]');
+    return message.replace(/https?:\/\/[^\s<>]+/g,'[url]').replace(/eyJ[\w-]+\.eyJ[\w-]+\.[\w-]+/g,'[jwt]').replace(/eyJ[\w-]+\.[\w-]{43}(?![\w-])/g,'[upload-ticket]');
   }
   onTestEnd(test,result) {
     const row = {name:test.title,status:result.status,duration_ms:result.duration,errors:result.errors.map(e=>this.scrub(e.message||'Test failed'))};

@@ -201,7 +201,11 @@ fn payload_check(kind: &str, p: &Value) -> Result<(), ApiError> {
             ("to_status", "status", 20),
             ("reason", "s", 500),
         ],
-        "document_upload" => &[("document_kind", "kind", 20), ("operations", "uploads", 10)],
+        "document_upload" => &[
+            ("document_kind", "kind", 20),
+            ("operations", "uploads", 10),
+            ("encrypted_transport", "b", 0),
+        ],
         "job_filters" => &[
             ("q", "s", 100),
             ("location", "s", 100),

@@ -5,6 +5,7 @@ mod documents;
 mod drafts;
 mod previews;
 mod scanner;
+mod uploads;
 
 use auth::{ApiError, App, Config};
 use axum::{
@@ -71,6 +72,7 @@ async fn start() -> anyhow::Result<()> {
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
         scan_key: std::env::var("SCAN_SHARED_KEY")?,
         draft_key: drafts::master_key()?,
+        upload_config: Arc::new(uploads::Config::load()?),
         uploads: Arc::new(tokio::sync::Semaphore::new(2)),
     });
     let router = Router::new()
@@ -83,6 +85,7 @@ async fn start() -> anyhow::Result<()> {
         .merge(business::routes())
         .merge(applications::routes())
         .merge(documents::routes())
+        .merge(uploads::routes())
         .merge(drafts::routes())
         .merge(previews::routes())
         .fallback(|| async {

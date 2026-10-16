@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs'],help='Development subset; final CI always runs the full suite.')
+parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs'],help='Development subset; final CI always runs the full suite.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')

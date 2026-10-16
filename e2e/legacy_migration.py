@@ -24,9 +24,9 @@ if sys.argv[1]=='before':
  (local/'legacy-before.json').write_text(json.dumps(snapshot()))
 else:
  before=json.loads((local/'legacy-before.json').read_text());after=snapshot()
- d={k:v for k,v in after['document'].items() if k not in ['file_format','media_type','document_kind','legacy_document']}
+ d={k:v for k,v in after['document'].items() if k not in ['file_format','media_type','document_kind','legacy_document','encrypted_transport']}
  shared={k:v for k,v in after['shared'].items() if k not in ['file_format_snapshot','media_type_snapshot','document_kind_snapshot']}
- checks={'document_unchanged':d==before['document'],'snapshot_unchanged':shared==before['shared'],'defaults_pdf_other':after['document']['file_format']=='pdf' and after['document']['document_kind']=='other' and after['document']['legacy_document'],'original_terminal_expiry_plus_6_days':abs(after['outcome_expiry']-before['outcome_expiry']-6*86400)<0.01,'no_clean_evidence':sql(f"SELECT count(*) FROM document_checks WHERE document_id='{D}';")=='0'}
+ checks={'document_unchanged':d==before['document'],'snapshot_unchanged':shared==before['shared'],'defaults_pdf_other':after['document']['file_format']=='pdf' and after['document']['document_kind']=='other' and after['document']['legacy_document'],'original_terminal_expiry_plus_6_days':abs(after['outcome_expiry']-before['outcome_expiry']-6*86400)<0.01,'legacy_not_encrypted':after['document']['encrypted_transport'] is False,'no_clean_evidence':sql(f"SELECT count(*) FROM document_checks WHERE document_id='{D}';")=='0'}
  assert all(checks.values()),checks
  raw=compose('exec','-T','api','cat',f'/data/resumes/{D}.pdf').stdout
  assert hashlib.sha256(raw).hexdigest()==before['document']['sha256']

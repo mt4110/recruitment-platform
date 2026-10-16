@@ -1,0 +1,30 @@
+{
+  "secret_scan": "passed",
+  "files": [
+    {
+      "path": "docs/validation/s1-2026-10-16/local/full/run.json",
+      "bytes": 11428,
+      "sha256": "95974ea19d90f5b66f31d4cd21b87d684f8a31f4c99beb803d785a56be4753f3"
+    },
+    {
+      "path": "docs/validation/s1-2026-10-16/local/full/summary.json",
+      "bytes": 19866,
+      "sha256": "7c77e42ec7f99f462a6b4757e74333742825b437938ce80292630c52dbc59ab8"
+    },
+    {
+      "path": "docs/validation/s1-2026-10-16/local/final/run.json",
+      "bytes": 11443,
+      "sha256": "53d11c11230718876a6ac547379c53e880d428d6535a8657cb5967965093adf6"
+    },
+    {
+      "path": "docs/validation/s1-2026-10-16/local/final/summary.json",
+      "bytes": 2434,
+      "sha256": "3bc4c7424f5f005ca41f46cc58426673960edddee82475764e062e0fcab6f4cf"
+    },
+    {
+      "path": "docs/validation/s1-2026-10-16/local/final/s1-encrypted-desktop.png",
+      "bytes": 356372,
+      "sha256": "ceecf86c7534ab646f0fdd62cf5292bd2f185719ee50094171d010d43739df39"
+    }
+  ]
+}

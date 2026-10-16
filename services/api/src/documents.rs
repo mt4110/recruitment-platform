@@ -46,9 +46,9 @@ struct Document {
     created_by: Uuid,
     storage_key: String,
     staging_key: Option<String>,
-    original_name: String,
+    original_name: Option<String>,
     size_bytes: i64,
-    sha256: String,
+    sha256: Option<String>,
     status: String,
     rejection_code: Option<String>,
     validation_policy: Option<String>,
@@ -173,7 +173,7 @@ async fn dto(tx: &mut PgConnection, d: &Document, u: Option<Uuid>) -> Result<Val
         .await
         .map_err(db_error)?;
     Ok(
-        json!({"document_version":version,"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name,"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
+        json!({"document_version":version,"available":available,"format_checked":d.validated_at.is_some(),"file_format":d.file_format,"media_type":d.media_type,"document_kind":d.document_kind,"inspection_state":if available {"complete"} else if blocked {"blocked"} else if d.status=="rejected" {"rejected"} else if d.validated_at.is_some() {"av_pending"} else {"format_pending"},"id":d.id,"document_id":d.id,"candidate_id":d.candidate_id,"original_name":d.original_name.as_deref().unwrap_or("暗号化書類（検査待ち）"),"size_bytes":d.size_bytes,"status":d.status,"rejection_code":d.rejection_code.as_deref().map(|c|{let e=rejection(c,StatusCode::UNPROCESSABLE_ENTITY); e.code}),"created_at":d.created_at,"updated_at":d.updated_at,"status_url":format!("/api/v1/documents/{}",d.id),"retry_allowed":until.is_some_and(|t|t<=Utc::now()),"lease_expires_at":until}),
     )
 }
 pub(crate) async fn list(tx: &mut PgConnection, candidate: Uuid) -> Result<Value, ApiError> {
@@ -557,6 +557,9 @@ async fn retry(
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     let d = doc(&mut tx, id).await?;
+    if d.sha256.is_none() {
+        return Err(unavailable("ENCRYPTED_PENDING"));
+    }
     if d.created_by != u.user_id {
         return Err(missing());
     }
@@ -605,7 +608,14 @@ struct Check {
     rejection_code: Option<String>,
 }
 async fn bytes(key: &str, d: &Document) -> Result<Option<Vec<u8>>, ApiError> {
-    verified_bytes(key, d.size_bytes, &d.sha256).await
+    verified_bytes(
+        key,
+        d.size_bytes,
+        d.sha256
+            .as_deref()
+            .ok_or_else(|| unavailable("ENCRYPTED_PENDING"))?,
+    )
+    .await
 }
 pub(crate) async fn verified_bytes(
     key: &str,
@@ -676,7 +686,7 @@ async fn inspect(app: &App, d: &Document, data: Vec<u8>) -> Result<Check, ApiErr
             .map_err(|_| unavailable("PDF_UNAVAILABLE"))?,
     )
     .map_err(|_| unavailable("PDF_UNAVAILABLE"))?;
-    if checked.sha256 != d.sha256 || checked.policy != format_policy(d) {
+    if Some(&checked.sha256) != d.sha256.as_ref() || checked.policy != format_policy(d) {
         return Err(unavailable("PDF_UNAVAILABLE"));
     }
     Ok(checked)
@@ -710,7 +720,14 @@ async fn process(
         )
         .await;
     };
-    let scan = crate::scanner::scan(app, data.clone(), &d.sha256).await?;
+    let scan = crate::scanner::scan(
+        app,
+        data.clone(),
+        d.sha256
+            .as_deref()
+            .ok_or_else(|| unavailable("ENCRYPTED_PENDING"))?,
+    )
+    .await?;
     if scan.verdict == "blocked" {
         crate::scanner::current(app, &scan).await?;
         let mut tx = begin(app, u).await?;
@@ -957,6 +974,10 @@ async fn outcome(
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     owner(&mut tx, id).await?;
+    if let Some(value) = crate::uploads::outcome(&mut tx, &u, id, query.key).await? {
+        tx.commit().await.map_err(db_error)?;
+        return Ok(Json(value).into_response());
+    }
     let record:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(format!("/api/v1/candidates/{id}/documents")).bind(query.key).fetch_optional(&mut *tx).await.map_err(db_error)?;
     let value = if let Some(l) = record {
         if expired(&l) {
@@ -987,6 +1008,9 @@ async fn recheck(
     .map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     let d = doc(&mut tx, id).await?;
+    if d.sha256.is_none() {
+        return Err(unavailable("ENCRYPTED_PENDING"));
+    }
     if d.created_by != u.user_id {
         return Err(missing());
     }
@@ -1063,7 +1087,14 @@ async fn recheck_work(
     let data = bytes(&d.storage_key, d)
         .await?
         .ok_or_else(|| unavailable("STORAGE_CONFLICT"))?;
-    let mut scan = crate::scanner::scan(app, data.clone(), &d.sha256).await?;
+    let mut scan = crate::scanner::scan(
+        app,
+        data.clone(),
+        d.sha256
+            .as_deref()
+            .ok_or_else(|| unavailable("ENCRYPTED_PENDING"))?,
+    )
+    .await?;
     if scan.verdict == "clean" {
         let checked = inspect(app, d, data).await?;
         if !checked.ok {
@@ -1110,6 +1141,9 @@ pub(crate) async fn reconcile_storage(pool: &sqlx::PgPool) -> anyhow::Result<()>
             anyhow::ensure!(count <= 100000, "storage inventory limit");
             let entry = entry?;
             let meta = std::fs::symlink_metadata(entry.path())?;
+            if entry.file_name() == "encrypted" && meta.is_dir() {
+                continue;
+            }
             anyhow::ensure!(meta.is_file(), "unexpected storage entry");
             let group = groups
                 .entry((meta.dev(), meta.ino()))

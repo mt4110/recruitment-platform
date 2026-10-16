@@ -43,8 +43,9 @@ services:
       PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
       SCAN_SHARED_KEY: ${SCAN_SHARED_KEY:?Run setup}
       DRAFT_MASTER_KEY: ${DRAFT_MASTER_KEY:?Run setup}
+      UPLOAD_TICKET_KEY: ${UPLOAD_TICKET_KEY:?Run setup}
     networks: [default,pdf,scan]
-    volumes: ['resumes:/data/resumes']
+    volumes: ['resumes:/data/resumes','${LOCAL_CONFIG_DIR:-./.local}/upload-public.pem:/run/upload-public.pem:ro']
     read_only: true
     tmpfs: ['/tmp:size=16m,mode=1777']
     cap_drop: [ALL]

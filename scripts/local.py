@@ -23,6 +23,21 @@ def compose(*args,**kw):
     executable=['docker','compose'] if subprocess.run(['docker','compose','version'],capture_output=True).returncode==0 else ['docker-compose']
     overrides=['-f',str(LOCAL/'e2e-networks.json')] if INSTANCE.startswith('e2e-') and (LOCAL/'e2e-networks.json').is_file() else []
     return run([*executable,'--project-directory',str(ROOT),'--env-file',str(ENV),'-f',str(ROOT/'infra/local/compose.yaml'),*overrides,*args],**kw)
+def upload_keys():
+    # Private unwrap key is kept offline on the host, never mounted into API/Next.
+    private=LOCAL/'upload-private.pem'; public=LOCAL/'upload-public.pem'
+    initial=not private.exists() and not public.exists()
+    if initial and 'UPLOAD_TICKET_KEY' in settings():raise SystemExit('Original wrap keys missing. Restore the existing keys; no replacement generated.')
+    if not private.exists() and not public.exists():
+        run(['openssl','genpkey','-algorithm','RSA','-pkeyopt','rsa_keygen_bits:3072','-out',str(private)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        run(['openssl','pkey','-in',str(private),'-pubout','-out',str(public)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        private.chmod(0o600);public.chmod(0o644)
+    elif not private.is_file() or not public.is_file():
+        raise SystemExit('Incomplete original wrap key pair. Restore it; keys are never replaced.')
+    values=settings()
+    if 'UPLOAD_TICKET_KEY' not in values:
+        if not initial:raise SystemExit('Ticket signing key missing. Restore the existing private configuration; no replacement generated.')
+        with ENV.open('a') as f:f.write('UPLOAD_TICKET_KEY='+secrets.token_urlsafe(32)+'\n')
 def setup():
     LOCAL.mkdir(mode=0o700,parents=True,exist_ok=True)
     if ENV.exists():
@@ -37,7 +52,7 @@ def setup():
             if checked.stdout.strip()!='t':raise SystemExit('Draft key missing for an existing draft database; restore the original private configuration. No replacement key generated.')
             with ENV.open('a') as f:f.write('DRAFT_MASTER_KEY='+secrets.token_urlsafe(32)+'\n')
         if not (LOCAL/'realm.json').is_file() or not (LOCAL/'demo-accounts.json').is_file():raise SystemExit('Incomplete local config; retain files and inspect before continuing.')
-        print('Existing local configuration retained.');return
+        upload_keys();print('Existing local configuration retained.');return
     app_port,idp_port=ports()
     names=[('agency-a','001'),('agency-b','002'),('employer-x','011'),('employer-y','012'),('unregistered','099')]
     accounts={name:secrets.token_urlsafe(24) for name,_ in names}
@@ -50,6 +65,7 @@ def setup():
     values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','SCAN_SHARED_KEY','DRAFT_MASTER_KEY')}
     values.update(APP_PORT=str(app_port),IDP_PORT=str(idp_port),COMPOSE_PROJECT_NAME='recruitment-local' if INSTANCE=='default' else 'recruitment-'+INSTANCE,LOCAL_CONFIG_DIR=str(LOCAL))
     ENV.write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
+    upload_keys()
     print('Created private .local/local.env and .local/demo-accounts.json. No credential values are printed.')
 def migrate():
     _,idp_port=ports()
