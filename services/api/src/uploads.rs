@@ -933,6 +933,11 @@ pub(crate) async fn outcome(
                 json!({"state":"failed","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"result_status":record.1,"error_code":record.2,"result_expires_at":record.3}),
             ));
         }
+        if record.0 == "completed" {
+            return Ok(UploadOutcome::Found(
+                json!({"state":"completed","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"status_url":format!("/api/v1/document-uploads/{id}"),"result_status":record.1,"result_expires_at":record.3}),
+            ));
+        }
         return Ok(UploadOutcome::Found(
             json!({"state":"processing","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"status_url":format!("/api/v1/document-uploads/{id}"),"result_status":202,"result_expires_at":null}),
         ));

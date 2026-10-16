@@ -5,7 +5,7 @@ on:
       scope:
         description: Full regression or S5 development subset
         type: choice
-        options: [full, s5]
+        options: [full, s5, worker-and-s5]
         default: full
 permissions:
   contents: read
@@ -45,6 +45,8 @@ jobs:
         run: |
           if [ "$S5_CHECK_SCOPE" = s5 ]; then
             python3 scripts/e2e.py --test-file s5.spec.ts
+          elif [ "$S5_CHECK_SCOPE" = worker-and-s5 ]; then
+            python3 scripts/e2e.py --test-file s2.spec.cjs s5.spec.ts
           else
             python3 scripts/e2e.py
           fi
