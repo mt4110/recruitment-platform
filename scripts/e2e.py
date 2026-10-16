@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs','s5.spec.ts'],help='Development subset; final CI always runs the full suite.')
+parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs','s5.spec.ts','r5.spec.ts'],help='Development subset; final CI always runs the full suite.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')
@@ -21,7 +21,7 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'S5 encrypted pipeline cross-cutting verification + regression; stop before R5/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'R5 encrypted device autosave and recovery + regression; stop before R6/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
     tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/document_migrate.py','scripts/document_snapshot.py','scripts/document_operator.py','scripts/document_crypto.cjs','scripts/e2e.py','scripts/check.py','scripts/audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']

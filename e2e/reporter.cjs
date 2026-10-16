@@ -15,12 +15,12 @@ module.exports = class SafeReporter {
   onTestEnd(test,result) {
     const row = {name:test.title,status:result.status,duration_ms:result.duration,errors:result.errors.map(e=>this.scrub(e.message||'Test failed'))};
     this.tests.push(row);
-    fs.writeFileSync(path.join(this.dir,'artifacts','progress.json'),JSON.stringify({scope:'S5 encrypted pipeline cross-cutting verification and existing browser regression',tests:this.tests},null,2)+'\n');
+    fs.writeFileSync(path.join(this.dir,'artifacts','progress.json'),JSON.stringify({scope:'R5 encrypted device draft verification and existing browser regression',tests:this.tests},null,2)+'\n');
     process.stdout.write(`${row.status}: ${row.name}\n`);
   }
   onError(error) { process.stdout.write(`Runner error: ${this.scrub(error.message||'unknown')}\n`); }
   onEnd(result) {
-    const summary = {scope:'S5 encrypted pipeline cross-cutting verification and existing browser regression',status:result.status,tests:this.tests,
+    const summary = {scope:'R5 encrypted device draft verification and existing browser regression',status:result.status,tests:this.tests,
       secrets_policy:'No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs.'};
     fs.writeFileSync(path.join(this.dir,'artifacts','summary.json'),JSON.stringify(summary,null,2)+'\n');
   }

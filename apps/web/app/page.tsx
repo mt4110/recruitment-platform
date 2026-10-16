@@ -1,6 +1,7 @@
 'use client';
 import {usePathname} from 'next/navigation';
 import Applications from './applications';
+import {DraftGate} from './drafts';
 import Previews from './previews';
 import Business from './business';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ export default function Home() {
   const pathname=usePathname();
   const [view, setView] = useState<View>({ phase: 'loading' });
   const [businessMe, setBusinessMe] = useState<Me | null>(null);
+  const [rechecking,setRechecking]=useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const request = useRef<AbortController | null>(null);
@@ -26,7 +28,7 @@ export default function Home() {
     setMessage(notice);
   }, []);
   const refresh = useCallback(async () => {
-    const current = ++revision.current;
+    setRechecking(true);const current = ++revision.current;
     request.current?.abort();
     const abort = new AbortController();
     request.current = abort;
@@ -42,7 +44,7 @@ export default function Home() {
         if (abort.signal.aborted || current !== revision.current) return;
         knownSession.current = true;
         setView({ phase: 'signed-in', me });
-        setBusinessMe(me);
+        setBusinessMe(me);setRechecking(false);
         setMessage('');
       } else setView({ phase: 'error' });
     } catch { if (!abort.signal.aborted && current === revision.current) setView({ phase: 'error' }); }
@@ -51,6 +53,7 @@ export default function Home() {
     void refresh();
     const onFocus = () => { void refresh(); };
     const onVisible = () => { if (document.visibilityState === 'visible') void refresh(); };
+    const onOffline=()=>{if(pathname.startsWith('/applications/'))setRechecking(true);};window.addEventListener('offline',onOffline);window.addEventListener('online',onFocus);
     window.addEventListener('focus', onFocus);
     document.addEventListener('visibilitychange', onVisible);
     if ('BroadcastChannel' in window) {
@@ -61,7 +64,7 @@ export default function Home() {
     return () => {
       revision.current += 1;
       request.current?.abort();
-      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('offline',onOffline);window.removeEventListener('online',onFocus);window.removeEventListener('focus', onFocus);
       document.removeEventListener('visibilitychange', onVisible);
       channel.current?.close(); channel.current = null;
     };
@@ -75,6 +78,7 @@ export default function Home() {
   useEffect(() => { if (view.phase === 'anonymous' && message) loginLink.current?.focus(); }, [view.phase, message]);
   async function logout() {
     if (view.phase !== 'signed-in' || busy) return;
+    if(Array.from(document.querySelectorAll('[aria-label="個人下書き"]')).some(e=>e.textContent?.includes('未同期'))&&!window.confirm('端末に保存した未同期入力があります。再ログイン後に復元できますが、保存前の最後の入力は保証されません。ログアウトしますか？'))return;
     setBusy(true); setMessage('');
     try {
       const r = await fetch('/auth/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': view.me.csrf_token } });
@@ -92,6 +96,6 @@ export default function Home() {
         {view.phase === 'error' && <div role="alert"><p>ログイン状態を確認できませんでした。</p><button onClick={() => { setView({ phase: 'loading' }); void refresh(); }}>再読み込み</button></div>}
         {view.phase === 'signed-in' && <><dl><div><dt>所属組織</dt><dd>{view.me.organization.name}</dd></div><div><dt>利用区分</dt><dd>{view.me.organization.kind === 'agency' ? '紹介会社' : '求人企業'}</dd></div><div><dt>利用者</dt><dd>{view.me.user.display_name}</dd></div></dl><button onClick={logout} disabled={busy}>{busy ? 'ログアウト中…' : 'ログアウト'}</button></>}
         <p className="message" role="status" aria-live="polite">{message}</p>
-      </section>{businessMe && (pathname==='/notifications'||pathname.endsWith('/invoice') ? <Previews key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/> : pathname.startsWith('/applications') ? <Applications key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/> : <Business key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/>)}<aside><h2>現在できること</h2><p>求人の登録・公開・検索・保存、架空候補者の登録・更新・アーカイブ、架空のPDF／XLSXの登録・安全性検査に対応しています。暗号化受付の書類は安全性検査と変換の完了後、ページ画像・テキスト・限定表で閲覧できます。原本の配信は行いません。通知は未送信のモックとして確認でき、採用決定後は固定金額・1明細のデモ請求HTMLを表示できます。</p><p>実在する求職者の情報は入力しないでください。</p></aside>
+      </section><DraftGate.Provider value={rechecking}><div hidden={rechecking}>{businessMe && (pathname==='/notifications'||pathname.endsWith('/invoice') ? <Previews key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/> : pathname.startsWith('/applications') ? <Applications key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/> : <Business key={businessMe.user.id} me={businessMe} signedIn={view.phase === 'signed-in'} onUnauthorized={refresh}/>)}</div></DraftGate.Provider><aside><h2>現在できること</h2><p>求人の登録・公開・検索・保存、架空候補者の登録・更新・アーカイブ、架空のPDF／XLSXの登録・安全性検査に対応しています。暗号化受付の書類は安全性検査と変換の完了後、ページ画像・テキスト・限定表で閲覧できます。原本の配信は行いません。通知は未送信のモックとして確認でき、採用決定後は固定金額・1明細のデモ請求HTMLを表示できます。</p><p>実在する求職者の情報は入力しないでください。</p></aside>
     </main><footer>recruitment-platform · ローカルプロトタイプ</footer></>;
 }

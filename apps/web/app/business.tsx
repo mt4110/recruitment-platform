@@ -161,7 +161,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
         try {
             if(editing&&body&&!idem.current.request){const meta=await draft.flush();idem.current.request={...body,...meta,operation_id:idem.current.key};}
             const submitted=editing?idem.current.request:body;
-            const r = await fetch('/api/v1' + path, { method, credentials: 'same-origin', signal: abort.signal, headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': me.csrf_token, ...(method === 'POST' ? { 'Idempotency-Key': idem.current.key } : {}) }, ...(body ? { body: JSON.stringify(submitted) } : {}) });
+            const r = editing ? await draft.request(path,method,submitted as Record<string,unknown>,idem.current.key,abort.signal) : await fetch('/api/v1' + path, { method, credentials: 'same-origin', signal: abort.signal, headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': me.csrf_token, ...(method === 'POST' ? { 'Idempotency-Key': idem.current.key } : {}) }, ...(body ? { body: JSON.stringify(submitted) } : {}) });
             if (!alive.current || abort.signal.aborted)
                 return;
             if (!r.ok) {
@@ -180,7 +180,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
                 return;
             }
             idem.current = null;
-            if(editing)draft.consumed();
+            if(editing)await draft.consumed((submitted as {draft_id:string}).draft_id);
             if (r.status === 204) {
                 setRecord(previous => previous ? { ...previous, favorited: method === 'PUT' } : previous);
                 setError(method === 'PUT' ? '求人を保存しました。' : '保存を解除しました。');
@@ -220,11 +220,11 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     <div className="section-title"><h2 id="workspace-title">{editing ? (id ? '編集する' : jobs ? '求人を登録する' : '候補者を登録する') : detail ? (record?.title || record?.name || '詳細') : title}</h2>{!id && !editing && allowed && (!jobs || !agency) && <a className="button" href={base + '/new'}>{jobs ? '求人を登録する' : '候補者を登録する'}</a>}</div>
     {error && <div className="notice" role="alert"><p>{error}</p>{conflict && <p>現在の入力は自動で上書きしません。</p>}{!expired && <button type="button" className="secondary" onClick={() => {if(conflict)draft.prepareFresh();setReload(v => v + 1);}}>{conflict ? '最新情報を読み直す' : '再読み込み'}</button>}{expired && <a href="/auth/login">再ログインする</a>}</div>}
     {loading ? <p role="status">読み込んでいます…</p> : !allowed ? null : editing ? <form className="editor" onSubmit={save}><DraftStatus draft={draft}/>
-      <fieldset disabled={busy || !draft.ready || expired || !!record?.archived_at || record?.status === 'closed'}><legend>{jobs ? '求人の内容' : '架空候補者の情報'}</legend>
+      <fieldset disabled={busy || !draft.editable || expired || !!record?.archived_at || record?.status === 'closed'}><legend>{jobs ? '求人の内容' : '架空候補者の情報'}</legend>
       {(jobs ? [['title', '求人名', 200], ['description', '仕事内容', 10000], ['location', '勤務地', 200]] : [['name', '架空氏名', 100], ['summary', '経歴の概要', 10000]]).map(([key, label, max]) => <label key={key}> {label}<span className="hint">必須・{max}文字以内</span>{key === 'description' || key === 'summary' ? <textarea name={String(key)} required maxLength={Number(max)} rows={7} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/> : <input name={String(key)} required maxLength={Number(max)} value={form[key] || ''} onChange={e => setForm(v => ({ ...v, [key]: e.target.value }))}/>}</label>)}
       {jobs && <label>雇用形態<select name="employment_type" value={form.employment_type || 'full_time'} onChange={e => setForm(v => ({ ...v, employment_type: e.target.value }))}>{['full_time', 'contract', 'part_time'].map(v => <option key={v} value={v}>{labels[v]}</option>)}</select></label>}
       {!jobs && !id && <label className="check"><input type="checkbox" required checked={confirmed} onChange={e => setConfirmed(e.target.checked)}/>氏名・経歴はすべて架空のデータです</label>}
-      <div className="actions"><button type="submit">{busy ? '保存中…' : jobs && !id ? '下書き保存' : '保存する'}</button><a href={id ? base + '/' + id : base}>戻る</a></div></fieldset>
+      <div className="actions"><button type="submit" disabled={!draft.ready||draft.failed}>{busy ? '保存中…' : jobs && !id ? '下書き保存' : '保存する'}</button><a href={id ? base + '/' + id : base}>戻る</a></div></fieldset>
     </form> : detail && record ? <article className="detail">
       <div className="metadata"><span className="badge">{jobs ? labels[record.status || ''] : record.archived_at ? 'アーカイブ済み' : '登録済み'}</span><span>更新版 {record.version}</span></div>
       {jobs ? <><p>{record.employer_name}</p><dl><div><dt>勤務地</dt><dd>{record.location}</dd></div><div><dt>雇用形態</dt><dd>{labels[record.employment_type || '']}</dd></div></dl><h3>仕事内容</h3><p className="prose">{record.description}</p></> : <><h3>経歴の概要</h3><p className="prose">{record.summary}</p><Documents key={record.id} candidate={record.id} initial={record.documents || []} archived={!!record.archived_at} me={me} signedIn={signedIn} onUnauthorized={onUnauthorized}/></>}

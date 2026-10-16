@@ -68,6 +68,7 @@ test('R4 key wrapping is owner bound, concurrent stable, no-store and revoked ve
  const wrapped=Buffer.from(sql(scope(actors.a.me)+"SELECT encode(wrapped_key,'hex') FROM draft_keys WHERE key_version=1;ROLLBACK;").split('\n').find(x=>/^[a-f0-9]{96}$/.test(x)),'hex');expect(wrapped.includes(Buffer.from(keys[0].key,'base64url'))).toBe(false);
  sql(`UPDATE draft_keys SET revoked_at=now() WHERE user_id='${actors.a.me.user.id}' AND key_version=1;`);const r=await call('a','POST','/drafts/key',{key_version:1});expect(r.status()).toBe(409);expect((await r.json()).error.code).toBe('DRAFT_KEY_REVOKED');
  expect((await call('a','POST','/drafts/key',{key_version:999})).status()).toBe(404);
+ require('./draft-key.cjs').rotate(actors.a.me); // Keep version 1 revoked; later UI uses a fresh current key.
 });
 test('R4 draft rate, quota and larger request limits stop writes without replacing input',async()=>{
  // Separate real OIDC user in the same organization; the helper never lowers product limits.
