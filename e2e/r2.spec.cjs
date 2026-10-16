@@ -67,7 +67,9 @@ test('R2 verified generation directory reload and same-generation check refresh 
  const before=state();
  await fault("import shutil;generation=str(uuid.uuid4());target=ROOT/generation;shutil.copytree(ROOT/m['generation_id'],target);m['generation_id']=generation",async()=>{
   await ready();const current=state();expect(current.generation_id).not.toBe(before.generation_id);expect(current.databases).toEqual(before.databases);
-  const c=await candidate(),r=await upload(c);expect(r.status()).toBe(201);const d=await r.json();expect(sql(`SELECT generation_id FROM document_checks WHERE document_id='${d.id}';`)).toBe(current.generation_id);
+  const c=await candidate();let r=await upload(c),d;
+  if(r.status()===503){const failure=await r.json();expect(failure.error.code).toBe('SCANNER_UNAVAILABLE');const id=failure.error.document_id;expect((await api('GET',`/documents/${id}/content`)).status()).toBe(410);expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');expect((await(await api('GET','/documents/'+id)).json()).available).toBe(false);await ready();r=await api('POST',`/documents/${id}/retry`);expect(r.status()).toBe(200);d=await r.json();expect(d.id).toBe(id);}else{expect(r.status()).toBe(201);d=await r.json();}
+  expect(d.available).toBe(true);expect(sql(`SELECT count(*) FROM documents WHERE candidate_id='${c}';`)).toBe('1');expect(sql(`SELECT generation_id FROM document_checks WHERE document_id='${d.id}';`)).toBe(current.generation_id);
  });
  const restored=state();await fault("m['last_successful_check']+=1",async()=>{await ready();expect(state().generation_id).toBe(restored.generation_id);});
 });

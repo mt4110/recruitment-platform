@@ -60,6 +60,7 @@ export default function Business({ me, signedIn = true, onUnauthorized }: {
     } | null>(null);
     const allowed = jobs || agency;
     const draft=useDraft({me,paused:busy,enabled:signedIn&&allowed&&editing&&!loading,kind:jobs?(id?'job_edit':'job_new'):(id?'candidate_edit':'candidate_new'),target:id,base:id?record?.version:null,payload:form,restore:p=>{setForm({...Object.fromEntries((jobs?['title','description','location','employment_type']:['name','summary']).map(k=>[k,String((record as Record<string,unknown>|null)?.[k]??(k==='employment_type'?'full_time':''))])),...Object.fromEntries(Object.entries(p).filter(([k])=>k!=='view'))} as Record<string,string>);setConfirmed(false);},unauthorized:onUnauthorized});
+    useEffect(()=>{if(editing&&draft.failureCode==='DRAFT_CONTEXT_CHANGED'){setConflict(true);setError('業務情報が変更されています。現在の入力は保持しています。最新情報を読み直してください。');}},[editing,draft.failureCode]);
     const filterDraft=useDraft({me,enabled:signedIn&&allowed&&!editing&&!detail,kind:jobs?'job_filters':'candidate_filters',payload:{...filters,cursor:cursor||''},restore:p=>{const next={...emptyFilters,...Object.fromEntries(Object.entries(p).filter(([k])=>!['view','cursor'].includes(k)))} as Filters;setFilters(next);setApplied(next);setCursor(typeof p.cursor==='string'?p.cursor||null:null);},unauthorized:onUnauthorized});
 
     useEffect(() => { if (!signedIn) {
