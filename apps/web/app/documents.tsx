@@ -67,7 +67,7 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
   if(data?.error?.code==='OPERATION_RESULT_EXPIRED'){patch(job.key,{stage:'expired',file:undefined,message:'7日間の照合期限を過ぎています。再送せず、書類一覧を確認してください。'});return null;}
   if(!r.ok)throw Error(data?.error?.message||'受付結果を照合できませんでした。');
   if(data.state==='not_recorded'){patch(job.key,{stage:'unrecorded',message:job.file?'まだ受付結果がありません。同じファイル・操作キーで再試行できます。':'未実行とは限りません。元ファイルの情報を復元できないため自動再送しません。書類一覧を確認してください。'});return null;}
-  const d=await readDocument(data.document_id,signal);patch(job.key,{document:d,stage:stageOf(d),file:undefined,message:d.rejection_code?reasons[d.rejection_code]:undefined});return d;
+  const d=await readDocument(data.document_id,signal);setMessage('受付済みの書類を確認しました。再アップロードはしていません。');patch(job.key,{document:d,stage:stageOf(d),file:undefined,message:d.rejection_code?reasons[d.rejection_code]:undefined});return d;
  }
  async function sendOne(job:Upload,signal:AbortSignal):Promise<boolean>{
   if(!job.file||!job.hash)return false;
@@ -109,7 +109,7 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
  }
  if(!signedIn)return null;
  return <section className="documents" aria-labelledby="documents-title"><h3 id="documents-title">履歴書・職務経歴書</h3>
- <p className="hint">架空のPDF／XLSXの登録・安全性検査に対応しています。各10MiB以内、1回10件まで順番に登録します。PDFは1〜20ページ、XLSXはSheets由来が初期対応です。旧版・提出済みの書類は上書きしません。</p>
+ <p className="hint">架空情報のみ。PDF／XLSXは各10MiB以内、1回10件まで順番に登録します。PDFは1〜20ページ、XLSXはSheets由来が初期対応です。旧版・提出済みの書類は上書きしません。</p>
  <p><a href="/sample-resume.pdf" download>架空レジュメのサンプルPDF</a></p>
  {message&&<p className="notice" role="status">{message}</p>}
  {items.length===0?<p>書類はまだ登録されていません。</p>:(Object.keys(kinds) as Kind[]).map(k=><section key={k} aria-label={kinds[k]+'の版一覧'}><h4>{kinds[k]}</h4>{!items.some(d=>d.document_kind===k)?<p className="hint">まだ登録されていません。</p>:<ul className="records">{items.filter(d=>d.document_kind===k).sort((a,b)=>b.document_version-a.document_version).map(d=><li key={d.id}><strong className="prose">{d.original_name}</strong><p>第{d.document_version}版 · {d.file_format.toUpperCase()} · {Math.ceil(d.size_bytes/1024)}KiB · {documentTime(d.created_at)}</p><p>{d.available?'登録完了':d.inspection_state==='blocked'?'利用停止':d.status==='rejected'?'登録拒否':d.status==='ready'?'追加検査待ち':'処理中'}</p>{d.rejection_code&&<p>{reasons[d.rejection_code]||reasons.PDF_REJECTED}</p>}<div className="actions">{d.available&&<a className="button secondary" href={`/api/v1/documents/${d.id}/content`}>{d.file_format.toUpperCase()}をダウンロード</a>}{d.status==='pending'&&d.retry_allowed&&<button type="button" disabled={busy} onClick={()=>void action(signal=>retryDocument(d,false,signal))}>処理を再試行する</button>}{d.status==='ready'&&!d.available&&d.inspection_state!=='blocked'&&<button type="button" disabled={busy} onClick={()=>void action(signal=>retryDocument(d,true,signal))}>追加検査を実行する</button>}</div></li>)}</ul>}</section>)}
