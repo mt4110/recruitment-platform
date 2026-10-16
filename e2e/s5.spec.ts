@@ -19,7 +19,6 @@ const root=path.resolve(__dirname,'..'),dir=process.env.RP_E2E_DIR!,actors:Recor
 const pdf=fs.readFileSync(path.join(root,'apps/web/public/sample-resume.pdf'));
 const xlsx=fs.readFileSync(path.join(__dirname,'fixtures/sheets-resume.xlsx'));
 const rows:Row[]=[],issues:string[]=[];let lastWorkerMemory:Record<string,number|null>={};
-let rejected:{candidate:Entity;id:string};
 let shared: { application:Entity; candidate:Entity; job:Entity; ids:string[] };
 const host=(script:string,args:string[]=[])=>cp.spawnSync('python3',[script,...args],{cwd:root,env:process.env,encoding:'utf8',timeout:180000});
 function compose(...args:string[]):string { const r=host('scripts/local.py',['compose',...args]);expect(r.status,'isolated service operation').toBe(0);return r.stdout; }
@@ -40,7 +39,7 @@ async function attach(p:Page,c:Entity,files:{name:string;mimeType:string;buffer:
  const prior=sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached';`).split('\n').filter(Boolean);await room();await p.goto(origin+'/candidates/'+c.id);await expect(p.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();await expect(p.getByLabel('暗号化受付を使う（検査・閲覧用変換を行います）')).toBeChecked();
  await p.getByLabel('書類の種類',{exact:true}).selectOption('resume');await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles(files);await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();
  await expect.poll(()=>Number(sql(`SELECT count(*) FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached';`)),{timeout:30000}).toBe(prior.length+files.length);
- return sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached' ORDER BY created_at,id;`).split('\n').filter(id=>!prior.includes(id));
+ return sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached' ORDER BY reserved_at,id;`).split('\n').filter(id=>!prior.includes(id));
 }
 async function screen(p:Page,name:string):Promise<void>{expect(new URL(p.url()).origin).toBe(origin);expect(await p.title()).toBeTruthy();await expect(p.locator('main')).not.toBeEmpty();await expect(p.locator('nextjs-portal')).toHaveCount(0);await p.screenshot({path:path.join(dir,'artifacts',name+'.png'),fullPage:false});}
 function counts(c:string):string{return sql(`SELECT (SELECT count(*) FROM upload_sessions WHERE candidate_id='${c}')||'|'||(SELECT count(*) FROM upload_attempts a JOIN upload_sessions s ON a.upload_id=s.id WHERE s.candidate_id='${c}')||'|'||(SELECT count(*) FROM encrypted_document_jobs j JOIN documents d ON d.id=j.document_id WHERE d.candidate_id='${c}');`);}
@@ -67,8 +66,8 @@ test('S5 encrypted PDF and XLSX browser journey reaches immutable sharing and in
  await x.goto(origin+'/jobs/new');await fresh(x);await x.getByLabel('求人名').fill('S5架空エンジニア');await x.getByLabel('仕事内容').fill('架空の業務開発');await x.getByLabel('勤務地').fill('架空東京');await x.getByRole('button',{name:'下書き保存',exact:true}).click();await expect(x.getByRole('button',{name:'公開する',exact:true})).toBeVisible();const jobId=new URL(x.url()).pathname.split('/').pop()!;await x.getByRole('button',{name:'公開する',exact:true}).click();await expect(x.getByText('公開中',{exact:true})).toBeVisible();
  await p.goto(origin+'/candidates/new');await fresh(p);await p.getByLabel('架空氏名').fill('S5一巡の架空候補者');await p.getByLabel('経歴の概要').fill('架空Web開発5年');await p.getByLabel('氏名・経歴はすべて架空のデータです').check();await p.getByRole('button',{name:'保存する',exact:true}).click();await expect(p.getByRole('heading',{name:'S5一巡の架空候補者',exact:true})).toBeVisible();const c=await entity('a','/candidates/'+new URL(p.url()).pathname.split('/').pop());
  const puts:Buffer[]=[];const observe=(r:import('@playwright/test').Request)=>{if(r.method()==='PUT'&&/\/document-uploads\/.+\/bytes$/.test(r.url()))puts.push(r.postDataBuffer()!);};p.on('request',observe);
- const ids=await attach(p,c,[{name:'S5架空履歴.pdf',mimeType:'application/pdf',buffer:pdf},{name:'S5架空経歴.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:xlsx}]);p.off('request',observe);expect(puts).toHaveLength(2);expect(puts.every(b=>!b.includes(pdf)&&!b.includes(xlsx)&&!b.includes(Buffer.from('S5架空')))).toBe(true);
- worker();worker();await p.reload();await expect(p.getByRole('region',{name:'履歴書の版一覧'})).toContainText('登録完了');
+ const ids=await attach(p,c,[{name:'S5架空履歴.pdf',mimeType:'application/pdf',buffer:pdf},{name:'S5架空経歴.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:xlsx}]);await expect.poll(()=>puts.length).toBe(2);p.off('request',observe);expect(puts).toHaveLength(2);expect(puts.every(b=>!b.includes(pdf)&&!b.includes(xlsx)&&!b.includes(Buffer.from('S5架空')))).toBe(true);
+ worker();worker();expect(sql(`SELECT bool_and(expires_at>now()+interval '6 days' AND expires_at<=now()+interval '7 days') FROM idempotency_records WHERE resource_id IN (${ids.map(id=>`'${id}'`).join(',')});`)).toBe('t');await p.reload();await expect(p.getByRole('region',{name:'履歴書の版一覧'})).toContainText('登録完了');
  await p.goto(origin+'/jobs/'+jobId);await p.getByRole('link',{name:'この求人に推薦する'}).click();await fresh(p);await p.getByLabel('候補者',{exact:true}).selectOption(c.id);await p.getByLabel('推薦理由',{exact:true}).fill('架空の推薦理由');await p.getByRole('button',{name:'下書きを保存する',exact:true}).click();await expect(p).toHaveURL(/\/applications\/[0-9a-f-]{36}$/);const appId=new URL(p.url()).pathname.split('/').pop()!;
  for(const name of ['S5架空履歴.pdf','S5架空経歴.xlsx'])await p.getByRole('checkbox',{name:new RegExp(name.replaceAll('.','\\.'))}).check();
  await p.getByLabel('氏名・経歴・書類はすべて架空の情報です').check();await p.getByLabel('選択した架空情報を企業に共有する操作を確認しました（demo-share-v1）').check();await p.getByRole('button',{name:'推薦を提出する',exact:true}).click();await expect(p.locator('.metadata')).toContainText('提出済み');
@@ -76,7 +75,7 @@ test('S5 encrypted PDF and XLSX browser journey reaches immutable sharing and in
  const extra=await attach(p,c,[{name:'S5未選択の追加版.pdf',mimeType:'application/pdf',buffer:pdf}]);worker();
  expect((await call('x',`/applications/${appId}/documents/${extra[0]}/view`)).status()).toBe(404);
  const snap=sql(`SELECT to_jsonb(s)::text FROM application_snapshots s WHERE application_id='${appId}';`);
- await x.goto(origin+'/applications/'+appId);await x.getByRole('button',{name:'安全な表示を開く'}).first().click();await expect(x.locator('.safe-view')).not.toBeEmpty();await screen(x,'s5-shared-desktop');await x.getByRole('button',{name:'閲覧を閉じる'}).click();
+ await x.goto(origin+'/applications/'+appId);await x.getByRole('button',{name:'安全な表示を開く'}).first().click();await expect(x.locator('.safe-view').first().locator('img,table').first()).toBeVisible();await screen(x,'s5-shared-desktop');await x.getByRole('button',{name:'閲覧を閉じる'}).click();
  await x.getByRole('button',{name:'選考を開始する'}).click();await expect(x.locator('.metadata')).toContainText('選考中');await x.getByRole('button',{name:'採用を決定する'}).click();await expect(x.locator('.metadata')).toContainText('採用決定');shared.application=await entity('x','/applications/'+appId);
  await x.getByRole('link',{name:'請求書プレビューを開く'}).click();await expect(x.getByText('請求HTMLプレビューです。',{exact:false})).toBeVisible();await expect(x.locator('object,iframe,embed')).toHaveCount(0);await screen(x,'s5-invoice-desktop');
  const invoice=await call('x',`/applications/${appId}/invoice-view`);expect(invoice.status()).toBe(200);expect((await invoice.json()).amount_yen).toBe(500000);
@@ -141,16 +140,26 @@ test('S5 browser loss before PUT requires file reselection and new attempt with 
  await restored.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5未受信.pdf',mimeType:'application/pdf',buffer:pdf});await restored.getByLabel('書類の内容はすべて架空の情報です').check();await restored.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(restored.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');expect(counts(c.id)).toBe('1|2|1');expect(sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}';`)).toBe(before);expect(sql(`SELECT count(*) FROM upload_attempts a JOIN upload_sessions s ON s.id=a.upload_id WHERE s.candidate_id='${c.id}' AND a.aad='${aad}';`)).toBe('1');worker();
 });
 
-test('S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs',async()=>{
- const doc=shared.ids[0],c=shared.candidate.id;
+// Age only this fixture at its first terminal transition. Existing outcome
+// immutability trigger remains enabled and is explicitly checked afterwards.
+function expiredAtTerminal(doc:string):void{
+ expect(doc).toMatch(/^[0-9a-f-]{36}$/);const name='zz_s5_deadline_'+doc.replaceAll('-','');
+ sql(`CREATE FUNCTION ${name}() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF OLD.state='processing' AND NEW.state IN ('completed','failed') THEN NEW.expires_at=clock_timestamp()-interval '1 second';END IF;RETURN NEW;END $$;REVOKE ALL ON FUNCTION ${name}() FROM PUBLIC,app_runtime,app_auth;CREATE TRIGGER ${name} BEFORE UPDATE ON idempotency_records FOR EACH ROW WHEN (OLD.resource_id='${doc}'::uuid) EXECUTE FUNCTION ${name}();`);
+}
+async function expiredReceipt(c:Entity,doc:string,available:boolean):Promise<void>{
  const r:Receipt=JSON.parse(sql(`SELECT json_build_object('upload_id',id,'attempt_id',canonical_attempt,'document_id',document_id,'state',state) FROM upload_sessions WHERE document_id='${doc}';`));
  const authorization=JSON.parse(sql(`SELECT json_build_object('attempt_id',id,'ciphertext_hash',ciphertext_hash,'ciphertext_size',ciphertext_size,'envelope',envelope) FROM upload_attempts WHERE id='${r.attempt_id}';`));
- const operationKey=sql(`SELECT key FROM idempotency_records WHERE resource_id='${doc}';`);
- const before=counts(c);sql(`UPDATE idempotency_records SET expires_at=now()-interval '1 second' WHERE resource_id='${doc}';`);
- for(const route of ['', '/authorize','/attempts','/complete'])expect((await call('a','/document-uploads/'+r.upload_id+route,route?'POST':'GET',route==='/authorize'?authorization:undefined)).status()).toBe(409);
- const fragment={v:1,user:actors.a.me.user.id,org:actors.a.me.organization.id,candidate:c,operations:[{key:operationKey,kind:'resume'}]};
- const p=actors.a.page;await p.goto(origin+'/candidates/'+c+'#receipts='+encodeURIComponent(JSON.stringify(fragment)));await p.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('結果照合期限切れ');
- expect(counts(c)).toBe(before);expect(sql(`SELECT state FROM idempotency_records WHERE resource_id='${doc}';`)).toBe('expired');expect((await call('a','/documents/'+doc+'/view')).status()).toBe(200);
+ const key=sql(`SELECT key FROM idempotency_records WHERE resource_id='${doc}';`),before=counts(c.id);
+ expect(()=>sql(`UPDATE idempotency_records SET expires_at=now()+interval '8 days' WHERE resource_id='${doc}';`)).toThrow('DB_CONTROL_FAILED:23514');
+ expect(sql("SELECT tgenabled FROM pg_trigger WHERE tgname='upload_outcome_immutable';")).toBe('O');
+ for(const suffix of ['', '/authorize','/attempts','/complete'])expect((await call('a','/document-uploads/'+r.upload_id+suffix,suffix?'POST':'GET',suffix==='/authorize'?authorization:undefined)).status()).toBe(409);
+ expect((await call('a',`/candidates/${c.id}/document-upload-outcome?key=${key}`)).status()).toBe(409);
+ const fragment={v:1,user:actors.a.me.user.id,org:actors.a.me.organization.id,candidate:c.id,operations:[{key,kind:'resume'}]},p=actors.a.page;let writes=0;const observer=(r:import('@playwright/test').Request)=>{if(/\/api\/v1\/document-uploads\//.test(r.url())&&['POST','PUT'].includes(r.method()))writes++;};p.on('request',observer);
+ try{await p.goto(origin+'/candidates/'+c.id+'#receipts='+encodeURIComponent(JSON.stringify(fragment)));await p.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('結果照合期限切れ');await expect(p.getByRole('button',{name:'受付結果を確認して再試行する'})).toHaveCount(0);expect(writes).toBe(0);}finally{p.off('request',observer);}
+ expect(counts(c.id)).toBe(before);expect(sql(`SELECT state FROM idempotency_records WHERE resource_id='${doc}';`)).toBe('expired');expect((await call('a','/documents/'+doc+'/view')).status()).toBe(available?200:404);
+}
+test('S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs',async()=>{
+ const c=await candidate('S5完了期限の架空候補者'),id=(await attach(actors.a.page,c,[{name:'S5完了期限.pdf',mimeType:'application/pdf',buffer:pdf}]))[0];expiredAtTerminal(id);worker();await expiredReceipt(c,id,true);
 });
 
 test('S5 small batch and 10MiB browser uploads record bounded phase latency without a fabricated SLA',async({browser})=>{
@@ -159,14 +168,14 @@ test('S5 small batch and 10MiB browser uploads record bounded phase latency with
  await context.addInitScript({content:`window.__s5={crypto_ms:0,crypto_calls:0,max_frame_gap_ms:0};
  const stats=window.__s5;for(const name of ['encrypt','wrapKey','digest']){const native=crypto.subtle[name];Object.defineProperty(crypto.subtle,name,{value:async function(...args){const t=performance.now();try{return await Reflect.apply(native,crypto.subtle,args);}finally{stats.crypto_ms+=performance.now()-t;stats.crypto_calls++;}}});}
  let previous;function frame(t){if(previous!==undefined)stats.max_frame_gap_ms=Math.max(stats.max_frame_gap_ms,t-previous);previous=t;requestAnimationFrame(frame);}requestAnimationFrame(frame);`});
- const eof=pdf.lastIndexOf('%%EOF');expect(eof).toBeGreaterThan(0);
- const big=Buffer.concat([pdf.subarray(0,eof),Buffer.alloc(10485760-eof-6,32),Buffer.from('%%EOF\n')]);expect(big.length).toBe(10485760);
+ const xref=pdf.lastIndexOf('startxref');expect(xref).toBeGreaterThan(0);
+ const big=Buffer.concat([pdf.subarray(0,xref),Buffer.alloc(10485760-pdf.length,32),pdf.subarray(xref)]);expect(big.length).toBe(10485760);
  const cases=[{name:'small-pdf-cold-js',files:[{name:'S5計測.pdf',mimeType:'application/pdf',buffer:pdf}]},
   ...[1,2,3].map(i=>({name:'small-pdf-warm-'+i,files:[{name:'S5計測.pdf',mimeType:'application/pdf',buffer:pdf}]})),
   {name:'batch-pdf-xlsx',files:[{name:'S5計測.pdf',mimeType:'application/pdf',buffer:pdf},{name:'S5計測.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:xlsx}]},
   {name:'max-10MiB',files:[{name:'S5上限計測.pdf',mimeType:'application/pdf',buffer:big}]}];
  for(const trial of cases){
-  const c=await candidate('S5計測専用の架空候補者');const started=performance.now(),requestStarts=new Map<import('@playwright/test').Request,number>(),durations:Record<string,number>={};
+  const c=await candidate('S5計測専用の架空候補者');await room();const started=performance.now(),requestStarts=new Map<import('@playwright/test').Request,number>(),durations:Record<string,number>={};
   const begin=(r:import('@playwright/test').Request)=>{if(r.url().includes('/api/v1/')&&['POST','PUT'].includes(r.method()))requestStarts.set(r,performance.now());};
   const finish=(r:import('@playwright/test').Request)=>{const t=requestStarts.get(r);if(t===undefined)return;let phase='';const u=new URL(r.url()).pathname;if(u.endsWith('/bytes'))phase='transfer';else if(u.endsWith('/authorize'))phase='authorization';else if(u.endsWith('/complete'))phase='complete';else if(u.endsWith('/document-uploads'))phase='reservation';if(phase)durations[phase]=(durations[phase]||0)+performance.now()-t;};
   p.on('request',begin);p.on('requestfinished',finish);const ids=await attach(p,c,trial.files);await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');p.off('request',begin);p.off('requestfinished',finish);durations.admission_wall=performance.now()-started;
@@ -181,7 +190,7 @@ test('S5 small batch and 10MiB browser uploads record bounded phase latency with
  }
  // Same-size policy rejection is measured separately from successful documents.
  const c=await candidate('S5拒否計測の架空候補者');const id=(await attach(p,c,[{name:'S5不正形式.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(pdf.length,0x61)}]))[0],t=performance.now(),stage=worker(false);
- rejected={candidate:c,id};expect((await call('a','/documents/'+id+'/view')).status()).toBe(404);rows.push({case:'invalid-format-small',format:'pdf',bytes:pdf.length,browser_cache:'same context',outcome:'rejected',timings_ms:{job_startup_processing_stop:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
+ expect(sql(`SELECT state||'|'||(expires_at>now()+interval '6 days') FROM idempotency_records WHERE resource_id='${id}';`)).toBe('failed|true');expect((await call('a','/documents/'+id+'/view')).status()).toBe(404);rows.push({case:'invalid-format-small',format:'pdf',bytes:pdf.length,browser_cache:'same context',outcome:'rejected',timings_ms:{job_startup_processing_stop:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
  const metric='admission_wall',success=rows.filter(r=>r.outcome==='ready'&&r.case.startsWith('small-pdf')).map(r=>r.timings_ms[metric]).sort((a,b)=>a-b);
  const percentile=(p:number)=>success[Math.max(0,Math.ceil(p*success.length)-1)];
  fs.writeFileSync(path.join(dir,'artifacts/s5-performance.json'),JSON.stringify({units:'milliseconds unless named bytes',rows,small_pdf_admission:{n:success.length,p50:percentile(.5),p95:percentile(.95),method:'nearest rank; descriptive small sample only'},scope:'Real browser WebCrypto and local authenticated HTTP admission, real AV and fresh isolated parser per job. Every job is a fresh sandbox; browser context/cache cold/warm labels only; every navigation creates a new JS realm. No TLS/WAN/production load or commercial latency SLA. AV and validation+conversion measured at broker; full host job wall includes startup and stop. Request durations include network and response transfer. Memory includes configured limits, OOM absence, broker RSS at completion and relay/sandbox cgroup peaks. An exited broker cgroup peak is unavailable (null).'},null,2)+'\n');
@@ -189,13 +198,5 @@ test('S5 small batch and 10MiB browser uploads record bounded phase latency with
 
 
 test('S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload',async()=>{
- const {candidate:c,id}=rejected;expect(sql(`SELECT state||'|'||(expires_at>now()+interval '6 days') FROM idempotency_records WHERE resource_id='${id}';`)).toBe('failed|true');
- const key=sql(`SELECT key FROM idempotency_records WHERE resource_id='${id}';`),r:Receipt=JSON.parse(sql(`SELECT json_build_object('upload_id',id,'attempt_id',canonical_attempt,'document_id',document_id,'state',state) FROM upload_sessions WHERE document_id='${id}';`));
- const authorization=JSON.parse(sql(`SELECT json_build_object('attempt_id',id,'ciphertext_hash',ciphertext_hash,'ciphertext_size',ciphertext_size,'envelope',envelope) FROM upload_attempts WHERE id='${r.attempt_id}';`));
- const before=counts(c.id);sql(`UPDATE idempotency_records SET expires_at=now()-interval '1 second' WHERE resource_id='${id}';`);
- for(const suffix of ['', '/authorize','/attempts','/complete'])expect((await call('a','/document-uploads/'+r.upload_id+suffix,suffix?'POST':'GET',suffix==='/authorize'?authorization:undefined)).status()).toBe(409);
- expect((await call('a',`/candidates/${c.id}/document-upload-outcome?key=${key}`)).status()).toBe(409);
- const fragment={v:1,user:actors.a.me.user.id,org:actors.a.me.organization.id,candidate:c.id,operations:[{key,kind:'resume'}]},p=actors.a.page;let writes=0;const observer=(r:import('@playwright/test').Request)=>{if(/\/api\/v1\/document-uploads\//.test(r.url())&&['POST','PUT'].includes(r.method()))writes++;};p.on('request',observer);
- try{await p.goto(origin+'/candidates/'+c.id+'#receipts='+encodeURIComponent(JSON.stringify(fragment)));await p.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('結果照合期限切れ');await expect(p.getByRole('button',{name:'受付結果を確認して再試行する'})).toHaveCount(0);expect(writes).toBe(0);}finally{p.off('request',observer);}
- expect(counts(c.id)).toBe(before);expect(sql(`SELECT state FROM idempotency_records WHERE resource_id='${id}';`)).toBe('expired');
+ test.setTimeout(180000);const c=await candidate('S5拒否期限の架空候補者'),id=(await attach(actors.a.page,c,[{name:'S5拒否期限.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(pdf.length,0x61)}]))[0];expiredAtTerminal(id);worker(false);await expiredReceipt(c,id,false);
 });

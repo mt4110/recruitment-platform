@@ -953,9 +953,16 @@ async fn outcome(
     let id = Uuid::parse_str(&raw).map_err(|_| invalid())?;
     let mut tx = begin(&app, &u).await?;
     owner(&mut tx, id).await?;
-    if let Some(value) = crate::uploads::outcome(&mut tx, &u, id, query.key).await? {
-        tx.commit().await.map_err(db_error)?;
-        return Ok(Json(value).into_response());
+    match crate::uploads::outcome(&mut tx, &u, id, query.key).await? {
+        crate::uploads::UploadOutcome::Found(value) => {
+            tx.commit().await.map_err(db_error)?;
+            return Ok(Json(value).into_response());
+        }
+        crate::uploads::UploadOutcome::Expired => {
+            tx.commit().await.map_err(db_error)?;
+            return Err(result_expired());
+        }
+        crate::uploads::UploadOutcome::NotFound => {}
     }
     let record:Option<Lease>=sqlx::query_as("SELECT request_hash,resource_id,state,result_status,error_code,lease_token,lease_expires_at,expires_at FROM idempotency_records WHERE org_id=$1 AND user_id=$2 AND http_method='POST' AND normalized_path=$3 AND key=$4").bind(u.organization_id).bind(u.user_id).bind(format!("/api/v1/candidates/{id}/documents")).bind(query.key).fetch_optional(&mut *tx).await.map_err(db_error)?;
     let value = if let Some(l) = record {

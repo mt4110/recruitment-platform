@@ -178,12 +178,14 @@ async fn candidate(tx: &mut Tx, id: Uuid) -> Result<(), ApiError> {
     }
     Ok(())
 }
-async fn result_valid(tx: &mut Tx, s: &Session) -> Result<(), ApiError> {
+async fn result_valid(tx: &mut Tx, s: &Session) -> Result<bool, ApiError> {
     let (state,expired):(String,bool)=sqlx::query_as("SELECT state,coalesce(expires_at<=now(),false) FROM idempotency_records WHERE resource_id=$1 AND normalized_path=$2").bind(s.document_id).bind(format!("/api/v1/candidates/{}/documents",s.candidate_id)).fetch_one(&mut **tx).await.map_err(db_error)?;
     if state == "expired" || expired {
-        return Err(fail("OPERATION_RESULT_EXPIRED"));
+        sqlx::query("UPDATE idempotency_records SET state='expired',result_status=NULL,error_code=NULL,lease_token=NULL,lease_expires_at=NULL WHERE resource_id=$1 AND state IN ('completed','failed') AND expires_at<=now()")
+            .bind(s.document_id).execute(&mut **tx).await.map_err(db_error)?;
+        return Ok(false);
     }
-    Ok(())
+    Ok(true)
 }
 async fn insert_attempt(tx: &mut Tx, s: &Session, u: &Identity) -> Result<(), ApiError> {
     let wrap: Option<String> = sqlx::query_scalar("SELECT upload_wrap_current()")
@@ -253,7 +255,11 @@ async fn reserve(
     .map_err(db_error)?;
     let sid = if let Some(sid) = existing {
         let s = session(&mut tx, sid).await?;
-        result_valid(&mut tx, &s).await?;
+        if !result_valid(&mut tx, &s).await? {
+            // Persist the immutable tombstone before returning the refusal.
+            tx.commit().await.map_err(db_error)?;
+            return Err(fail("OPERATION_RESULT_EXPIRED"));
+        }
         if s.request_hash != request_hash {
             return Err(fail("IDEMPOTENCY_MISMATCH"));
         }
@@ -409,7 +415,11 @@ async fn authorize(
     let u = checked(&app, &h, true).await?;
     let mut tx = begin(&app, &u).await?;
     let s = session(&mut tx, id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     candidate(&mut tx, s.candidate_id).await?;
     let a = attempt(&mut tx, id).await?;
     let key_active: bool = sqlx::query_scalar("SELECT upload_wrap_enabled($1)")
@@ -596,7 +606,11 @@ async fn status(
     let u = checked(&app, &h, false).await?;
     let mut tx = begin(&app, &u).await?;
     let s = session(&mut tx, id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     let a = attempt(&mut tx, id).await?;
     if let Err(e) = recover(&mut tx, &app, &s, &a).await
         && e.code != "UPLOAD_RECONCILING"
@@ -630,7 +644,11 @@ async fn new_attempt(
     let u = checked(&app, &h, true).await?;
     let mut tx = begin(&app, &u).await?;
     let s = session(&mut tx, id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     candidate(&mut tx, s.candidate_id).await?;
     let a = attempt(&mut tx, id).await?;
     recover(&mut tx, &app, &s, &a).await?;
@@ -676,7 +694,11 @@ async fn receive(
     }
     let mut tx = begin(&app, &u).await?;
     let s = session(&mut tx, id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     candidate(&mut tx, s.candidate_id).await?;
     let a = attempt(&mut tx, id).await?;
     if a.id != t.attempt
@@ -806,7 +828,11 @@ async fn receive(
     let mut tx = begin(&app, &current).await?;
     let s = session(&mut tx, id).await?;
     candidate(&mut tx, s.candidate_id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     let n=sqlx::query("UPDATE upload_attempts SET state='stored',stored_at=$3 WHERE id=$1 AND lease_token=$2 AND state='receiving' AND receive_deadline>=now() AND receive_deadline>=$3").bind(a.id).bind(token).bind(time).execute(&mut *tx).await.map_err(db_error)?.rows_affected();
     if n != 1 {
         return Err(fail("UPLOAD_RECONCILING"));
@@ -830,7 +856,11 @@ async fn complete(
     let u = checked(&app, &h, true).await?;
     let mut tx = begin(&app, &u).await?;
     let s = session(&mut tx, id).await?;
-    result_valid(&mut tx, &s).await?;
+    if !result_valid(&mut tx, &s).await? {
+        // Persist the immutable tombstone before returning the refusal.
+        tx.commit().await.map_err(db_error)?;
+        return Err(fail("OPERATION_RESULT_EXPIRED"));
+    }
     candidate(&mut tx, s.candidate_id).await?;
     let a = attempt(&mut tx, id).await?;
     recover(&mut tx, &app, &s, &a).await?;
@@ -872,12 +902,17 @@ async fn complete(
     tx.commit().await.map_err(db_error)?;
     Ok((StatusCode::ACCEPTED, Json(v)).into_response())
 }
+pub(crate) enum UploadOutcome {
+    Found(Value),
+    Expired,
+    NotFound,
+}
 pub(crate) async fn outcome(
     tx: &mut Tx,
     _u: &Identity,
     candidate: Uuid,
     key: Uuid,
-) -> Result<Option<Value>, ApiError> {
+) -> Result<UploadOutcome, ApiError> {
     let found: Option<Uuid> = sqlx::query_scalar(
         "SELECT id FROM upload_sessions WHERE candidate_id=$1 AND operation_key=$2",
     )
@@ -888,19 +923,21 @@ pub(crate) async fn outcome(
     .map_err(db_error)?;
     if let Some(id) = found {
         let s = session(tx, id).await?;
-        result_valid(tx, &s).await?;
+        if !result_valid(tx, &s).await? {
+            return Ok(UploadOutcome::Expired);
+        }
         let a = attempt(tx, id).await?;
         let record:(String,Option<i32>,Option<String>,Option<DateTime<Utc>>)=sqlx::query_as("SELECT state,result_status,error_code,expires_at FROM idempotency_records WHERE resource_id=$1").bind(s.document_id).fetch_one(&mut **tx).await.map_err(db_error)?;
         if record.0 == "failed" {
-            return Ok(Some(
+            return Ok(UploadOutcome::Found(
                 json!({"state":"failed","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"result_status":record.1,"error_code":record.2,"result_expires_at":record.3}),
             ));
         }
-        return Ok(Some(
+        return Ok(UploadOutcome::Found(
             json!({"state":"processing","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"status_url":format!("/api/v1/document-uploads/{id}"),"result_status":202,"result_expires_at":null}),
         ));
     }
-    Ok(None)
+    Ok(UploadOutcome::NotFound)
 }
 #[cfg(test)]
 mod tests {
