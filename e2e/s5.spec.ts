@@ -54,7 +54,7 @@ async function avFault(change:string,work:()=>Promise<void>):Promise<void>{
 test.describe.configure({mode:'serial'});
 test.beforeAll(async({browser})=>{
  // Prior suites intentionally retain many drafts. Expire only isolated test fixtures; never delete or relax quotas.
- sql("UPDATE form_drafts SET expires_at=now()-interval '1 second',revision=revision+1 WHERE state='active' AND expires_at>now();");
+ sql("UPDATE form_drafts SET expires_at=now()-interval '1 second',revision=revision+1 WHERE state='active' AND expires_at>now();UPDATE draft_admissions SET at=now()-interval '2 hours';");
  for(const [who,name] of [['a','agency-a'],['b','agency-b'],['x','employer-x'],['y','employer-y']]){
   const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',()=>issues.push('PAGE_ERROR'));
   page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/^Failed to load resource: the server responded with a status of (400|401|403|404|409|413|422|429|503)\b/.test(m.text())&&!/net::ERR_FAILED/.test(m.text()))issues.push('CONSOLE_ERROR');});
@@ -200,5 +200,11 @@ test('S5 small batch and 10MiB browser uploads record bounded phase latency with
 
 
 test('S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload',async()=>{
- test.setTimeout(180000);const c=await candidate('S5拒否期限の架空候補者'),id=(await attach(actors.a.page,c,[{name:'S5拒否期限.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(pdf.length,0x61)}]))[0];expiredAtTerminal(id);worker(false);await expiredReceipt(c,id,false);
+ test.setTimeout(180000);const c=await candidate('S5拒否期限の架空候補者'),id=(await attach(actors.a.page,c,[{name:'S5拒否期限.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(pdf.length,0x61)}]))[0];expiredAtTerminal(id);const before=counts(c.id);await scannerReady();
+ for(let attempt=0;attempt<2;attempt++){
+  const r=host('scripts/document_job.py',['--no-build']);expect(r.status).toBe(1);const v:Worker=JSON.parse(r.stdout.trim().split('\n').at(-1)!);expect(v.stopped).toBe(true);const record=JSON.parse(fs.readFileSync(v.record,'utf8'));expect(record.log_secret_pattern_found).toBe(false);expect(Object.values(record.containers).every((v:unknown)=>!(v as {oom_killed:boolean}).oom_killed)).toBe(true);expect(counts(c.id)).toBe(before);
+  if(v.events[0]==='rejected'){expect(v.events).toEqual(['rejected']);expect(sql(`SELECT state||'|'||error_code FROM encrypted_document_jobs WHERE document_id='${id}';`)).toBe('rejected|FORMAT_REJECTED');break;}
+  expect(attempt,'only one bounded recovery is allowed').toBe(0);expect(v.events).toEqual(['retryable']);expect(sql(`SELECT state||'|'||error_code||'|'||view_ready FROM encrypted_document_jobs WHERE document_id='${id}';`)).toBe('retryable|WORKER_UNAVAILABLE|false');expect(sql(`SELECT count(*) FROM document_artifacts WHERE document_id='${id}' AND state='stored';`)).toBe('0');await scannerReady();
+ }
+ await expiredReceipt(c,id,false);
 });
