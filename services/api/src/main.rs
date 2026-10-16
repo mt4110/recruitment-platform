@@ -31,7 +31,9 @@ async fn main() {
     }
 }
 async fn start() -> anyhow::Result<()> {
+    tracing::info!(event = "startup_phase", phase = "config");
     let config = Config::load()?;
+    tracing::info!(event = "startup_phase", phase = "auth_db");
     let options = PgConnectOptions::new()
         .host("db")
         .database("recruitment")
@@ -44,6 +46,7 @@ async fn start() -> anyhow::Result<()> {
         .acquire_timeout(std::time::Duration::from_secs(5))
         .connect_with(options)
         .await?;
+    tracing::info!(event = "startup_phase", phase = "runtime_db");
     let runtime = PgPoolOptions::new()
         .max_connections(5)
         .acquire_timeout(std::time::Duration::from_secs(5))
@@ -57,12 +60,31 @@ async fn start() -> anyhow::Result<()> {
                 .disable_statement_logging(),
         )
         .await?;
+    tracing::info!(event = "startup_phase", phase = "inventory");
     documents::reconcile_storage(&runtime).await?;
     let http = openidconnect::reqwest::Client::builder()
         .redirect(openidconnect::reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(5))
         .build()?;
-    let oidc = auth::discover(&config, &http).await?;
+    tracing::info!(event = "startup_phase", phase = "oidc");
+    let mut discovery = None;
+    for attempt in 0..5 {
+        match auth::discover(&config, &http).await {
+            Ok(value) => {
+                discovery = Some(value);
+                break;
+            }
+            Err(_) if attempt < 4 => {
+                tracing::warn!(event = "startup_phase", phase = "oidc_retry");
+                tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+            }
+            Err(e) => return Err(e),
+        }
+    }
+    let oidc = discovery.ok_or_else(|| anyhow::anyhow!("OIDC discovery unavailable"))?;
+    tracing::info!(event = "startup_phase", phase = "upload_config");
+    let upload_config = Arc::new(uploads::Config::load()?);
+    tracing::info!(event = "startup_phase", phase = "app_state");
     let app = Arc::new(App {
         config,
         db,
@@ -72,7 +94,7 @@ async fn start() -> anyhow::Result<()> {
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
         scan_key: std::env::var("SCAN_SHARED_KEY")?,
         draft_key: drafts::master_key()?,
-        upload_config: Arc::new(uploads::Config::load()?),
+        upload_config,
         uploads: Arc::new(tokio::sync::Semaphore::new(2)),
     });
     let router = Router::new()
@@ -97,6 +119,7 @@ async fn start() -> anyhow::Result<()> {
         })
         .layer(middleware::from_fn(headers))
         .with_state(app);
+    tracing::info!(event = "startup_phase", phase = "listen");
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
     axum::serve(listener, router)
         .with_graceful_shutdown(async {

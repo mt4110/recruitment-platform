@@ -105,6 +105,15 @@ try:
 except subprocess.CalledProcessError:
     print('E2E setup/build failed; inspect the private operations.log. No existing demo services were changed.')
 finally:
+    # Persist only fixed, structured startup phases. No raw errors, headers, env or tokens.
+    startup=subprocess.run(['docker','logs',f'recruitment-{instance}-api-1'],env=env,capture_output=True)
+    phases=[]
+    for line in startup.stdout.splitlines()+startup.stderr.splitlines():
+        try:fields=json.loads(line).get('fields',{})
+        except (ValueError,AttributeError):continue
+        if fields.get('event') in ('startup_phase','startup_io_failed','startup_failed'):
+            phases.append({k:fields[k] for k in ('event','phase','io_kind') if k in fields})
+    (artifacts/'startup.json').write_text(json.dumps({'api':phases},indent=2)+'\n')
     # Stop only this run's services, even after failure. Never delete containers,
     # volumes, configurations, previous test output, or the interactive demo.
     with (local/'operations.log').open('a') as log:

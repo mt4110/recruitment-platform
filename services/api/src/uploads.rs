@@ -38,7 +38,9 @@ impl Config {
     pub fn load() -> anyhow::Result<Self> {
         let key = B64.decode(std::env::var("UPLOAD_TICKET_KEY")?)?;
         anyhow::ensure!(key.len() == 32, "ticket key length");
-        let pem = std::fs::read_to_string("/run/upload-public.pem")?;
+        let pem = std::fs::read_to_string("/run/upload-public.pem").inspect_err(|e| {
+            tracing::error!(event="startup_io_failed",phase="upload_public_key",io_kind=?e.kind());
+        })?;
         anyhow::ensure!(
             pem.starts_with("-----BEGIN PUBLIC KEY-----") && !pem.contains("PRIVATE"),
             "public key only"
@@ -51,7 +53,7 @@ impl Config {
             public_spki.len() >= 500 && public_spki.len() < 2000,
             "public key size"
         );
-        std::fs::create_dir_all("/data/resumes/encrypted")?;
+        std::fs::create_dir_all("/data/resumes/encrypted").inspect_err(|e| { tracing::error!(event="startup_io_failed",phase="encrypted_directory",io_kind=?e.kind()); })?;
         // A single local receiver owns this volume. Process death releases the OS lock.
         let file = std::fs::OpenOptions::new()
             .read(true)
@@ -59,7 +61,10 @@ impl Config {
             .create(true)
             .truncate(false)
             .open("/data/resumes/encrypted/receiver.lock")?;
-        file.try_lock()?;
+        file.try_lock().map_err(|e| {
+            tracing::error!(event="startup_io_failed",phase="receiver_lock",io_kind=?e);
+            e
+        })?;
         Ok(Self {
             key,
             public_spki,
