@@ -37,7 +37,7 @@ function worker(accepted=true):Record<string,number>{
 async function fresh(p:Page):Promise<void>{const panel=p.getByRole('complementary',{name:'個人下書き'}).first();await expect(panel).toBeVisible();await expect(panel).not.toContainText('下書きを確認中');const b=p.getByRole('button',{name:'新しい下書きを開始する',exact:true});if(await b.isVisible())await b.click();}
 async function attach(p:Page,c:Entity,files:{name:string;mimeType:string;buffer:Buffer}[]):Promise<string[]>{
  const prior=sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached';`).split('\n').filter(Boolean);await room();await p.goto(origin+'/candidates/'+c.id);await expect(p.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();await expect(p.getByLabel('暗号化受付を使う（検査・閲覧用変換を行います）')).toBeChecked();
- await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles(files);await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();
+ await p.getByLabel('書類の種類',{exact:true}).selectOption('resume');await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles(files);await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();
  await expect.poll(()=>Number(sql(`SELECT count(*) FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached';`)),{timeout:30000}).toBe(prior.length+files.length);
  return sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}' AND state='attached' ORDER BY created_at,id;`).split('\n').filter(id=>!prior.includes(id));
 }
@@ -117,7 +117,7 @@ async function recoveryUrl(p:Page):Promise<string>{await expect(p.getByRole('com
 test('S5 browser context loss after stored response restores same receipt without a second PUT',async({browser})=>{
  test.setTimeout(240000);const c=await candidate('S5受領復帰の架空候補者'),p=actors.a.page;await room();await p.goto(origin+'/candidates/'+c.id);await expect(p.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();let puts=0;
  await p.route('**/api/v1/document-uploads/*/bytes',async route=>{puts++;const r=await route.fetch();expect(r.status()).toBe(202);await route.abort('failed');});
- await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5受領復帰.pdf',mimeType:'application/pdf',buffer:pdf});await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('再試行待ち');const url=await recoveryUrl(p);
+ await p.getByLabel('書類の種類',{exact:true}).selectOption('resume');await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5受領復帰.pdf',mimeType:'application/pdf',buffer:pdf});await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('再試行待ち');const url=await recoveryUrl(p);
  const before=sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}';`);expect(puts).toBe(1);
  const restored=await restartActor(browser,url);await expect(restored.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');expect(counts(c.id)).toBe('1|1|1');worker();await restored.reload();await expect(restored.getByRole('region',{name:'履歴書の版一覧'})).toContainText('登録完了');expect(sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}';`)).toBe(before);
 });
@@ -125,7 +125,7 @@ test('S5 browser context loss after stored response restores same receipt withou
 test('S5 browser loss before PUT requires file reselection and new attempt with the same document',async({browser})=>{
  test.setTimeout(240000);const c=await candidate('S5未受信復帰の架空候補者'),p=actors.a.page;await room();await p.goto(origin+'/candidates/'+c.id);await expect(p.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();
  await p.route('**/api/v1/document-uploads/*/authorize',async route=>{const r=await route.fetch();expect(r.status()).toBe(200);await route.abort('failed');});
- await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5未受信.pdf',mimeType:'application/pdf',buffer:pdf});await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('再試行待ち');const url=await recoveryUrl(p);
+ await p.getByLabel('書類の種類',{exact:true}).selectOption('resume');await p.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5未受信.pdf',mimeType:'application/pdf',buffer:pdf});await p.getByLabel('書類の内容はすべて架空の情報です').check();await p.getByRole('button',{name:'書類を登録する',exact:true}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('再試行待ち');const url=await recoveryUrl(p);
  const before=sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}';`),aad=sql(`SELECT a.aad FROM upload_attempts a JOIN upload_sessions s ON s.id=a.upload_id WHERE s.candidate_id='${c.id}';`);
  const restored=await restartActor(browser,url);await expect(restored.getByRole('region',{name:'書類の受付状況'})).toContainText('元のファイルを再選択');expect(counts(c.id)).toBe('1|1|0');await expect(restored.getByLabel('PDF／XLSXファイル',{exact:true})).toBeEnabled();
  await restored.getByLabel('PDF／XLSXファイル',{exact:true}).setInputFiles({name:'S5未受信.pdf',mimeType:'application/pdf',buffer:pdf});await restored.getByLabel('書類の内容はすべて架空の情報です').check();await restored.getByRole('button',{name:'受付結果を確認して再試行する',exact:true}).click();await expect(restored.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');expect(counts(c.id)).toBe('1|2|1');expect(sql(`SELECT document_id FROM upload_sessions WHERE candidate_id='${c.id}';`)).toBe(before);expect(sql(`SELECT count(*) FROM upload_attempts a JOIN upload_sessions s ON s.id=a.upload_id WHERE s.candidate_id='${c.id}' AND a.aad='${aad}';`)).toBe('1');worker();
@@ -135,8 +135,11 @@ test('S5 terminal receipt expiry does not reauthorize resend complete or recreat
  const doc=shared.ids[0],c=shared.candidate.id;
  const r:Receipt=JSON.parse(sql(`SELECT json_build_object('upload_id',id,'attempt_id',canonical_attempt,'document_id',document_id,'state',state) FROM upload_sessions WHERE document_id='${doc}';`));
  const authorization=JSON.parse(sql(`SELECT json_build_object('attempt_id',id,'ciphertext_hash',ciphertext_hash,'ciphertext_size',ciphertext_size,'envelope',envelope) FROM upload_attempts WHERE id='${r.attempt_id}';`));
+ const operationKey=sql(`SELECT key FROM idempotency_records WHERE resource_id='${doc}';`);
  const before=counts(c);sql(`UPDATE idempotency_records SET expires_at=now()-interval '1 second' WHERE resource_id='${doc}';`);
  for(const route of ['', '/authorize','/attempts','/complete'])expect((await call('a','/document-uploads/'+r.upload_id+route,route?'POST':'GET',route==='/authorize'?authorization:undefined)).status()).toBe(409);
+ const fragment={v:1,user:actors.a.me.user.id,org:actors.a.me.organization.id,candidate:c,operations:[{key:operationKey,kind:'resume'}]};
+ const p=actors.a.page;await p.goto(origin+'/candidates/'+c+'#receipts='+encodeURIComponent(JSON.stringify(fragment)));await p.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('結果照合期限切れ');
  expect(counts(c)).toBe(before);expect(sql(`SELECT state FROM idempotency_records WHERE resource_id='${doc}';`)).toBe('expired');expect((await call('a','/documents/'+doc+'/view')).status()).toBe(200);
 });
 

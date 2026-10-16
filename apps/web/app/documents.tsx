@@ -75,7 +75,7 @@ export default function Documents({candidate,initial,archived,me,signedIn,onUnau
    const stateResponse=await fetch('/api/v1/document-uploads/'+data.upload_id,{cache:'no-store',signal});const receipt=await stateResponse.json();if(!stateResponse.ok)throw Error(receipt?.error?.message||'受付結果を確認できません。');
    if(['stored','attached'].includes(receipt.attempt_state)){
     if(receipt.attempt_state==='stored'){const c=await fetch('/api/v1/document-uploads/'+data.upload_id+'/complete',{method:'POST',signal,headers:{'X-CSRF-Token':me.csrf_token}});if(!c.ok)throw Error('暗号文は保存済みです。受付結果を確認して処理を再開してください。');}
-    const d=await readDocument(data.document_id,signal);patch(job.key,{document:d,stage:'pending',file:undefined,message:'暗号化して受付済みです。安全性検査・閲覧用変換の完了をお待ちください。'});return d;
+    const d=await readDocument(data.document_id,signal);patch(job.key,{document:d,stage:stageOf(d),file:undefined,message:d.available?'登録済みの書類を復元しました。':d.status==='rejected'?'受付済みの検査結果を確認しました。':'暗号化して受付済みです。安全性検査・閲覧用変換の完了をお待ちください。'});return d;
    }
    patch(job.key,{stage:receipt.state==='rejected'?'expired':'unrecorded',message:'受付予約を復元しました。受領未完了なら、元のファイルを再選択して同じ操作で再開してください。'});return null;
   }
