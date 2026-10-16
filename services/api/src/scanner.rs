@@ -6,7 +6,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use std::time::Duration;
 use uuid::Uuid;
-#[derive(Deserialize)]
+#[derive(Deserialize, serde::Serialize)]
 pub struct Scan {
     pub nonce: Uuid,
     pub sha256: String,

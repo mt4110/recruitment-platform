@@ -26,11 +26,9 @@ use tokio::{fs, io::AsyncWriteExt};
 use uuid::Uuid;
 const MAX: i64 = 10485760;
 const OVERHEAD: i64 = 4116;
-const WRAP: &str = "original-v1";
 type Hmac256 = Hmac<Sha256>;
 pub struct Config {
     key: Vec<u8>,
-    public_spki: String,
     active: Mutex<HashSet<Uuid>>,
     _lock: std::fs::File,
 }
@@ -67,7 +65,6 @@ impl Config {
         })?;
         Ok(Self {
             key,
-            public_spki,
             active: Mutex::new(HashSet::new()),
             _lock: file,
         })
@@ -189,12 +186,17 @@ async fn result_valid(tx: &mut Tx, s: &Session) -> Result<(), ApiError> {
     Ok(())
 }
 async fn insert_attempt(tx: &mut Tx, s: &Session, u: &Identity) -> Result<(), ApiError> {
+    let wrap: Option<String> = sqlx::query_scalar("SELECT upload_wrap_current()")
+        .fetch_one(&mut **tx)
+        .await
+        .map_err(db_error)?;
+    let wrap = wrap.ok_or_else(storage)?;
     let id = Uuid::new_v4();
     let aad = format!(
-        "rp-upload-v1|{WRAP}|{}|{}|{id}|{}|{}",
+        "rp-upload-v1|{wrap}|{}|{}|{id}|{}|{}",
         s.id, s.document_id, u.organization_id, s.file_format
     );
-    sqlx::query("INSERT INTO upload_attempts(id,upload_id,org_id,user_id,wrap_version,aad,staging_key) VALUES($1,$2,$3,$4,$5,$6,$7)").bind(id).bind(s.id).bind(u.organization_id).bind(u.user_id).bind(WRAP).bind(aad).bind(Uuid::new_v4()).execute(&mut **tx).await.map_err(db_error)?;
+    sqlx::query("INSERT INTO upload_attempts(id,upload_id,org_id,user_id,wrap_version,aad,staging_key) VALUES($1,$2,$3,$4,$5,$6,$7)").bind(id).bind(s.id).bind(u.organization_id).bind(u.user_id).bind(wrap).bind(aad).bind(Uuid::new_v4()).execute(&mut **tx).await.map_err(db_error)?;
     Ok(())
 }
 #[derive(Deserialize, Serialize)]
@@ -296,12 +298,20 @@ async fn reserve(
     };
     let s = session(&mut tx, sid).await?;
     let a = attempt(&mut tx, sid).await?;
-    let v = dto(&app, &s, &a);
+    let v = dto(&mut tx, &s, &a).await?;
     tx.commit().await.map_err(db_error)?;
     Ok((StatusCode::CREATED, Json(v)).into_response())
 }
-fn dto(app: &App, s: &Session, a: &Attempt) -> Value {
-    json!({"upload_id":s.id,"document_id":s.document_id,"state":s.state,"attempt_id":a.id,"attempt_state":a.state,"reservation_expires_at":s.reserved_at+Duration::hours(24),"attempt_expires_at":a.first_authorized_at.map(|v|(v+Duration::minutes(15)).min(s.reserved_at+Duration::hours(24))),"file_format":s.file_format,"plain_length":s.plain_length,"wrap_key_version":a.wrap_version,"wrap_public_spki":app.upload_config.public_spki,"aad":a.aad,"available":false,"status_url":format!("/api/v1/document-uploads/{}",s.id)})
+async fn dto(tx: &mut Tx, s: &Session, a: &Attempt) -> Result<Value, ApiError> {
+    let public: Option<String> = sqlx::query_scalar("SELECT upload_wrap_public($1)")
+        .bind(&a.wrap_version)
+        .fetch_one(&mut **tx)
+        .await
+        .map_err(db_error)?;
+    let public = public.ok_or_else(storage)?;
+    Ok(
+        json!({"upload_id":s.id,"document_id":s.document_id,"state":s.state,"attempt_id":a.id,"attempt_state":a.state,"reservation_expires_at":s.reserved_at+Duration::hours(24),"attempt_expires_at":a.first_authorized_at.map(|v|(v+Duration::minutes(15)).min(s.reserved_at+Duration::hours(24))),"file_format":s.file_format,"plain_length":s.plain_length,"wrap_key_version":a.wrap_version,"wrap_public_spki":public,"aad":a.aad,"available":false,"status_url":format!("/api/v1/document-uploads/{}",s.id)}),
+    )
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -402,6 +412,14 @@ async fn authorize(
     result_valid(&mut tx, &s).await?;
     candidate(&mut tx, s.candidate_id).await?;
     let a = attempt(&mut tx, id).await?;
+    let key_active: bool = sqlx::query_scalar("SELECT upload_wrap_enabled($1)")
+        .bind(&a.wrap_version)
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(db_error)?;
+    if !key_active {
+        return Err(storage());
+    }
     if a.id != b.attempt_id
         || !["prepared", "authorized"].contains(&a.state.as_str())
         || s.state != "reserved"
@@ -589,7 +607,18 @@ async fn status(
     let a = attempt(&mut tx, id).await?;
     expire(&mut tx, &s, &a).await?;
     let s = session(&mut tx, id).await?;
-    let v = dto(&app, &s, &a);
+    let mut v = dto(&mut tx, &s, &a).await?;
+    let job: Option<(String, Option<String>)> =
+        sqlx::query_as("SELECT state,error_code FROM encrypted_document_jobs WHERE document_id=$1")
+            .bind(s.document_id)
+            .fetch_optional(&mut *tx)
+            .await
+            .map_err(db_error)?;
+    if let Some((state, code)) = job {
+        v["processing_state"] = json!(state);
+        v["processing_error"] = json!(code);
+    }
+
     tx.commit().await.map_err(db_error)?;
     Ok(Json(v).into_response())
 }
@@ -619,7 +648,7 @@ async fn new_attempt(
         .map_err(db_error)?;
     insert_attempt(&mut tx, &s, &u).await?;
     let a = attempt(&mut tx, id).await?;
-    let v = dto(&app, &s, &a);
+    let v = dto(&mut tx, &s, &a).await?;
     tx.commit().await.map_err(db_error)?;
     Ok((StatusCode::CREATED, Json(v)).into_response())
 }
@@ -659,7 +688,7 @@ async fn receive(
         return Err(fail("INVALID_UPLOAD_TICKET"));
     }
     if ["stored", "attached", "receiving", "reconciling"].contains(&a.state.as_str()) {
-        let v = dto(&app, &s, &a);
+        let v = dto(&mut tx, &s, &a).await?;
         tx.commit().await.map_err(db_error)?;
         return Ok((StatusCode::ACCEPTED, Json(v)).into_response());
     }
@@ -789,7 +818,7 @@ async fn receive(
         .map_err(db_error)?;
     let s = session(&mut tx, id).await?;
     let a = attempt(&mut tx, id).await?;
-    let v = dto(&app, &s, &a);
+    let v = dto(&mut tx, &s, &a).await?;
     tx.commit().await.map_err(db_error)?;
     Ok((StatusCode::ACCEPTED, Json(v)).into_response())
 }
@@ -839,7 +868,7 @@ async fn complete(
     }
     let s = session(&mut tx, id).await?;
     let a = attempt(&mut tx, id).await?;
-    let v = dto(&app, &s, &a);
+    let v = dto(&mut tx, &s, &a).await?;
     tx.commit().await.map_err(db_error)?;
     Ok((StatusCode::ACCEPTED, Json(v)).into_response())
 }
@@ -861,6 +890,12 @@ pub(crate) async fn outcome(
         let s = session(tx, id).await?;
         result_valid(tx, &s).await?;
         let a = attempt(tx, id).await?;
+        let record:(String,Option<i32>,Option<String>,Option<DateTime<Utc>>)=sqlx::query_as("SELECT state,result_status,error_code,expires_at FROM idempotency_records WHERE resource_id=$1").bind(s.document_id).fetch_one(&mut **tx).await.map_err(db_error)?;
+        if record.0 == "failed" {
+            return Ok(Some(
+                json!({"state":"failed","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"result_status":record.1,"error_code":record.2,"result_expires_at":record.3}),
+            ));
+        }
         return Ok(Some(
             json!({"state":"processing","upload_state":s.state,"attempt_state":a.state,"document_id":s.document_id,"upload_id":id,"status_url":format!("/api/v1/document-uploads/{id}"),"result_status":202,"result_expires_at":null}),
         ));
@@ -873,7 +908,6 @@ mod tests {
     fn config() -> Config {
         Config {
             key: vec![42; 32],
-            public_spki: String::new(),
             active: Mutex::new(HashSet::new()),
             _lock: std::fs::File::open("/dev/null").expect("test fixture"),
         }

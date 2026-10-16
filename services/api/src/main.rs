@@ -6,6 +6,7 @@ mod drafts;
 mod previews;
 mod scanner;
 mod uploads;
+mod workers;
 
 use auth::{ApiError, App, Config};
 use axum::{
@@ -92,10 +93,22 @@ async fn start() -> anyhow::Result<()> {
         http,
         oidc,
         pdf_key: std::env::var("PDF_SHARED_KEY")?,
+        invoice_key: std::env::var("INVOICE_SHARED_KEY")?,
         scan_key: std::env::var("SCAN_SHARED_KEY")?,
         draft_key: drafts::master_key()?,
         upload_config,
         uploads: Arc::new(tokio::sync::Semaphore::new(2)),
+    });
+    let control_addr = tokio::net::lookup_host(("api-control", 8081))
+        .await?
+        .next()
+        .ok_or_else(|| anyhow::anyhow!("control interface unavailable"))?;
+    let control_listener = tokio::net::TcpListener::bind(control_addr).await?;
+    let control_router = workers::routes().with_state(app.clone());
+    tokio::spawn(async move {
+        if axum::serve(control_listener, control_router).await.is_err() {
+            tracing::error!(event = "document_control_stopped");
+        }
     });
     let router = Router::new()
         .route("/live", get(|| async { StatusCode::OK }))
@@ -120,7 +133,16 @@ async fn start() -> anyhow::Result<()> {
         .layer(middleware::from_fn(headers))
         .with_state(app);
     tracing::info!(event = "startup_phase", phase = "listen");
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
+    let public_addr = tokio::net::lookup_host(("api-public", 8080))
+        .await?
+        .next()
+        .ok_or_else(|| anyhow::anyhow!("public interface unavailable"))?;
+    let listener = tokio::net::TcpListener::bind(public_addr).await?;
+    let local_listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await?;
+    let local_router = router.clone();
+    tokio::spawn(async move {
+        let _ = axum::serve(local_listener, local_router).await;
+    });
     axum::serve(listener, router)
         .with_graceful_shutdown(async {
             let _ = tokio::signal::ctrl_c().await;

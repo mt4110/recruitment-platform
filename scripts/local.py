@@ -38,11 +38,34 @@ def upload_keys():
     if 'UPLOAD_TICKET_KEY' not in values:
         if not initial:raise SystemExit('Ticket signing key missing. Restore the existing private configuration; no replacement generated.')
         with ENV.open('a') as f:f.write('UPLOAD_TICKET_KEY='+secrets.token_urlsafe(32)+'\n')
+def worker_keys():
+    marker=LOCAL/'worker-keys-initialized'
+    files=['broker-auth','broker-api-auth','scan-auth','artifact-private.pem','artifact-public.pem']
+    if marker.exists():
+        if not all((LOCAL/f).is_file() for f in files):raise SystemExit('Worker key missing; restore the original private configuration.')
+        return
+    if any((LOCAL/f).exists() for f in files):raise SystemExit('Incomplete worker provisioning; retain and inspect private files.')
+    token=secrets.token_bytes(32)
+    for name,raw,mode in [('broker-auth',token,0o600),('broker-api-auth',token,0o644),('scan-auth',settings()['SCAN_SHARED_KEY'].encode(),0o600)]:
+        with (LOCAL/name).open('xb') as f:f.write(raw)
+        (LOCAL/name).chmod(mode)
+    run(['openssl','genpkey','-algorithm','RSA','-pkeyopt','rsa_keygen_bits:3072','-out',str(LOCAL/'artifact-private.pem')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    run(['openssl','pkey','-in',str(LOCAL/'artifact-private.pem'),'-pubout','-out',str(LOCAL/'artifact-public.pem')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    (LOCAL/'artifact-private.pem').chmod(0o600);(LOCAL/'artifact-public.pem').chmod(0o644)
+    marker.write_text('S2 keys provisioned; missing material must be restored.\n')
+def register_worker_keys():
+    body="SET ROLE app_migrator;\n"
+    for purpose,name in [('original','upload-public.pem'),('artifact','artifact-public.pem')]:
+        public=''.join(s for s in (LOCAL/name).read_text().splitlines() if not s.startswith('-'))
+        if not re.fullmatch(r'[A-Za-z0-9+/=]{500,2000}',public):raise SystemExit('Invalid public key.')
+        body+=f"INSERT INTO document_key_versions(purpose,version,public_spki,accept_upload) VALUES('{purpose}','{purpose}-v1','{public}',true) ON CONFLICT DO NOTHING;\n"
+        body+=f"DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM document_key_versions WHERE purpose='{purpose}' AND version='{purpose}-v1' AND public_spki='{public}') THEN RAISE EXCEPTION 'key identity mismatch';END IF;END $$;\n"
+    compose('exec','-T','db','psql','-U','postgres','-d','recruitment','-v','ON_ERROR_STOP=1',input=body,text=True,stdout=subprocess.DEVNULL)
 def setup():
-    LOCAL.mkdir(mode=0o700,parents=True,exist_ok=True)
+    LOCAL.mkdir(mode=0o700,parents=True,exist_ok=True);LOCAL.chmod(0o700)
     if ENV.exists():
         values=settings()
-        for name in ('PDF_SHARED_KEY','SCAN_SHARED_KEY'):
+        for name in ('PDF_SHARED_KEY','SCAN_SHARED_KEY','INVOICE_SHARED_KEY'):
             if name not in values:
                 with ENV.open('a') as f:f.write(name+'='+secrets.token_urlsafe(32)+'\n')
         if 'DRAFT_MASTER_KEY' not in values:
@@ -52,7 +75,7 @@ def setup():
             if checked.stdout.strip()!='t':raise SystemExit('Draft key missing for an existing draft database; restore the original private configuration. No replacement key generated.')
             with ENV.open('a') as f:f.write('DRAFT_MASTER_KEY='+secrets.token_urlsafe(32)+'\n')
         if not (LOCAL/'realm.json').is_file() or not (LOCAL/'demo-accounts.json').is_file():raise SystemExit('Incomplete local config; retain files and inspect before continuing.')
-        upload_keys();print('Existing local configuration retained.');return
+        upload_keys();worker_keys();print('Existing local configuration retained.');return
     app_port,idp_port=ports()
     names=[('agency-a','001'),('agency-b','002'),('employer-x','011'),('employer-y','012'),('unregistered','099')]
     accounts={name:secrets.token_urlsafe(24) for name,_ in names}
@@ -62,10 +85,10 @@ def setup():
     # Directory is private (0700); only this individual file is mounted read-only.
     (LOCAL/'realm.json').write_text(json.dumps(realm,ensure_ascii=False));(LOCAL/'realm.json').chmod(0o644)
     (LOCAL/'demo-accounts.json').write_text(json.dumps(accounts,indent=2)+'\n')
-    values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','SCAN_SHARED_KEY','DRAFT_MASTER_KEY')}
+    values={name:secrets.token_urlsafe(32) for name in ('POSTGRES_PASSWORD','AUTH_DB_PASSWORD','MIGRATION_DB_PASSWORD','RUNTIME_DB_PASSWORD','IDP_DB_PASSWORD','IDP_ADMIN_PASSWORD','ATTEMPT_KEY','CSRF_KEY','PDF_SHARED_KEY','INVOICE_SHARED_KEY','SCAN_SHARED_KEY','DRAFT_MASTER_KEY')}
     values.update(APP_PORT=str(app_port),IDP_PORT=str(idp_port),COMPOSE_PROJECT_NAME='recruitment-local' if INSTANCE=='default' else 'recruitment-'+INSTANCE,LOCAL_CONFIG_DIR=str(LOCAL))
     ENV.write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
-    upload_keys()
+    upload_keys();worker_keys()
     print('Created private .local/local.env and .local/demo-accounts.json. No credential values are printed.')
 def migrate():
     _,idp_port=ports()
@@ -82,6 +105,7 @@ def migrate():
     body+='COMMIT;\n'
     for fixture in sorted((ROOT/'fixtures').glob('*.sql')): body+=fixture.read_text()+'\n'
     compose('exec','-T','db','psql','-U','postgres','-d','recruitment',input=body,text=True,stdout=subprocess.DEVNULL)
+    if not cutoff:register_worker_keys()
     print('Migrations and fictional fixtures applied; existing records retained.')
 if len(sys.argv)<2:raise SystemExit('Usage: python3 scripts/local.py setup|up|stop|status|migrate|compose <args>')
 command=sys.argv[1]

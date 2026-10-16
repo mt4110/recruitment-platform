@@ -3,6 +3,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import hashlib, hmac, json, os, subprocess, sys, threading
 
 KEY = os.environ['PDF_SHARED_KEY']
+ROLE = os.environ.get('PDF_SERVICE_ROLE','inspector')
 SLOT = threading.BoundedSemaphore(1)
 LIMIT = 10 * 1024 * 1024
 class Handler(BaseHTTPRequestHandler):
@@ -14,7 +15,8 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200 if self.path=='/live' else 404,{})
     def do_POST(self):
         self.connection.settimeout(6)
-        if self.path not in ('/internal/pdf/check','/internal/document/check','/internal/pdf/render-invoice'):return self.reply(404,{})
+        allowed=('/internal/pdf/render-invoice',) if ROLE=='invoice' else ('/internal/pdf/check','/internal/document/check')
+        if self.path not in allowed:return self.reply(404,{})
         if not hmac.compare_digest(self.headers.get('X-PDF-Key','').encode('utf-8'),KEY.encode('utf-8')):return self.reply(403,{})
         try:length=int(self.headers.get('Content-Length','0'))
         except ValueError:return self.reply(400,{})

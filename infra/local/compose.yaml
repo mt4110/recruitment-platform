@@ -41,11 +41,16 @@ services:
       ATTEMPT_KEY: ${ATTEMPT_KEY:?Run setup}
       CSRF_KEY: ${CSRF_KEY:?Run setup}
       PDF_SHARED_KEY: ${PDF_SHARED_KEY:?Run setup}
+      INVOICE_SHARED_KEY: ${INVOICE_SHARED_KEY:?Run setup}
       SCAN_SHARED_KEY: ${SCAN_SHARED_KEY:?Run setup}
       DRAFT_MASTER_KEY: ${DRAFT_MASTER_KEY:?Run setup}
       UPLOAD_TICKET_KEY: ${UPLOAD_TICKET_KEY:?Run setup}
-    networks: [default,pdf,scan]
-    volumes: ['resumes:/data/resumes','${LOCAL_CONFIG_DIR:-./.local}/upload-public.pem:/run/upload-public.pem:ro']
+    networks:
+      default: {aliases: [api-public]}
+      pdf: {}
+      scan: {}
+      document-control: {aliases: [api-control]}
+    volumes: ['resumes:/data/resumes','${LOCAL_CONFIG_DIR:-./.local}/upload-public.pem:/run/upload-public.pem:ro','${LOCAL_CONFIG_DIR:-./.local}/broker-api-auth:/run/broker-auth:ro']
     read_only: true
     tmpfs: ['/tmp:size=16m,mode=1777']
     cap_drop: [ALL]
@@ -132,6 +137,32 @@ services:
     shm_size: 256m
     cpus: 2
     pids_limit: 256
+  invoice-renderer:
+    build: ./services/pdf-renderer
+    environment:
+      PDF_SHARED_KEY: ${INVOICE_SHARED_KEY:?Run setup}
+      PDF_SERVICE_ROLE: invoice
+    networks: [pdf]
+    read_only: true
+    tmpfs: ['/tmp:size=256m,mode=1777']
+    cap_drop: [ALL]
+    cap_add: [SYS_CHROOT]
+    security_opt: ['no-new-privileges:true','seccomp=./infra/local/pdf-seccomp.json']
+    mem_limit: 1536m
+    shm_size: 256m
+    cpus: 2
+    pids_limit: 256
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/live',timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  document-broker:
+    profiles: [document-job]
+    build: ./services/document-worker
+  document-sandbox:
+    profiles: [document-job]
+    build: ./services/pdf-renderer
   scan:
     build: ./services/av
     environment:
@@ -169,6 +200,7 @@ services:
     cpus: 1
     pids_limit: 32
 networks:
+  document-control: {internal: true}
   av-egress: {}
   scan: {internal: true}
   pdf: {internal: true}

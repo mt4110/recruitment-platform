@@ -11,7 +11,7 @@ RUN ldconfig && python -c "import pyexpat,pikepdf,lxml.etree,PIL,ssl; assert tup
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --global npm@12.2.0 --ignore-scripts && npm ci --ignore-scripts
-COPY server.py validator.py xlsx_validator.py invoice.mjs ./
+COPY server.py validator.py xlsx_validator.py invoice.mjs sandbox.py ./
 ENV PYTHONDONTWRITEBYTECODE=1 HOME=/tmp/pdf-home XDG_CONFIG_HOME=/tmp/pdf-config XDG_CACHE_HOME=/tmp/pdf-cache
 USER pwuser
 CMD ["python","server.py"]

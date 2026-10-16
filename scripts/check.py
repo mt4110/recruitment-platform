@@ -11,10 +11,10 @@ run('cargo','clippy','--manifest-path','services/api/Cargo.toml','--locked','--a
 run('cargo','test','--manifest-path','services/api/Cargo.toml','--locked')
 run('npm','run','typecheck','--prefix','apps/web')
 # Syntax validation does not write pyc or execute fixture helpers.
-for folder in ('scripts','services/av','services/pdf-renderer','e2e'):
+for folder in ('scripts','services/av','services/pdf-renderer','services/document-worker','e2e'):
     for path in sorted((ROOT/folder).glob('*.py')):
         ast.parse(path.read_text(), filename=str(path))
-for folder,pattern in (('e2e','*.cjs'),('services/pdf-renderer','*.mjs')):
+for folder,pattern in (('e2e','*.cjs'),('services/document-worker','*.cjs'),('services/pdf-renderer','*.mjs')):
     for path in sorted((ROOT/folder).glob(pattern)):
         run('node','--check',str(path))
 print('Rust format/lint/tests, TypeScript and Python/Node syntax: passed')

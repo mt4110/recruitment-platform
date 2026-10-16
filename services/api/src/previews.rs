@@ -144,8 +144,8 @@ async fn pdf(
     };
     let response = app
         .http
-        .post("http://pdf-renderer:8080/internal/pdf/render-invoice")
-        .header("X-PDF-Key", &app.pdf_key)
+        .post("http://invoice-renderer:8080/internal/pdf/render-invoice")
+        .header("X-PDF-Key", &app.invoice_key)
         .timeout(Duration::from_secs(10))
         .header("Content-Type", "application/json")
         .body(serde_json::to_vec(&data).map_err(|_| unavailable())?)
