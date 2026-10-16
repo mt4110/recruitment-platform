@@ -1,0 +1,13 @@
+{
+  "source_commit": "943e0a43f44cbd804869902229f406e1c9937b73",
+  "ci_run": "https://github.com/mt4110/recruitment-platform/actions/runs/38831274903",
+  "runtime_source_file_count": 78,
+  "all_source_sha256_equal": true,
+  "both_source_clean": true,
+  "both_unchanged_during_run": true,
+  "both_stopped": true,
+  "browser_each": 76,
+  "r3_added_tests": 9,
+  "xlsx_worker_each": 67,
+  "source_scope": "runtime/services/migrations/fixtures/e2e/local tooling; final documentation-only commit does not change these sources"
+}

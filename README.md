@@ -6,7 +6,7 @@
 
 設計v0.3の[最終レビュー](docs/reviews/2026-10-15-design-final-review.md)に続き、[M0はarm64/amd64で確認済み](docs/validation/2026-10-15-m0-completion.md)。[M1の最終記録](docs/validation/2026-10-15-m1-e2e-report.md)に続き、[M2の実装・検証・残工数](docs/validation/2026-10-15-m2-report.md)を記録しています。[M3の実装・検証・残工数](docs/validation/2026-10-15-m3-report.md)を記録しています。[M4の実装・検証・残工数](docs/validation/2026-10-15-m4-report.md)を保存し、M4で停止しています。
 
-**v0.4のR2まで実装・両arch検証済みです。** [R2記録](docs/validation/2026-10-16-r2-report.md)を参照してください。実AV→形式検査、定義更新・鮮度/ロード世代照合、旧PDFの再検査を追加しました。合格した書類だけ配信/推薦できます。全フォーム自動保存は後続です。[残計画は60〜106時間の仮積算](docs/design/07-delivery.md)。R3・M5へは進まず停止しています。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。
+**v0.4のR3まで実装・両arch検証済みです（各76件）。** [R3記録](docs/validation/2026-10-16-r3-report.md)を参照してください。PDF/XLSXの実AV・形式検査に加え、種類別の版管理、複数登録、選択した版だけの推薦、受付結果の復帰を追加しました。再起動後は保存した復帰リンクを再認証後に開いて受付済みIDへ戻れます。全フォームの自動保存・入力/選択の永続復元は後続です。未送信ファイルは再選択が必要です。[残計画は56〜98時間の仮積算](docs/design/07-delivery.md)。R4・M5へは進まず停止しています。検証は隔離環境で行い、通常デモ`localhost:3000`のM4環境・DBは未更新です。
 
 ## ローカルで試す
 
