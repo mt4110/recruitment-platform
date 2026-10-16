@@ -19,6 +19,7 @@ const root=path.resolve(__dirname,'..'),dir=process.env.RP_E2E_DIR!,actors:Recor
 const pdf=fs.readFileSync(path.join(root,'apps/web/public/sample-resume.pdf'));
 const xlsx=fs.readFileSync(path.join(__dirname,'fixtures/sheets-resume.xlsx'));
 const rows:Row[]=[],issues:string[]=[];let lastWorkerMemory:Record<string,number|null>={};
+let rejected:{candidate:Entity;id:string};
 let shared: { application:Entity; candidate:Entity; job:Entity; ids:string[] };
 const host=(script:string,args:string[]=[])=>cp.spawnSync('python3',[script,...args],{cwd:root,env:process.env,encoding:'utf8',timeout:180000});
 function compose(...args:string[]):string { const r=host('scripts/local.py',['compose',...args]);expect(r.status,'isolated service operation').toBe(0);return r.stdout; }
@@ -83,6 +84,15 @@ test('S5 encrypted PDF and XLSX browser journey reaches immutable sharing and in
  for(const who of ['b','y'])for(const suffix of ['invoice-view',`documents/${ids[0]}/view`])expect((await call(who,`/applications/${appId}/`+suffix)).status()).toBe(404);
  const raw=await call('x',`/applications/${appId}/invoice-preview.pdf`);expect(raw.status()).toBe(410);expect((await raw.body()).length).toBe(0);
  await p.goto(origin+'/notifications');await expect(p.getByText('未送信のデモです。実際のメールは送信しません。',{exact:true})).toBeVisible();await expect(p.locator('.records')).toContainText('対象の推薦を見る');
+});
+
+test('S5 retained internal invoice PDF matches authorized HTML values without browser delivery',async()=>{
+ const response=await call('x',`/applications/${shared.application.id}/invoice-view`);expect(response.status()).toBe(200);const value=await response.json();
+ const fields=['placement_id','invoice_number','decided_on','issuer','recipient','amount_yen','tax_label','demo_notice'];
+ const payload=Object.fromEntries(fields.map(k=>[k,value[k]]));
+ const code="import sys,json,os,urllib.request,io,subprocess,pikepdf;v=json.load(sys.stdin);r=urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8080/internal/pdf/render-invoice',data=json.dumps(v).encode(),headers={'Content-Type':'application/json','X-PDF-Key':os.environ['PDF_SHARED_KEY']}),timeout=12);b=r.read(524289);assert len(b)<=524288;p=pikepdf.Pdf.open(io.BytesIO(b));text=subprocess.run(['pdftotext','-','-'],input=b,capture_output=True,check=True).stdout.decode();box=[float(n) for n in p.pages[0].mediabox];print(json.dumps({'pages':len(p.pages),'a4':abs(box[2]-595.28)<2 and abs(box[3]-841.89)<2,'fonts':len(p.pages[0].Resources.Font),'japanese_and_values':all(s in text for s in ['500,000','税額：未計算',v['invoice_number'],v['issuer'],v['recipient'],'デモ用・実際の請求には使用できません。'])}))";
+ const r=cp.spawnSync('python3',['scripts/local.py','compose','exec','-T','invoice-renderer','python','-c',code],{cwd:root,env:process.env,input:JSON.stringify(payload),encoding:'utf8',timeout:20000});expect(r.status,'internal fixed template and parser').toBe(0);const checked=JSON.parse(r.stdout);expect(checked.pages).toBe(1);expect(checked.a4).toBe(true);expect(checked.fonts).toBeGreaterThan(0);expect(checked.japanese_and_values).toBe(true);
+ const raw=await call('x',`/applications/${shared.application.id}/invoice-preview.pdf`);expect(raw.status()).toBe(410);expect((await raw.body()).length).toBe(0);
 });
 
 test('S5 stale definitions load mismatch and update failure reject encrypted shared pages and submit',async()=>{
@@ -162,17 +172,30 @@ test('S5 small batch and 10MiB browser uploads record bounded phase latency with
   p.on('request',begin);p.on('requestfinished',finish);const ids=await attach(p,c,trial.files);await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('暗号化して受付済みです');p.off('request',begin);p.off('requestfinished',finish);durations.admission_wall=performance.now()-started;
   const stats:Record<string,number>=await p.evaluate('window.__s5');expect(stats.crypto_calls).toBeGreaterThan(0);durations.webcrypto=stats.crypto_ms;durations.max_animation_frame_gap=stats.max_frame_gap_ms;
   for(const [index,id] of ids.entries()){
-   const jobStarted=performance.now(),stage=worker();const jobWall=performance.now()-jobStarted;
+   const jobStarted=performance.now(),stage=worker();const jobWall=performance.now()-jobStarted;expect(Object.keys(stage).sort()).toEqual(['ciphertext_fetch','decrypt','av','validation_and_conversion','artifact_encryption_and_storage'].sort());expect(Object.values(lastWorkerMemory).filter((v):v is number=>v!==null).every(v=>v>0)).toBe(true);
    const queue=Number(sql(`SELECT extract(epoch FROM min(e.created_at)-j.created_at)*1000 FROM encrypted_document_jobs j JOIN document_worker_events e ON e.document_id=j.document_id AND e.event='claimed' WHERE j.document_id='${id}' GROUP BY j.created_at;`));
-   const t=performance.now(),r=await call('a','/documents/'+id+'/view');expect(r.status()).toBe(200);const v=await r.json();expect(v.format).toBe(trial.files[index].name.endsWith('.xlsx')?'xlsx':'pdf');
+   expect(Number.isFinite(queue)&&queue>=0).toBe(true);const t=performance.now(),r=await call('a','/documents/'+id+'/view');expect(r.status()).toBe(200);const v=await r.json();expect(v.format).toBe(trial.files[index].name.endsWith('.xlsx')?'xlsx':'pdf');
    if(v.format==='pdf'){const image=await call('a','/documents/'+id+'/view/pages/1');expect(image.status()).toBe(200);expect(image.headers()['content-type']).toBe('image/png');}
-   rows.push({case:trial.name,format:v.format,bytes:trial.files[index].buffer.length,browser_cache:trial.name.includes('cold')?'fresh context / first upload module':'same context / prior upload module',outcome:'ready',timings_ms:{...durations,queue_until_claim:queue,job_startup_processing_stop:jobWall,first_manifest_and_page:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
+   rows.push({case:trial.name,format:v.format,bytes:trial.files[index].buffer.length,browser_cache:trial.name.includes('cold')?'fresh browser context / first measured workload':'same context / later workload, new navigation',outcome:'ready',timings_ms:{...durations,queue_until_claim:queue,job_startup_processing_stop:jobWall,first_manifest_and_page:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
   }
  }
  // Same-size policy rejection is measured separately from successful documents.
  const c=await candidate('S5拒否計測の架空候補者');const id=(await attach(p,c,[{name:'S5不正形式.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(pdf.length,0x61)}]))[0],t=performance.now(),stage=worker(false);
- expect((await call('a','/documents/'+id+'/view')).status()).toBe(404);rows.push({case:'invalid-format-small',format:'pdf',bytes:pdf.length,browser_cache:'same context',outcome:'rejected',timings_ms:{job_startup_processing_stop:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
+ rejected={candidate:c,id};expect((await call('a','/documents/'+id+'/view')).status()).toBe(404);rows.push({case:'invalid-format-small',format:'pdf',bytes:pdf.length,browser_cache:'same context',outcome:'rejected',timings_ms:{job_startup_processing_stop:performance.now()-t},worker_ms:stage,memory_limits_bytes:{broker:536870912,relay:536870912,sandbox:1073741824},observed_memory_bytes:lastWorkerMemory,worker_oom:false});
  const metric='admission_wall',success=rows.filter(r=>r.outcome==='ready'&&r.case.startsWith('small-pdf')).map(r=>r.timings_ms[metric]).sort((a,b)=>a-b);
  const percentile=(p:number)=>success[Math.max(0,Math.ceil(p*success.length)-1)];
- fs.writeFileSync(path.join(dir,'artifacts/s5-performance.json'),JSON.stringify({units:'milliseconds unless named bytes',rows,small_pdf_admission:{n:success.length,p50:percentile(.5),p95:percentile(.95),method:'nearest rank; descriptive small sample only'},scope:'Real browser WebCrypto and local authenticated HTTP admission, real AV and fresh isolated parser per job. Every job is a fresh sandbox; browser cold/warm labels only. No TLS/WAN/production load or commercial latency SLA. AV and validation+conversion measured at broker; full host job wall includes startup and stop. Request durations include network and response transfer. Memory includes configured limits, OOM absence, broker RSS at completion and relay/sandbox cgroup peaks. An exited broker cgroup peak is unavailable (null).'},null,2)+'\n');
+ fs.writeFileSync(path.join(dir,'artifacts/s5-performance.json'),JSON.stringify({units:'milliseconds unless named bytes',rows,small_pdf_admission:{n:success.length,p50:percentile(.5),p95:percentile(.95),method:'nearest rank; descriptive small sample only'},scope:'Real browser WebCrypto and local authenticated HTTP admission, real AV and fresh isolated parser per job. Every job is a fresh sandbox; browser context/cache cold/warm labels only; every navigation creates a new JS realm. No TLS/WAN/production load or commercial latency SLA. AV and validation+conversion measured at broker; full host job wall includes startup and stop. Request durations include network and response transfer. Memory includes configured limits, OOM absence, broker RSS at completion and relay/sandbox cgroup peaks. An exited broker cgroup peak is unavailable (null).'},null,2)+'\n');
+});
+
+
+test('S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload',async()=>{
+ const {candidate:c,id}=rejected;expect(sql(`SELECT state||'|'||(expires_at>now()+interval '6 days') FROM idempotency_records WHERE resource_id='${id}';`)).toBe('failed|true');
+ const key=sql(`SELECT key FROM idempotency_records WHERE resource_id='${id}';`),r:Receipt=JSON.parse(sql(`SELECT json_build_object('upload_id',id,'attempt_id',canonical_attempt,'document_id',document_id,'state',state) FROM upload_sessions WHERE document_id='${id}';`));
+ const authorization=JSON.parse(sql(`SELECT json_build_object('attempt_id',id,'ciphertext_hash',ciphertext_hash,'ciphertext_size',ciphertext_size,'envelope',envelope) FROM upload_attempts WHERE id='${r.attempt_id}';`));
+ const before=counts(c.id);sql(`UPDATE idempotency_records SET expires_at=now()-interval '1 second' WHERE resource_id='${id}';`);
+ for(const suffix of ['', '/authorize','/attempts','/complete'])expect((await call('a','/document-uploads/'+r.upload_id+suffix,suffix?'POST':'GET',suffix==='/authorize'?authorization:undefined)).status()).toBe(409);
+ expect((await call('a',`/candidates/${c.id}/document-upload-outcome?key=${key}`)).status()).toBe(409);
+ const fragment={v:1,user:actors.a.me.user.id,org:actors.a.me.organization.id,candidate:c.id,operations:[{key,kind:'resume'}]},p=actors.a.page;let writes=0;const observer=(r:import('@playwright/test').Request)=>{if(/\/api\/v1\/document-uploads\//.test(r.url())&&['POST','PUT'].includes(r.method()))writes++;};p.on('request',observer);
+ try{await p.goto(origin+'/candidates/'+c.id+'#receipts='+encodeURIComponent(JSON.stringify(fragment)));await p.getByRole('button',{name:'受付結果をまとめて確認する'}).click();await expect(p.getByRole('region',{name:'書類の受付状況'})).toContainText('結果照合期限切れ');await expect(p.getByRole('button',{name:'受付結果を確認して再試行する'})).toHaveCount(0);expect(writes).toBe(0);}finally{p.off('request',observer);}
+ expect(counts(c.id)).toBe(before);expect(sql(`SELECT state FROM idempotency_records WHERE resource_id='${id}';`)).toBe('expired');
 });
