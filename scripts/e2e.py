@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run M1 through M6 / R1 through R4 browser E2E in a new local Compose project; retain all evidence/data."""
+"""Run M1 through M6 / R1 through R6 browser E2E in a new local Compose project; retain all evidence/data."""
 import argparse, hashlib, json, os, re, secrets, socket, subprocess, time, io, tarfile, ipaddress
 from pathlib import Path
 
@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--app-port', type=int, default=3001)
 parser.add_argument('--idp-port', type=int, default=18082)
-parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs','s5.spec.ts','r5.spec.ts'],help='Selected regression files; full suite is the default. Record the actual scope with completion evidence.')
+parser.add_argument('--test-file',nargs='+',choices=['business.spec.cjs','workflow.spec.cjs','documents.spec.cjs','r1.spec.cjs','r2.spec.cjs','r3.spec.cjs','r4.spec.cjs','m5.spec.cjs','s1.spec.cjs','s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs','s5.spec.ts','r5.spec.ts','r6.spec.ts'],help='Selected regression files; full suite is the default. Record the actual scope with completion evidence.')
 args = parser.parse_args()
 if args.app_port == args.idp_port or any(p < 1024 or p > 65535 for p in (args.app_port, args.idp_port)):
     parser.error('Use two distinct ports, 1024..65535.')
@@ -21,9 +21,9 @@ local.mkdir(mode=0o700, parents=True)
 os.umask(0o077)
 artifacts = local / 'artifacts'; artifacts.mkdir()
 env = dict(os.environ, RP_INSTANCE=instance, RP_APP_PORT=str(args.app_port), RP_IDP_PORT=str(args.idp_port), RP_E2E_DIR=str(local))
-summary = {'scope': 'R5 encrypted device autosave and recovery + regression; stop before R6/M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
+summary = {'scope': 'R6 cross-cutting validation, bounded load and distribution audit; stop before M7/publication', 'instance': instance, 'app_port': args.app_port, 'idp_port': args.idp_port, 'phase': 'setup', 'status': 'failed', 'test_selection':args.test_file or 'full'}
 def source_hashes():
-    tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/document_migrate.py','scripts/document_snapshot.py','scripts/document_operator.py','scripts/document_crypto.cjs','scripts/e2e.py','scripts/check.py','scripts/audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
+    tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/document_migrate.py','scripts/document_snapshot.py','scripts/document_operator.py','scripts/document_crypto.cjs','scripts/e2e.py','scripts/check.py','scripts/audit.py','scripts/distribution_audit.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file() and '__pycache__' not in p.parts]
     for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','services/document-worker','services/postgres','e2e/fixtures','validation/r0/fixtures']:
@@ -107,6 +107,14 @@ try:
         peak=int(subprocess.check_output(['docker','exec',name,'cat','/sys/fs/cgroup/memory.peak'],env=env,text=True))
         summary['av_runtime'][service]={'running':state['Running'],'oom_killed':state['OOMKilled'],'memory_peak_bytes':peak}
         if not state['Running'] or state['OOMKilled']:code=1;summary['status']='failed'
+    summary['resource_runtime']={}
+    for service in ('gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater'):
+        name=f'recruitment-{instance}-{service}-1'
+        meta=json.loads(subprocess.check_output(['docker','inspect',name],env=env,text=True))[0]
+        observed={k:int(subprocess.check_output(['docker','exec',name,'cat','/sys/fs/cgroup/'+k],env=env,text=True)) for k in ('memory.peak','memory.max','pids.max')}
+        cpu=subprocess.check_output(['docker','exec',name,'cat','/sys/fs/cgroup/cpu.max'],env=env,text=True).strip()
+        summary['resource_runtime'][service]={'image_id':meta['Image'],'running':meta['State']['Running'],'oom_killed':meta['State']['OOMKilled'],'memory_peak_bytes':observed['memory.peak'],'memory_limit_bytes':observed['memory.max'],'pids_limit':observed['pids.max'],'cpu_max':cpu}
+        if not meta['State']['Running'] or meta['State']['OOMKilled'] or observed['memory.max']<=0 or observed['pids.max']<=0:code=1;summary['status']='failed'
     summary['log_scan'] = {}
     for service in ('gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater'):
         raw = subprocess.check_output(['docker','logs',f'recruitment-{instance}-{service}-1'],env=env,stderr=subprocess.STDOUT)
