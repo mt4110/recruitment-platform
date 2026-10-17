@@ -17,6 +17,7 @@ def export(root,out,selected=None):
         return False
     for run in ([selected] if selected else sorted(root.glob('e2e-*/artifacts/run.json'))):
         run_count+=1
+        metadata=json.loads(run.read_text())
         fixture=run.parent.parent
         values=[]
         required=['demo-accounts.json','local.env','upload-private.pem','artifact-private.pem','broker-auth','scan-auth','viewer-auth']
@@ -29,7 +30,7 @@ def export(root,out,selected=None):
         accounts=fixture/'demo-accounts.json'
         if accounts.exists():values += [v.encode() for v in json.loads(accounts.read_text()).values()]
         env=fixture/'local.env'
-        if env.exists():values += [x.partition('=')[2].encode() for x in env.read_text().splitlines() if '=' in x and len(x.partition('=')[2])>=24]
+        if env.exists():values += [x.partition('=')[2].encode() for x in env.read_text().splitlines() if '=' in x and len(x.partition('=')[2])>=24 and not (x.partition('=')[0]=='COMPOSE_PROJECT_NAME' and x.partition('=')[2]=='recruitment-'+metadata.get('instance','') and re.fullmatch(r'e2e-[a-z0-9-]+',metadata.get('instance','')))]
         for name in ('upload-private.pem','artifact-private.pem','broker-auth','scan-auth','viewer-auth'):
             if (fixture/name).exists():values.append((fixture/name).read_bytes())
         files=list(run.parent.glob('*.json'))+list(run.parent.glob('*.png'))+list((run.parent/'audit').glob('*.json'))

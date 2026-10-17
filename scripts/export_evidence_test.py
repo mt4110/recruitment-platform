@@ -27,4 +27,15 @@ class EvidenceExportTests(unittest.TestCase):
         self.assertFalse(r['fixture_coverage'][0]['required_fixture_complete'])
     def test_absent_run_cannot_pass(self):
         root=self.base/'empty';root.mkdir();r=export(root,self.base/'empty-export');self.assertEqual(r['status'],'failed')
+    def test_only_verified_project_identity_is_public_metadata(self):
+        (self.artifacts/'run.json').write_text(json.dumps({'instance':'e2e-synthetic','project':'recruitment-e2e-synthetic'}))
+        with (self.fixture/'local.env').open('a') as f:f.write('\nCOMPOSE_PROJECT_NAME=recruitment-e2e-synthetic\n')
+        self.assertEqual(self.check()['status'],'passed')
+        # An unrelated secret placed in that variable must still be withheld.
+        root=self.base/'mismatch';fixture=root/'e2e-synthetic';(fixture/'artifacts').mkdir(parents=True)
+        for name in ('demo-accounts.json','local.env','upload-private.pem','artifact-private.pem','broker-auth','scan-auth','viewer-auth'):
+            (fixture/name).write_bytes((self.fixture/name).read_bytes())
+        (fixture/'local.env').write_text('COMPOSE_PROJECT_NAME=SYNTHETIC_PROJECT_SECRET_ONLY_12345')
+        (fixture/'artifacts/run.json').write_text(json.dumps({'instance':'e2e-synthetic','secret':'SYNTHETIC_PROJECT_SECRET_ONLY_12345'}))
+        self.assertEqual(export(root,self.base/'mismatch-export')['withheld_files'],1)
 if __name__=='__main__':unittest.main()

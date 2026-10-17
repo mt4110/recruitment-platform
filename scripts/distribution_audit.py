@@ -18,7 +18,7 @@ def main():
     accounts=fixture/'demo-accounts.json'
     if accounts.exists():values += [v.encode() for v in json.loads(accounts.read_text()).values()]
     env=fixture/'local.env'
-    if env.exists():values += [line.partition('=')[2].encode() for line in env.read_text().splitlines() if '=' in line and len(line.partition('=')[2])>=24]
+    if env.exists():values += [line.partition('=')[2].encode() for line in env.read_text().splitlines() if '=' in line and len(line.partition('=')[2])>=24 and not (line.partition('=')[0]=='COMPOSE_PROJECT_NAME' and line.partition('=')[2]=='recruitment-'+run['instance'])]
     for name in ('broker-auth','scan-auth','viewer-auth','upload-private.pem','artifact-private.pem'):
         if (fixture/name).exists():values.append((fixture/name).read_bytes())
     pattern=rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}|rp_session=|rp_attempt=|eyJ[A-Za-z0-9_-]+\.eyJ|[?&](?:access_token|id_token|code)='

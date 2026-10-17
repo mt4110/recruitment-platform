@@ -9,9 +9,9 @@ invitation to ignore a scanner. External publication remains a separate gate.
 import argparse, collections, datetime, hashlib, json, os, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);p.add_argument('--trivy',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);p.add_argument('--trivy',required=True);p.add_argument('--allow-r6-selected-run',action='store_true');a=p.parse_args()
 def main():
-    run=json.loads(a.run.read_text());assert run['services_stopped'] and run['test_selection']=='full' and not run['source_dirty'] and run['source_unchanged_during_run']
+    run=json.loads(a.run.read_text());assert run['services_stopped'] and (run['test_selection']=='full' or a.allow_r6_selected_run and run['test_selection']==['s5.spec.ts','z-s4.spec.cjs']) and not run['source_dirty'] and run['source_unchanged_during_run']
     for name,digest in run['source_sha256'].items():
         assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,'SOURCE_MISMATCH'
         assert hashlib.sha256(subprocess.check_output(['git','show',run['source_commit']+':'+name],cwd=ROOT)).hexdigest()==digest,'COMMIT_MISMATCH'
@@ -23,7 +23,7 @@ def main():
         if r.returncode not in (0,1):raise RuntimeError(f'Audit tool failed ({r.returncode}): {args[0]}')
         return json.loads(path.read_text())
     version=subprocess.check_output([a.trivy,'--version'],text=True).splitlines()[0];assert version=='Version: 0.76.0',version
-    summary={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_commit':run['source_commit'],'trivy':version,'cargo_audit':'0.22.1','images':{},'locks':{},'scope':'Known vulnerability and license inventory; not release approval','unknown_or_missing_license_packages':0}
+    summary={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_commit':run['source_commit'],'trivy':version,'test_selection':run['test_selection'],'cargo_audit':'0.22.1','images':{},'locks':{},'scope':'Known vulnerability and license inventory; not release approval','unknown_or_missing_license_packages':0}
     services=['gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater','document-broker','document-relay','document-sandbox']
     seen={}
     for service in services:

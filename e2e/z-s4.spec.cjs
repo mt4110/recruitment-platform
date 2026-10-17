@@ -79,11 +79,14 @@ test('S4 tampered backup refuses authentication before creating a restore target
  const f=path.join(dest,'000000.enc'),b=fs.readFileSync(f);b[b.length-1]^=1;fs.writeFileSync(f,b);expect(host('scripts/document_snapshot.py',['verify','--backup',dest]).status).toBe(1);
  const bad=source+'-bad';expect(host('scripts/document_snapshot.py',['restore','--backup',dest,'--target',bad]).status).toBe(1);expect(fs.existsSync(path.join(root,'.local',bad))).toBe(false);
 });
-test('S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance',async()=>{
- test.setTimeout(480000);
+test('S4 post-cutover snapshot authenticates current policy and old keys',async()=>{
+ test.setTimeout(360000);
  for(const purpose of ['original','artifact'])expect(host('scripts/document_key.py',[purpose,'rotate','--version',purpose+'-v8']).status).toBe(0);
  expect(host('scripts/document_key.py',['original','revoke','--version','original-v8']).status).toBe(0);
  await assertViews();postBackup=okay('scripts/document_snapshot.py',['backup']).backup;
+});
+test('S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance',async()=>{
+ test.setTimeout(480000);
  target=source+'-restore';const restored=host('scripts/document_snapshot.py',['restore','--backup',postBackup,'--target',target],420000);expect(restored.status,restored.stdout).toBe(0);
  process.env.RP_INSTANCE=target;await scanReady();expect(state()).toEqual(before);await assertViews();expect(sql(`SELECT wrap_version FROM document_migrations WHERE document_id='${D}';`)).toBe('original-v1');
  expect(sql('SELECT legacy_open FROM document_cutover;')).toBe('f');expect(sql("SELECT enabled FROM document_key_versions WHERE purpose='original' AND version='original-v8';")).toBe('f');const restoredDir=path.join(root,'.local',target),oldKey=path.join(restoredDir,'artifact-private.pem'),mode=fs.statSync(oldKey).mode&0o777;expect(fs.existsSync(path.join(restoredDir,'keyring/original-v8.pem'))).toBe(true);
