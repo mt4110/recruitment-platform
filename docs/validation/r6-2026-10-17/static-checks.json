@@ -1,0 +1,13 @@
+{
+  "source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "command": "python3 scripts/check.py",
+  "exit_code": 0,
+  "elapsed_seconds": 4.51,
+  "checks": [
+    "Rust format/Clippy/unit 9",
+    "web and E2E TypeScript",
+    "reporter regression 3",
+    "evidence export regression 6",
+    "Python/Node syntax"
+  ]
+}

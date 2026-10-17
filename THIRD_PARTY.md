@@ -48,3 +48,7 @@ PDF製品workerはPlaywright1.64.1（Apache-2.0）と公式v1.64.1-noble digest�
 ## S2のサービス分離（2026-10-16）
 
 broker／relayは既存のdigest固定Node24.22.0 imageとNode/OpenSSL標準cryptoだけを利用し、npm依存を追加しない。sandbox／旧形式検査／請求生成は既存の固定Python inspector・Playwright1.64.1 imageを再利用する。書類用秘密鍵をsandboxへ渡さず、請求サービスの認証鍵も独立させる。Rustのrsa秘密操作禁止は維持する。サービス分離をOS／image全体の監査合格とは扱わず、M6の保留を維持する。[S2記録](docs/validation/2026-10-16-s2-report.md)。
+
+## R6の再棚卸し（2026-10-17）
+
+常設11サービスとbroker／relay／sandboxの14役割を実image IDで対応づけ、同一IDだけを重複除外して再scanした。[R6記録](docs/validation/2026-10-17-r6-report.md)の全severity・修正有無・license未知数は期限切れDBによる参考値とし、最新DBでの再監査を要する。Linux全186件とローカル段階別検証の成功は監査／再配布適合を意味しない。M6の依存／OS指摘とM7の対応ソース提供・Chrome for Testing等の一般配布条件は未完了のまま維持する。今回、依存lockfileとimage baseのversion指定は変更していない。

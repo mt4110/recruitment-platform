@@ -1,0 +1,139 @@
+{
+  "scope": "R6 cross-cutting bounded load and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S5 encrypted PDF and XLSX browser journey reaches immutable sharing and invoice HTML",
+      "status": "passed",
+      "duration_ms": 38877,
+      "errors": []
+    },
+    {
+      "name": "S5 retained internal invoice PDF matches authorized HTML values without browser delivery",
+      "status": "passed",
+      "duration_ms": 1321,
+      "errors": []
+    },
+    {
+      "name": "S5 stale definitions load mismatch and update failure reject encrypted shared pages and submit",
+      "status": "passed",
+      "duration_ms": 2252,
+      "errors": []
+    },
+    {
+      "name": "S5 cross-document derivative substitution is refused without raw fallback",
+      "status": "passed",
+      "duration_ms": 468,
+      "errors": []
+    },
+    {
+      "name": "S5 browser context loss after stored response restores same receipt without a second PUT",
+      "status": "passed",
+      "duration_ms": 13376,
+      "errors": []
+    },
+    {
+      "name": "S5 browser loss before PUT requires file reselection and new attempt with the same document",
+      "status": "passed",
+      "duration_ms": 14574,
+      "errors": []
+    },
+    {
+      "name": "S5 terminal receipt expiry does not reauthorize resend complete or recreate jobs",
+      "status": "passed",
+      "duration_ms": 13702,
+      "errors": []
+    },
+    {
+      "name": "S5 small batch and 10MiB browser uploads record bounded phase latency without a fabricated SLA",
+      "status": "passed",
+      "duration_ms": 103065,
+      "errors": []
+    },
+    {
+      "name": "S5 real rejected receipt becomes a seven-day tombstone in the browser without another upload",
+      "status": "passed",
+      "duration_ms": 14303,
+      "errors": []
+    },
+    {
+      "name": "S4 inventory preserves old PDF/shared selection and rejects unprepared views",
+      "status": "passed",
+      "duration_ms": 816,
+      "errors": []
+    },
+    {
+      "name": "S4 backup crypto preserves large pipe output and rejects tag or context tampering",
+      "status": "passed",
+      "duration_ms": 414,
+      "errors": []
+    },
+    {
+      "name": "S4 cold backup authenticates DB original files old keys and AV definitions",
+      "status": "passed",
+      "duration_ms": 93621,
+      "errors": []
+    },
+    {
+      "name": "S4 mapping adds ciphertext without changing original selection",
+      "status": "passed",
+      "duration_ms": 17117,
+      "errors": []
+    },
+    {
+      "name": "S4 missing old original key refuses worker and preserves shared denial",
+      "status": "passed",
+      "duration_ms": 11611,
+      "errors": []
+    },
+    {
+      "name": "S4 queued migrations resume separately and preserve selected version",
+      "status": "passed",
+      "duration_ms": 23977,
+      "errors": []
+    },
+    {
+      "name": "S4 repeated apply remains idempotent after completed migration",
+      "status": "passed",
+      "duration_ms": 12506,
+      "errors": []
+    },
+    {
+      "name": "S4 migrated selected version renders with no raw fallback or framework errors",
+      "status": "passed",
+      "duration_ms": 352,
+      "errors": []
+    },
+    {
+      "name": "S4 current key policy denies migrated views and shares without rewriting snapshots",
+      "status": "passed",
+      "duration_ms": 1145,
+      "errors": []
+    },
+    {
+      "name": "S4 cutover drains old admission and explicitly quarantines unmigrated records",
+      "status": "passed",
+      "duration_ms": 24554,
+      "errors": []
+    },
+    {
+      "name": "S4 tampered backup refuses authentication before creating a restore target",
+      "status": "passed",
+      "duration_ms": 738,
+      "errors": []
+    },
+    {
+      "name": "S4 post-cutover snapshot authenticates current policy and old keys",
+      "status": "passed",
+      "duration_ms": 78981,
+      "errors": []
+    },
+    {
+      "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+      "status": "passed",
+      "duration_ms": 158745,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

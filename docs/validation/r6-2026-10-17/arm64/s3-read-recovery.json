@@ -1,0 +1,7 @@
+{
+  "transient_refusals": {},
+  "max_attempts": 10,
+  "delay_ms": 200,
+  "required_final_status": 200,
+  "allowed_transient_code": "SCANNER_UNAVAILABLE"
+}

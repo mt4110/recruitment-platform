@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-17T13:21:00.636742+00:00",
+  "normal_demo_services": {
+    "api": {
+      "running": true,
+      "health": "healthy"
+    },
+    "web": {
+      "running": true,
+      "health": "healthy"
+    },
+    "pdf-renderer": {
+      "running": true,
+      "health": "healthy"
+    },
+    "gateway": {
+      "running": true,
+      "health": "healthy"
+    },
+    "idp": {
+      "running": true,
+      "health": "healthy"
+    },
+    "db": {
+      "running": true,
+      "health": "healthy"
+    },
+    "idp-db": {
+      "running": true,
+      "health": "healthy"
+    }
+  },
+  "normal_demo_http_status": 200,
+  "isolated_e2e_running_containers": 0,
+  "normal_demo_updated": false,
+  "scope": "Read-only terminal health check; retained demo remains its previous version."
+}

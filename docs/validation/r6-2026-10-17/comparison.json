@@ -1,0 +1,16 @@
+{
+  "source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "source_files": 135,
+  "native_full_186_passed": true,
+  "local_baseline_185_plus_corrected_22": true,
+  "current_local_full_suite_rerun": false,
+  "source_hashes_equal": true,
+  "overall_ci_conclusion": "failure",
+  "audit_status": {
+    "local-arm64": "tool_error",
+    "amd64": "tool_error",
+    "arm64": "tool_error"
+  },
+  "local_baseline_commit": "c330eeadf064dd0ce37f551fe1110e6f22c99c83",
+  "scope": "R6 qualification; audit findings remain a separate failing gate; stop before M7/publication"
+}

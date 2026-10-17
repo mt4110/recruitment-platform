@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "fixture_coverage": [
+    {
+      "instance": "e2e-20261017-123823-3c747f",
+      "required_fixture_complete": true
+    }
+  ],
+  "copied_files": 28,
+  "withheld_files": 0,
+  "sha256": {
+    "e2e-20261017-123823-3c747f/audit/api.json": "7aa8c340425d5d07e4b2a449f190e8720d88a10d5233080e0474d71e9b44aa13",
+    "e2e-20261017-123823-3c747f/audit/artifact-viewer.json": "a6fe41b2d21a78389b28c4506f8093919e24bd98d4de7803d1265a80cb122d69",
+    "e2e-20261017-123823-3c747f/audit/cargo-licenses.json": "c8bc06f96b44c9f20fe34813934d60e8b656fb570c8b01ca8c5c851bf8c1414a",
+    "e2e-20261017-123823-3c747f/audit/cargo.json": "ae44406b3d5b8edba678247b47a145a18594c4879d0f48a3941816b9b8fe5d32",
+    "e2e-20261017-123823-3c747f/audit/db.json": "19a2cef232a2aeaf2ae9186c4985e6f0037bf3b9ffd9d560e32482a2828210f8",
+    "e2e-20261017-123823-3c747f/audit/e2e-npm.json": "7e61a1dc06ccb26109029be9b95227c72eeca9eb1ad4f71a2292e97fbbf21251",
+    "e2e-20261017-123823-3c747f/audit/gateway.json": "a1ff13d244013b3bd4689afc4ac60dbdfcf3ad7da4128ecaef7d753aa6761bf0",
+    "e2e-20261017-123823-3c747f/audit/idp.json": "a7deecf819e50518a9f74e934a22c8e26103c12329076a51850eccf2dd05c436",
+    "e2e-20261017-123823-3c747f/audit/pdf-npm.json": "12931fe186a1d5341d0bd56a90726249c7208945f5b9168701ba8b1af5ce8dc3",
+    "e2e-20261017-123823-3c747f/audit/pdf-renderer.json": "59968eec692666365d3086c7439cc64ea59dbdc26fe77e3bc3356ff81342e8a1",
+    "e2e-20261017-123823-3c747f/audit/scan.json": "043b4fd972834a521fc00851a3a64c057257ac074689a9d6618dd9bff1c71711",
+    "e2e-20261017-123823-3c747f/audit/summary.json": "2d7ae13b05271bb34db31178751b7c3b6c9aa07624b7a4857af5b72ae63d99e3",
+    "e2e-20261017-123823-3c747f/audit/tool-failure.json": "686cd0433e8d5c848d76bf9d7cef8181d5b15e29c7c7b61796028078a560cc76",
+    "e2e-20261017-123823-3c747f/audit/web-npm.json": "1edfafa47b19e0370e6d56a342e61d4a7e05f3fc950dbbb9a217fdcb10dee904",
+    "e2e-20261017-123823-3c747f/audit/web.json": "912babd69eaaadccd5228ed42ee7777e679f33e4566f9ffa929632ade6b66018",
+    "e2e-20261017-123823-3c747f/distribution.json": "2f692c05d336c6eda7d9854bace894747e7896e825d423d47852c0477652f8e5",
+    "e2e-20261017-123823-3c747f/legacy-migration.json": "6176c40bc53797ee695c66072e01c84920e4972b9273a0692bab528a5b596249",
+    "e2e-20261017-123823-3c747f/progress.json": "f369148f2ebabce2572807cc5dbc4f88542759237be203186cecbf1a4fbd8482",
+    "e2e-20261017-123823-3c747f/r2-isolation.json": "9c1686c3f0fa6f8cf65e5685abfef92532ea6d7f49b7d711eb29c1302d364c93",
+    "e2e-20261017-123823-3c747f/run.json": "53f9af975f39837bac5b48313086e3c6b32f2e5495e4e809a2f9d5707c984560",
+    "e2e-20261017-123823-3c747f/s4-migrated-selected-version.png": "b4e33e666769d80d5abf3879d79839124f28ba014b71a2178932ad6c47267844",
+    "e2e-20261017-123823-3c747f/s4-recovery.json": "14117ef50f87702fc5dcf7f5740f6d3ba2a4bb81a7bc97bbcd4c05787f55d4e0",
+    "e2e-20261017-123823-3c747f/s5-invoice-desktop.png": "b34afb2b89d2ce3a10f63e801d2e1123340516cd229bdeed906d72acce72b2af",
+    "e2e-20261017-123823-3c747f/s5-performance.json": "56942e56607f60c9b37c580ac1fb7f1eb131e03c8f7c1e0f400b12cde73e6e21",
+    "e2e-20261017-123823-3c747f/s5-shared-desktop.png": "073412f48a4ff088fd1ca880163b853f00c3f64b1523d9a5ef10dfe4aaf14a93",
+    "e2e-20261017-123823-3c747f/startup.json": "c3dfa65c9864ac8e5e230e831cc13f336c23be02bf6f321c8ec943c0d342443c",
+    "e2e-20261017-123823-3c747f/summary.json": "7a726f376451e19d54fdc21a4adb2cda7a15e3a842b75fcf452934f9909fa9dd",
+    "e2e-20261017-123823-3c747f/xlsx-policy.json": "3a01d3a4a76897ff51c65da1aff5160d7f0d1368b96237fa5ab09f272da010f4"
+  },
+  "scope": "Allowlisted JSON/PNG, known fixture secret bytes and authentication patterns; unsafe originals remain private. No OCR or image redistribution approval."
+}

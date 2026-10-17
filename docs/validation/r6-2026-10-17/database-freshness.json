@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-10-17T12:44:51.204641+00:00",
+  "trivy": "0.76.0",
+  "records": [
+    {
+      "repository": "default official source",
+      "vulnerability_database": {
+        "Version": 2,
+        "NextUpdate": "2026-10-17T01:13:54.947090202Z",
+        "UpdatedAt": "2026-10-16T01:13:54.947090392Z",
+        "DownloadedAt": "2026-10-17T12:34:53.683679Z"
+      },
+      "expired_at_observation": true
+    },
+    {
+      "repository": "public.ecr.aws/aquasecurity/trivy-db:2",
+      "vulnerability_database": {
+        "Version": 2,
+        "NextUpdate": "2026-10-17T01:13:54.947090202Z",
+        "UpdatedAt": "2026-10-16T01:13:54.947090392Z",
+        "DownloadedAt": "2026-10-17T12:44:31.034925Z"
+      },
+      "expired_at_observation": true
+    }
+  ],
+  "alternate_cache_was_new": true,
+  "alternate_download_exit_code": 0,
+  "freshness_rule_unchanged": true,
+  "status": "blocked_by_expired_database",
+  "scope": "Metadata receipt; not a clean vulnerability audit."
+}

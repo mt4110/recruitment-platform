@@ -1,0 +1,207 @@
+{
+  "checked_at": "2026-10-17T13:16:50.719873+00:00",
+  "source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "trivy": "Version: 0.76.0",
+  "test_selection": "full",
+  "cargo_audit": "0.22.1",
+  "images": {
+    "gateway": {
+      "image_id": "sha256:173d8f54401a36e3534af3a96fcd4a077a476b984938aa3391b6565e7aeddd15",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 71,
+      "findings": {
+        "MEDIUM": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "web": {
+      "image_id": "sha256:25ec3d9d827c01c61f4c0435b1792f7c9f53ed5024398d3b4a81e7723e9e37b5",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 253,
+      "findings": {
+        "LOW": 84,
+        "HIGH": 60,
+        "MEDIUM": 94,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "fixable_high_critical": 3
+    },
+    "api": {
+      "image_id": "sha256:8c77cf47bd519a2e9a68ab7f6e36c2ab3786567fa4ac9504c6eb8975aeaefdca",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 106,
+      "findings": {
+        "LOW": 152,
+        "HIGH": 69,
+        "MEDIUM": 128,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "db": {
+      "image_id": "sha256:52752f3f214fb2e209683cc75053a0e0b9680d8652ef308e2648ca97c5f34a4c",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 148,
+      "findings": {
+        "LOW": 173,
+        "HIGH": 95,
+        "MEDIUM": 194,
+        "UNKNOWN": 6,
+        "CRITICAL": 4
+      },
+      "fixable_high_critical": 25
+    },
+    "idp": {
+      "image_id": "sha256:4e8f716cccbf94c5461d9e6cb1f600bc74ac4d9bcfdf572511bbbc7d783d0ae5",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 562,
+      "findings": {
+        "MEDIUM": 25,
+        "LOW": 25
+      },
+      "fixable_high_critical": 0
+    },
+    "idp-db": {
+      "image_id": "sha256:52752f3f214fb2e209683cc75053a0e0b9680d8652ef308e2648ca97c5f34a4c",
+      "same_as": "db",
+      "role": "tested persistent container",
+      "architecture": "arm64"
+    },
+    "pdf-renderer": {
+      "image_id": "sha256:07f4a8b4c0e7604ac9100abe31822353e69be726e0287aa56757aa4b82926b79",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 691,
+      "findings": {
+        "LOW": 79,
+        "MEDIUM": 573,
+        "HIGH": 10
+      },
+      "fixable_high_critical": 7
+    },
+    "invoice-renderer": {
+      "image_id": "sha256:07f4a8b4c0e7604ac9100abe31822353e69be726e0287aa56757aa4b82926b79",
+      "same_as": "pdf-renderer",
+      "role": "tested persistent container",
+      "architecture": "arm64"
+    },
+    "artifact-viewer": {
+      "image_id": "sha256:4f17e4ae11f3724afd13bd0593016747d746a05190bada85f8f75ee48bd1bc7c",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 234,
+      "findings": {
+        "LOW": 84,
+        "HIGH": 64,
+        "MEDIUM": 100,
+        "CRITICAL": 4,
+        "UNKNOWN": 1
+      },
+      "fixable_high_critical": 10
+    },
+    "scan": {
+      "image_id": "sha256:2a56ef3a657b5c0ace4692c4decd11ed99a7fff7c2e4ee08fb93e2ef71da672b",
+      "role": "tested persistent container",
+      "architecture": "arm64",
+      "packages": 125,
+      "findings": {
+        "LOW": 144,
+        "HIGH": 79,
+        "MEDIUM": 120,
+        "CRITICAL": 1,
+        "UNKNOWN": 1
+      },
+      "fixable_high_critical": 0
+    },
+    "updater": {
+      "image_id": "sha256:2a56ef3a657b5c0ace4692c4decd11ed99a7fff7c2e4ee08fb93e2ef71da672b",
+      "same_as": "scan",
+      "role": "tested persistent container",
+      "architecture": "arm64"
+    },
+    "document-broker": {
+      "image_id": "sha256:4f17e4ae11f3724afd13bd0593016747d746a05190bada85f8f75ee48bd1bc7c",
+      "same_as": "artifact-viewer",
+      "role": "ephemeral job build tag",
+      "tag": "recruitment-e2e-20261017-124022-e8aebc-document-broker",
+      "architecture": "arm64"
+    },
+    "document-relay": {
+      "image_id": "sha256:4f17e4ae11f3724afd13bd0593016747d746a05190bada85f8f75ee48bd1bc7c",
+      "same_as": "artifact-viewer",
+      "role": "ephemeral job build tag",
+      "tag": "recruitment-e2e-20261017-124022-e8aebc-document-broker",
+      "architecture": "arm64"
+    },
+    "document-sandbox": {
+      "image_id": "sha256:07f4a8b4c0e7604ac9100abe31822353e69be726e0287aa56757aa4b82926b79",
+      "same_as": "pdf-renderer",
+      "role": "ephemeral job build tag",
+      "tag": "recruitment-e2e-20261017-124022-e8aebc-document-sandbox",
+      "architecture": "arm64"
+    }
+  },
+  "locks": {
+    "web": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "e2e": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "pdf": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "rustsec": {
+      "count": 1,
+      "database": {
+        "advisory-count": 1334,
+        "last-commit": "64f92cdc64401fab47baa10e2e11fe382aa57155",
+        "last-updated": "2026-10-17T01:27:42+02:00"
+      }
+    }
+  },
+  "scope": "Known vulnerability and license inventory; not release approval",
+  "unknown_or_missing_license_packages": 538,
+  "secret_findings": 0,
+  "scanner_databases": {
+    "Version": "0.76.0",
+    "VulnerabilityDB": {
+      "Version": 2,
+      "NextUpdate": "2026-10-17T01:13:54.947090202Z",
+      "UpdatedAt": "2026-10-16T01:13:54.947090392Z",
+      "DownloadedAt": "2026-10-17T13:16:55.009252357Z"
+    },
+    "JavaDB": {
+      "Version": 1,
+      "NextUpdate": "2026-10-20T01:07:50.102177379Z",
+      "UpdatedAt": "2026-10-17T01:07:50.102177499Z",
+      "DownloadedAt": "2026-10-17T13:17:28.875984689Z"
+    }
+  },
+  "status": "tool_error",
+  "database_errors": [
+    "VulnerabilityDB"
+  ]
+}

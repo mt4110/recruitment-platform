@@ -1,0 +1,7 @@
+{
+  "source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "test": "source hash mismatch refused before invoking scanner",
+  "exit_code": 2,
+  "status": "passed",
+  "fixture_sha256_intentionally_invalid": true
+}

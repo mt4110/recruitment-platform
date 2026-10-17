@@ -1,0 +1,303 @@
+{
+  "conclusion": "failure",
+  "databaseId": 39033316215,
+  "headSha": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "jobs": [
+    {
+      "completedAt": "2026-10-17T13:15:05Z",
+      "conclusion": "failure",
+      "databaseId": 117398080480,
+      "name": "verification (amd64, ubuntu-24.04)",
+      "startedAt": "2026-10-17T12:38:21Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-17T12:38:23Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-17T12:38:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:25Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 2,
+          "startedAt": "2026-10-17T12:38:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:25Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "number": 3,
+          "startedAt": "2026-10-17T12:38:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:25Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "number": 4,
+          "startedAt": "2026-10-17T12:38:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:41Z",
+          "conclusion": "success",
+          "name": "Install fixed E2E dependencies",
+          "number": 5,
+          "startedAt": "2026-10-17T12:38:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:39:55Z",
+          "conclusion": "success",
+          "name": "Install fixed web dependencies and Rust checks",
+          "number": 6,
+          "startedAt": "2026-10-17T12:38:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:11:57Z",
+          "conclusion": "success",
+          "name": "Verify full regression including R6 bounded load",
+          "number": 7,
+          "startedAt": "2026-10-17T12:39:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:11:57Z",
+          "conclusion": "success",
+          "name": "Verify source archive and sanitized evidence",
+          "number": 8,
+          "startedAt": "2026-10-17T13:11:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:13:44Z",
+          "conclusion": "success",
+          "name": "Prepare pinned audit tools",
+          "number": 9,
+          "startedAt": "2026-10-17T13:11:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:02Z",
+          "conclusion": "failure",
+          "name": "Audit exact tested images and dependencies (findings fail gate)",
+          "number": 10,
+          "startedAt": "2026-10-17T13:13:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:02Z",
+          "conclusion": "success",
+          "name": "Preserve redacted build failure diagnostics",
+          "number": 11,
+          "startedAt": "2026-10-17T13:15:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:02Z",
+          "conclusion": "success",
+          "name": "Export only validated evidence, withhold unsafe originals",
+          "number": 12,
+          "startedAt": "2026-10-17T13:15:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:03Z",
+          "conclusion": "success",
+          "name": "Preserve sanitized results only",
+          "number": 13,
+          "startedAt": "2026-10-17T13:15:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:03Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "number": 24,
+          "startedAt": "2026-10-17T13:15:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:03Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "number": 25,
+          "startedAt": "2026-10-17T13:15:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:04Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 26,
+          "startedAt": "2026-10-17T13:15:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:15:04Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-17T13:15:04Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/mt4110/recruitment-platform/actions/runs/39033316215/job/117398080480"
+    },
+    {
+      "completedAt": "2026-10-17T13:18:26Z",
+      "conclusion": "failure",
+      "databaseId": 117398080668,
+      "name": "verification (arm64, ubuntu-24.04-arm)",
+      "startedAt": "2026-10-17T12:38:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-17T12:38:26Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-17T12:38:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:27Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 2,
+          "startedAt": "2026-10-17T12:38:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:28Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "number": 3,
+          "startedAt": "2026-10-17T12:38:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:28Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "number": 4,
+          "startedAt": "2026-10-17T12:38:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:38:51Z",
+          "conclusion": "success",
+          "name": "Install fixed E2E dependencies",
+          "number": 5,
+          "startedAt": "2026-10-17T12:38:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T12:40:21Z",
+          "conclusion": "success",
+          "name": "Install fixed web dependencies and Rust checks",
+          "number": 6,
+          "startedAt": "2026-10-17T12:38:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:14:51Z",
+          "conclusion": "success",
+          "name": "Verify full regression including R6 bounded load",
+          "number": 7,
+          "startedAt": "2026-10-17T12:40:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:14:51Z",
+          "conclusion": "success",
+          "name": "Verify source archive and sanitized evidence",
+          "number": 8,
+          "startedAt": "2026-10-17T13:14:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:16:50Z",
+          "conclusion": "success",
+          "name": "Prepare pinned audit tools",
+          "number": 9,
+          "startedAt": "2026-10-17T13:14:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:22Z",
+          "conclusion": "failure",
+          "name": "Audit exact tested images and dependencies (findings fail gate)",
+          "number": 10,
+          "startedAt": "2026-10-17T13:16:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:22Z",
+          "conclusion": "success",
+          "name": "Preserve redacted build failure diagnostics",
+          "number": 11,
+          "startedAt": "2026-10-17T13:18:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:22Z",
+          "conclusion": "success",
+          "name": "Export only validated evidence, withhold unsafe originals",
+          "number": 12,
+          "startedAt": "2026-10-17T13:18:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:24Z",
+          "conclusion": "success",
+          "name": "Preserve sanitized results only",
+          "number": 13,
+          "startedAt": "2026-10-17T13:18:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:24Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "number": 24,
+          "startedAt": "2026-10-17T13:18:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:24Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "number": 25,
+          "startedAt": "2026-10-17T13:18:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:24Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 26,
+          "startedAt": "2026-10-17T13:18:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-17T13:18:24Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-17T13:18:24Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/mt4110/recruitment-platform/actions/runs/39033316215/job/117398080668"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/mt4110/recruitment-platform/actions/runs/39033316215"
+}

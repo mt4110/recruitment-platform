@@ -1,0 +1,12 @@
+{
+  "source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "hashes_verified": 135,
+  "actual_counts": {
+    "passed": 186
+  },
+  "resource_services": 11,
+  "worker_roles": 3,
+  "audit_status": "tool_error",
+  "source_archive": "passed",
+  "scope": "Actual results retained, not automatic audit acceptance"
+}
