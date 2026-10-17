@@ -1,0 +1,126 @@
+{
+  "scope": "Allowlisted scanner result targets, linked to compact report raw hashes; not raw scanner output.",
+  "images": [
+    {
+      "role": "gateway",
+      "image_id": "sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+      "raw_sha256": "a41e171aef4090d10b249b6d7ab6c70b906a84fc87b3653ee145c338ea841c7f",
+      "results": [
+        {
+          "target": "sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5 (alpine 3.24.2)",
+          "type": "alpine",
+          "package_advisory_rows": 3
+        }
+      ]
+    },
+    {
+      "role": "web",
+      "image_id": "sha256:bf30d74ebdea5ba43d69079fb3ad6667ac3fb3ccb8ba37173643c1f1b1ea65c6",
+      "raw_sha256": "70aeace4d19980899aecc608a1f447dd01cb6d8ce26fec942992fbc974f33a27",
+      "results": [
+        {
+          "target": "sha256:bf30d74ebdea5ba43d69079fb3ad6667ac3fb3ccb8ba37173643c1f1b1ea65c6 (debian 12.15)",
+          "type": "debian",
+          "package_advisory_rows": 228
+        },
+        {
+          "target": "Node.js",
+          "type": "node-pkg",
+          "package_advisory_rows": 12
+        }
+      ]
+    },
+    {
+      "role": "api",
+      "image_id": "sha256:fcc1de3be7c5c72ecd2e6b509356cd6f37e9b19ec692771a2bf0762152eb2673",
+      "raw_sha256": "a107b622ba88da6c5dea4877550bdfd24db8ac7b2a8f0ee0c39d23c75e06f0c7",
+      "results": [
+        {
+          "target": "sha256:fcc1de3be7c5c72ecd2e6b509356cd6f37e9b19ec692771a2bf0762152eb2673 (debian 12.15)",
+          "type": "debian",
+          "package_advisory_rows": 351
+        }
+      ]
+    },
+    {
+      "role": "db",
+      "image_id": "sha256:356766c37a0fa8e2f344d5ef750d343ef41dfb93a2203f4f4babcc0a1c93a61f",
+      "raw_sha256": "b080e7daed72597e5b2579e5f7ba8d8ffe40e3f5bea7aa3b2f219fa7ec5c3e19",
+      "results": [
+        {
+          "target": "sha256:356766c37a0fa8e2f344d5ef750d343ef41dfb93a2203f4f4babcc0a1c93a61f (debian 12.15)",
+          "type": "debian",
+          "package_advisory_rows": 412
+        },
+        {
+          "target": "usr/local/bin/gosu",
+          "type": "gobinary",
+          "package_advisory_rows": 60
+        }
+      ]
+    },
+    {
+      "role": "idp",
+      "image_id": "sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244",
+      "raw_sha256": "20ac27670016f27f50b684fe88a53a9950fd5f9a7f6ebf786031f2a053f630e5",
+      "results": [
+        {
+          "target": "sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244 (redhat 9.8)",
+          "type": "redhat",
+          "package_advisory_rows": 51
+        }
+      ]
+    },
+    {
+      "role": "pdf-renderer",
+      "image_id": "sha256:9a1b25ecf23e39c8302f1fafaf8c88f9851df7caea0e205f0c86fb45a1989b8d",
+      "raw_sha256": "8ea9290fa16c9aa395a44a461bb1c3bb1111760d3f6587aa882c3528e3a85a7f",
+      "results": [
+        {
+          "target": "sha256:9a1b25ecf23e39c8302f1fafaf8c88f9851df7caea0e205f0c86fb45a1989b8d (ubuntu 24.04)",
+          "type": "ubuntu",
+          "package_advisory_rows": 644
+        },
+        {
+          "target": "Node.js",
+          "type": "node-pkg",
+          "package_advisory_rows": 12
+        },
+        {
+          "target": "Python",
+          "type": "python-pkg",
+          "package_advisory_rows": 6
+        }
+      ]
+    },
+    {
+      "role": "artifact-viewer",
+      "image_id": "sha256:35d091db62f9c910be4c8470535c8ad0b9d71e19715b45f0c7debfee5d31e4e8",
+      "raw_sha256": "6ef5aae03cb9c170d3ee48801812256ca8b897fc43c04ccb494caec80cf8db93",
+      "results": [
+        {
+          "target": "sha256:35d091db62f9c910be4c8470535c8ad0b9d71e19715b45f0c7debfee5d31e4e8 (debian 12.15)",
+          "type": "debian",
+          "package_advisory_rows": 241
+        },
+        {
+          "target": "Node.js",
+          "type": "node-pkg",
+          "package_advisory_rows": 12
+        }
+      ]
+    },
+    {
+      "role": "scan",
+      "image_id": "sha256:187c4e25add946fb86d8db1dd74d71046724b521c79067f29e48aa30cd7e4b43",
+      "raw_sha256": "a4d10c7b9ffd93763bd7da73cdd7963d006c6afe540eeb9d6fae6c818613ae8e",
+      "results": [
+        {
+          "target": "sha256:187c4e25add946fb86d8db1dd74d71046724b521c79067f29e48aa30cd7e4b43 (debian 13.7)",
+          "type": "debian",
+          "package_advisory_rows": 345
+        }
+      ]
+    }
+  ]
+}

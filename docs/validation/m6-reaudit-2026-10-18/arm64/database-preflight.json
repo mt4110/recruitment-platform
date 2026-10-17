@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-10-17T19:24:55.654614+00:00",
+  "repository": "ghcr.io/aquasecurity/trivy-db:2",
+  "new_cache": true,
+  "metadata": {
+    "Version": "0.76.0",
+    "VulnerabilityDB": {
+      "Version": 2,
+      "NextUpdate": "2026-10-18T18:34:28.174846475Z",
+      "UpdatedAt": "2026-10-17T18:34:28.174846796Z",
+      "DownloadedAt": "2026-10-17T19:24:54.705947Z"
+    }
+  },
+  "vulnerability_db_fresh": true
+}

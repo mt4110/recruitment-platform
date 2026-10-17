@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "fixture_coverage": [
+    {
+      "instance": "e2e-20261017-123823-3c747f",
+      "required_fixture_complete": true
+    }
+  ],
+  "copied_files": 20,
+  "withheld_files": 0,
+  "sha256": {
+    "e2e-20261017-123823-3c747f/audit/api.json": "cb32d2ca675b38d6fa4059c6b43c10f9936f977335d934edb49035416f943759",
+    "e2e-20261017-123823-3c747f/audit/artifact-viewer.json": "3ed3dfc3bb142a6799e09fb509e912e20f876b1a12a2b5b8508c3677e2d46dcf",
+    "e2e-20261017-123823-3c747f/audit/cargo-licenses.json": "c8bc06f96b44c9f20fe34813934d60e8b656fb570c8b01ca8c5c851bf8c1414a",
+    "e2e-20261017-123823-3c747f/audit/cargo.json": "595767a194ef6d9427a5b3df81a52a6bd4df21c8b152a7ab48df55bfe521299d",
+    "e2e-20261017-123823-3c747f/audit/db.json": "833bc9193e6254302e892f6e607b8dc11675b26fb25cd37654f633c60a567761",
+    "e2e-20261017-123823-3c747f/audit/e2e-npm.json": "7e61a1dc06ccb26109029be9b95227c72eeca9eb1ad4f71a2292e97fbbf21251",
+    "e2e-20261017-123823-3c747f/audit/gateway.json": "2d945ec35b8d9999fa5e04adfe9149f5d1db64a4a5b83799f50216220483bd96",
+    "e2e-20261017-123823-3c747f/audit/idp.json": "d0106bb7b2d1937fe6dfd1bf171fe51d7c40c898d807277a846dc15157bfa889",
+    "e2e-20261017-123823-3c747f/audit/pdf-npm.json": "12931fe186a1d5341d0bd56a90726249c7208945f5b9168701ba8b1af5ce8dc3",
+    "e2e-20261017-123823-3c747f/audit/pdf-renderer.json": "4458548077f9a042b7ac2c543bb9ed8b03069fe1f5be809eb244238a1bf8807f",
+    "e2e-20261017-123823-3c747f/audit/scan.json": "03bc899f8ec3e7fe8f8106466b5881462832348de506d6cc30d9087e05b231ed",
+    "e2e-20261017-123823-3c747f/audit/summary.json": "b05d467339bd9c08a47fd9dc45758ef54b4131aec97b6c4697c7bbb8db16164c",
+    "e2e-20261017-123823-3c747f/audit/web-npm.json": "1edfafa47b19e0370e6d56a342e61d4a7e05f3fc950dbbb9a217fdcb10dee904",
+    "e2e-20261017-123823-3c747f/audit/web.json": "ac2cb6b44b3ea9e636d5982fd90ff0938371d198342bad313ecc7350749069c9",
+    "e2e-20261017-123823-3c747f/comparison.json": "608e6b4d77330c36b4bf29dba40290f583f8be527fc91d9afbd737d6d546fd61",
+    "e2e-20261017-123823-3c747f/database-preflight.json": "d63601448e94e5237a82508c94a5b3d0f274c0978857cf33686e0156968485d4",
+    "e2e-20261017-123823-3c747f/delta.json": "b35dd87cad14ce3c46a7d738bf6a7bc6e26364674dc11858a1afd32ca60e83a1",
+    "e2e-20261017-123823-3c747f/provenance.json": "7acc97ce050f12ecf625bf8406d9da3d0b1585bc9309f162b164b1ff1f545533",
+    "e2e-20261017-123823-3c747f/run.json": "53f9af975f39837bac5b48313086e3c6b32f2e5495e4e809a2f9d5707c984560",
+    "e2e-20261017-123823-3c747f/runtime-versions.json": "2d857582f3178a7836efd91952de97aea0eef2282e443334ffa15e157e6a8096"
+  },
+  "scope": "Allowlisted JSON/PNG, known fixture secret bytes and authentication patterns; unsafe originals remain private. No OCR or image redistribution approval."
+}

@@ -1,0 +1,23 @@
+{
+  "pdf-renderer": {
+    "image_id": "sha256:9a1b25ecf23e39c8302f1fafaf8c88f9851df7caea0e205f0c86fb45a1989b8d",
+    "container": "m6-inspect-20261018-pdf-renderer",
+    "exit_code": 0,
+    "stdout": "{\"expat\": \"expat_2.8.5\", \"lxml_libxml\": [2, 14, 6], \"qpdf\": \"12.4.2\"}",
+    "stderr": ""
+  },
+  "artifact-viewer": {
+    "image_id": "sha256:35d091db62f9c910be4c8470535c8ad0b9d71e19715b45f0c7debfee5d31e4e8",
+    "container": "m6-inspect-20261018-artifact-viewer",
+    "exit_code": 0,
+    "stdout": "{\"node\":\"24.22.0\",\"openssl\":\"3.5.8\"}",
+    "stderr": ""
+  },
+  "db": {
+    "image_id": "sha256:356766c37a0fa8e2f344d5ef750d343ef41dfb93a2203f4f4babcc0a1c93a61f",
+    "container": "m6-inspect-20261018-db",
+    "exit_code": 0,
+    "stdout": "1.19 (go1.24.6 on linux/arm64; gc)",
+    "stderr": ""
+  }
+}

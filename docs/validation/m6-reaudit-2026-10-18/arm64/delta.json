@@ -1,0 +1,224 @@
+[
+  {
+    "role": "api",
+    "added": [],
+    "changed": [],
+    "removed": []
+  },
+  {
+    "role": "artifact-viewer",
+    "added": [],
+    "changed": [],
+    "removed": []
+  },
+  {
+    "role": "db",
+    "added": [],
+    "changed": [
+      {
+        "VulnerabilityID": "CVE-2026-97030",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.26.9, 1.27.2",
+        "Severity": "MEDIUM",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97030"
+      }
+    ],
+    "removed": []
+  },
+  {
+    "role": "gateway",
+    "added": [
+      {
+        "VulnerabilityID": "CVE-2026-77214",
+        "PkgName": "libexpat",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.5-r0",
+        "FixedVersion": "2.9.0-r0",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-77214"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-102633",
+        "PkgName": "libexpat",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.5-r0",
+        "FixedVersion": "2.9.0-r0",
+        "Severity": "MEDIUM",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102633"
+      }
+    ],
+    "changed": [],
+    "removed": []
+  },
+  {
+    "role": "idp",
+    "added": [
+      {
+        "VulnerabilityID": "CVE-2026-46675",
+        "PkgName": "java-21-openjdk-headless",
+        "PkgPath": null,
+        "InstalledVersion": "1:21.0.12.1.1-1.2.el9",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-46675"
+      }
+    ],
+    "changed": [],
+    "removed": []
+  },
+  {
+    "role": "pdf-renderer",
+    "added": [],
+    "changed": [],
+    "removed": []
+  },
+  {
+    "role": "scan",
+    "added": [],
+    "changed": [
+      {
+        "VulnerabilityID": "CVE-2026-66046",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66046"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-76956",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-76956"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-76957",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-76957"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-77214",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-77214"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-93990",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93990"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-102633",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "MEDIUM",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102633"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-15310",
+        "PkgName": "libpython3.13-minimal",
+        "PkgPath": null,
+        "InstalledVersion": "3.13.5-2+deb13u5",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-15310"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-15310",
+        "PkgName": "libpython3.13-stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "3.13.5-2+deb13u5",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-15310"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-107161",
+        "PkgName": "libsasl2-2",
+        "PkgPath": null,
+        "InstalledVersion": "2.1.28+dfsg1-9",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-107161",
+        "PkgName": "libsasl2-modules",
+        "PkgPath": null,
+        "InstalledVersion": "2.1.28+dfsg1-9",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-107161",
+        "PkgName": "libsasl2-modules-db",
+        "PkgPath": null,
+        "InstalledVersion": "2.1.28+dfsg1-9",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-107161"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-15310",
+        "PkgName": "python3.13",
+        "PkgPath": null,
+        "InstalledVersion": "3.13.5-2+deb13u5",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-15310"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-15310",
+        "PkgName": "python3.13-minimal",
+        "PkgPath": null,
+        "InstalledVersion": "3.13.5-2+deb13u5",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "Status": "affected",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-15310"
+      }
+    ],
+    "removed": []
+  },
+  {
+    "role": "web",
+    "added": [],
+    "changed": [],
+    "removed": []
+  }
+]

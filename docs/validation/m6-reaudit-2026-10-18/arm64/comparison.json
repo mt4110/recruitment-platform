@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-10-17T19:28:47.364143+00:00",
+  "scope": "Reaudit exact previously tested local arm64 images; no rebuild, new E2E, native amd64 audit, CI dispatch, dependency fix, M7 or publication.",
+  "audit_exit": 1,
+  "audit_status": "findings",
+  "all_databases_fresh": true,
+  "tested_source_commit": "6476ad96f1954983db10bfc12b1a1edec0de8b0b",
+  "record_source_commit": "c0c1bca90db8fd2b7f2af20410d83f440c78b83b",
+  "source_hashes_verified": 135,
+  "image_roles": 14,
+  "unique_images": 8,
+  "image_findings_by_severity": {
+    "HIGH": 378,
+    "MEDIUM": 1242,
+    "LOW": 737,
+    "UNKNOWN": 9,
+    "CRITICAL": 11
+  },
+  "fixable_high_critical_package_advisory_rows": 51,
+  "previous_fixable_high_critical_rows": 45,
+  "application_npm_audits_zero": true,
+  "rustsec_findings": 1,
+  "unknown_or_missing_license_package_records": 538,
+  "secret_findings": 0,
+  "new_e2e_executed": false,
+  "native_amd64_reaudited": false
+}

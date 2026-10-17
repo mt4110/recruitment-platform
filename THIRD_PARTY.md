@@ -1,6 +1,6 @@
 # 依存物のライセンスと確認範囲
 
-2026-10-16更新。各導入段階の履歴を含み、現在の監査結果は末尾のM6節を参照。プロジェクト本体はApache-2.0。第三者の権利・ライセンスはそれぞれに従う。依存を改変して再配布する場合は、対象のLICENSE/NOTICE/source提供条件を再確認する。
+2026-10-18更新。各導入段階の履歴を含み、最新の監査結果は末尾の再監査節を参照。プロジェクト本体はApache-2.0。第三者の権利・ライセンスはそれぞれに従う。依存を改変して再配布する場合は、対象のLICENSE/NOTICE/source提供条件を再確認する。
 
 | 主な製品依存 | 固定版 | 表記 |
 | --- | --- | --- |
@@ -52,3 +52,7 @@ broker／relayは既存のdigest固定Node24.22.0 imageとNode/OpenSSL標準cryp
 ## R6の再棚卸し（2026-10-17）
 
 常設11サービスとbroker／relay／sandboxの14役割を実image IDで対応づけ、同一IDだけを重複除外して再scanした。[R6記録](docs/validation/2026-10-17-r6-report.md)の全severity・修正有無・license未知数は期限切れDBによる参考値とし、最新DBでの再監査を要する。Linux全186件とローカル段階別検証の成功は監査／再配布適合を意味しない。M6の依存／OS指摘とM7の対応ソース提供・Chrome for Testing等の一般配布条件は未完了のまま維持する。今回、依存lockfileとimage baseのversion指定は変更していない。
+
+## M6再監査（2026-10-18）
+
+[期限内DBの再監査記録](docs/validation/2026-10-18-m6-reaudit-report.md)を追加。保持したarm64の14役割／8実imageを照合し、Trivy／Java DBとも期限内でfindings/exit1。M6受入は保留。未知／未取得licenseは538のpackage記録で、idp 413・renderer 95が大半を占める。package重複の整理とPOM／LICENSE／OS copyrightへの一次照合、一般配布条件の確認は残る。scannerの未知記録を違反確定や許諾済みと扱わない。RustSecの未修正1件も維持。inspectorのExpat 2.8.5は手動の実version確認で補足し、OS package scan合計へ加算していない。今回、製品コード／lock／digestを変更せず、amd64の再監査・新しいE2E／CI・M7・公開は実施していない。
