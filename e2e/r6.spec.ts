@@ -6,7 +6,7 @@ const {sql, signIn, identity, origin, assertPrivateStorage} = require('./helpers
 const dir=process.env.RP_E2E_DIR!;
 type Actor={context:BrowserContext;page:Page;me:{user:{id:string};csrf_token:string}};
 const actors:Record<string,Actor>={};
-const evidence:{forms:string[];load:unknown[]}={forms:[],load:[]};
+const evidence:{forms:string[];load:unknown[];ime?:unknown}={forms:[],load:[]};
 const issues:string[]=[];
 let candidate:{id:string;version:number},job:{id:string;version:number},application:{id:string},shared:{id:string},documentId:string;
 async function call(who:string,method:string,url:string,data?:unknown){
@@ -63,8 +63,17 @@ for(const c of cases)test(`R6 ${c.kind}: input navigation reload visibility and 
  const panel=p.getByRole('complementary',{name:'個人下書き'}).nth(c.index||0);
  await expect(panel).toContainText(/サーバーへ保存しました|下書きを復元しました/);
  const input=c.field(p);await expect(input).toBeEnabled();
- const saved=p.waitForResponse(r=>r.request().method()==='PUT'&&r.url().includes('/api/v1/drafts/')&&r.request().postDataJSON()?.form_type===c.kind&&r.ok());
- if(c.checkbox)await input.check();else if(c.select)await input.selectOption(c.value);else await input.fill(c.value);
+ const saved=p.waitForResponse(r=>r.request().method()==='PUT'&&r.url().includes('/api/v1/drafts/')&&r.request().postDataJSON()?.form_type===c.kind&&(c.kind!=='candidate_new'||r.request().postDataJSON()?.payload?.name===c.value)&&r.ok());
+ if(c.kind==='candidate_new'){
+  const errors:string[]=[],warnings:string[]=[];
+  const listener=(m:import('@playwright/test').ConsoleMessage)=>{if(m.type()==='error')errors.push('CONSOLE_ERROR');if(m.type()==='warning')warnings.push('CONSOLE_WARNING');};p.on('console',listener);
+  await input.focus();const cdp=await actor.context.newCDPSession(p);
+  const intermediate=p.waitForResponse(r=>r.request().method()==='PUT'&&r.url().includes('/api/v1/drafts/')&&r.request().postDataJSON()?.payload?.name==='かくうへんかんちゅう'&&r.ok());
+  await cdp.send('Input.imeSetComposition',{text:'かくうへんかんちゅう',selectionStart:10,selectionEnd:10});await expect(input).toHaveValue('かくうへんかんちゅう');await intermediate;
+  await cdp.send('Input.insertText',{text:c.value});await expect(input).toHaveValue(c.value);await saved;
+  p.off('console',listener);await cdp.detach();expect(errors).toEqual([]);expect(warnings).toEqual([]);
+  evidence.ime={method:'Chromium CDP composition, not OS IME',intermediate_saved:true,final_saved:true,console_errors:errors.length,console_warnings:warnings.length};
+ }else if(c.checkbox)await input.check();else if(c.select)await input.selectOption(c.value);else await input.fill(c.value);
  await input.blur();const response=await saved;const id=(await response.json()).id;
  const check=async()=>{
   const field=c.field(p);if(c.checkbox)await expect(field).toBeChecked();else await expect(field).toHaveValue(c.value);
@@ -82,8 +91,8 @@ for(const c of cases)test(`R6 ${c.kind}: input navigation reload visibility and 
  await p.goto(origin+url);await check();await assertPrivateStorage(p);
  expect((await call(c.who,'GET','/drafts/'+id)).status()).toBe(200);
  expect(sql('SELECT (SELECT count(*) FROM jobs),(SELECT count(*) FROM candidates),(SELECT count(*) FROM applications),(SELECT count(*) FROM documents),(SELECT count(*) FROM selection_events),(SELECT count(*) FROM notification_previews);')).toBe(counts);
- if(c.kind==='candidate_edit')await p.screenshot({path:path.join(dir,'artifacts/r6-restored-desktop.png')});
- if(c.kind==='application_filters'){await p.setViewportSize({width:390,height:844});await expect.poll(()=>p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await p.screenshot({path:path.join(dir,'artifacts/r6-restored-mobile.png')});}
+ if(c.kind==='candidate_edit'){await input.scrollIntoViewIfNeeded();await p.screenshot({path:path.join(dir,'artifacts/r6-restored-desktop.png')});}
+ if(c.kind==='application_filters'){await p.setViewportSize({width:390,height:844});await input.scrollIntoViewIfNeeded();await expect.poll(()=>p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await p.screenshot({path:path.join(dir,'artifacts/r6-restored-mobile.png')});}
  evidence.forms.push(c.kind);await p.goto('about:blank');
 });
 test('R6 bounded concurrent load preserves ownership revisions rate admission and resource limits',async()=>{

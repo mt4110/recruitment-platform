@@ -90,15 +90,15 @@ jobs:
               if re.search(forbidden,text): text='Diagnostics withheld: residual sensitive pattern.'
               (folder/'artifacts/build-failure.json').write_text(json.dumps({'phase':state['phase'],'redacted_tail':text},indent=2)+'\n')
           PYCODE
+      - name: Export only validated evidence, withhold unsafe originals
+        if: always()
+        run: python3 scripts/export_evidence.py --out .local/shared-r6
       - name: Preserve sanitized results only
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: r6-browser-results-${{ matrix.arch }}
-          path: |
-            .local/e2e-*/artifacts/*.json
-            .local/e2e-*/artifacts/*.png
-            .local/e2e-*/artifacts/audit/*.json
+          path: .local/shared-r6/
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

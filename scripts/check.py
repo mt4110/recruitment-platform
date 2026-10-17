@@ -10,6 +10,7 @@ run('cargo','fmt','--manifest-path','services/api/Cargo.toml','--','--check')
 run('cargo','clippy','--manifest-path','services/api/Cargo.toml','--locked','--all-targets','--','-D','warnings')
 run('cargo','test','--manifest-path','services/api/Cargo.toml','--locked')
 run('npm','run','typecheck','--prefix','apps/web')
+run('node','--test','e2e/reporter.test.cjs')
 run('node','apps/web/node_modules/typescript/bin/tsc','--project','e2e/tsconfig.json')
 # Syntax validation does not write pyc or execute fixture helpers.
 for folder in ('scripts','services/av','services/pdf-renderer','services/document-worker','e2e'):

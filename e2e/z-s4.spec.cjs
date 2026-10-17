@@ -39,12 +39,20 @@ test('S4 cold backup authenticates DB original files old keys and AV definitions
  expect(okay('scripts/document_snapshot.py',['verify','--backup',preBackup]).status).toBe('verified');await scanReady();expect(state()).toEqual(before);
  const files=fs.readdirSync(preBackup);expect(files).toContain('manifest.enc');expect(files).toContain('COMPLETE');expect(files.every(f=>f==='COMPLETE'||/^\d{6}\.enc$/.test(f)||f==='manifest.enc')).toBe(true);expect(fs.existsSync(path.join(preBackup,'backup.key'))).toBe(false);
 });
-test('S4 mapping adds ciphertext then resumes after old original key loss and worker failure',async()=>{
+test('S4 mapping adds ciphertext without changing original selection',async()=>{
  const args=['apply','--backup',preBackup,'--document',D,'--document',xlsx.id];expect(okay('scripts/document_migrate.py',args).queued_or_ready).toBe(2);
  expect(state()).toEqual(before);expect((await call('a','/documents/'+D+'/view')).status()).toBe(404);
+});
+test('S4 missing old original key refuses worker and preserves shared denial',async()=>{
  const k=path.join(dir,'upload-private.pem'),mode=fs.statSync(k).mode&0o777;fs.chmodSync(k,0);
  try{expect(host('scripts/document_job.py',['--no-build']).status).toBe(1);expect((await call('x',`/applications/${A}/documents/${D}/view`)).status()).toBe(404);}finally{fs.chmodSync(k,mode);}
+});
+test('S4 queued migrations resume separately and preserve selected version',async()=>{
  for(let i=0;i<2;i++)expect(okay('scripts/document_job.py',['--no-build']).events).toEqual(['checked']);
+ expect(state()).toEqual(before);await assertViews();
+});
+test('S4 repeated apply remains idempotent after completed migration',async()=>{
+ const args=['apply','--backup',preBackup,'--document',D,'--document',xlsx.id];
  expect(okay('scripts/document_migrate.py',args).queued_or_ready).toBe(2);expect(sql(`SELECT count(*) FROM document_migrations WHERE document_id IN ('${D}','${xlsx.id}') AND state='ready';`)).toBe('2');expect(state()).toEqual(before);await assertViews();
 });
 test('S4 migrated selected version renders with no raw fallback or framework errors',async()=>{
