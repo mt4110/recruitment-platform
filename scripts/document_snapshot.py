@@ -5,7 +5,7 @@ No overwrite, cleanup, key replacement, live cloud backup or arbitrary archive e
 import argparse,json,os,re,secrets,uuid
 from pathlib import Path,PurePosixPath
 from document_operator import ROOT,instance,values,run,compose,sql,quote,digest,lock,write_new,crypto,volume_helper,LIST,READ,WRITE
-IMAGES=['db','idp-db','api','web','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater','document-broker','document-sandbox']
+IMAGES=['gateway','db','idp-db','api','web','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater','document-broker','document-sandbox']
 MAX_TOTAL=1610612736
 CONFIG={'local.env','realm.json','demo-accounts.json','upload-private.pem','upload-public.pem','broker-auth','broker-api-auth','scan-auth','artifact-private.pem','artifact-public.pem','viewer-auth','viewer-api-auth','worker-keys-initialized','viewer-keys-initialized'}
 def valid_config(p):return p in CONFIG or bool(re.fullmatch(r'(?:keyring/(?:original|artifact)-v[1-9][0-9]{0,3}(?:\.public)?\.pem|viewer-keys/artifact-v[1-9][0-9]{0,3}\.pem)',p))
@@ -103,6 +103,7 @@ def restore(folder,target):
  for kind,prefix in [('volume',project+'_'),('network',project+'_'),('image',project+'-')]:
   listing=run(['docker',kind,'ls','--format','{{.Repository}}' if kind=='image' else '{{.Name}}']).decode().splitlines()
   if any(n.startswith(prefix) for n in listing):raise ValueError('Target resources already exist')
+ if not set(IMAGES)<=set(m['image_ids']):raise ValueError('Snapshot lacks a required runtime image; create a new verified snapshot before cutover')
  for image in m['image_ids'].values():
   if not re.fullmatch(r'sha256:[a-f0-9]{64}',image):raise ValueError('Invalid image identity')
   run(['docker','image','inspect',image,'--format','{{.Id}}'])

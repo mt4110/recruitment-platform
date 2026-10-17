@@ -87,8 +87,10 @@ test('S4 post-cutover snapshot authenticates current policy and old keys',async(
 });
 test('S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance',async()=>{
  test.setTimeout(480000);
+ const gatewayImage=cp.execFileSync('docker',['inspect','--format','{{.Image}}',`recruitment-${source}-gateway-1`],{env:process.env,encoding:'utf8'}).trim();
  target=source+'-restore';const restored=host('scripts/document_snapshot.py',['restore','--backup',postBackup,'--target',target],420000);expect(restored.status,restored.stdout).toBe(0);
  process.env.RP_INSTANCE=target;await scanReady();expect(state()).toEqual(before);await assertViews();expect(sql(`SELECT wrap_version FROM document_migrations WHERE document_id='${D}';`)).toBe('original-v1');
+ expect(cp.execFileSync('docker',['inspect','--format','{{.Image}}',`recruitment-${target}-gateway-1`],{env:process.env,encoding:'utf8'}).trim()).toBe(gatewayImage);
  expect(sql('SELECT legacy_open FROM document_cutover;')).toBe('f');expect(sql("SELECT enabled FROM document_key_versions WHERE purpose='original' AND version='original-v8';")).toBe('f');const restoredDir=path.join(root,'.local',target),oldKey=path.join(restoredDir,'artifact-private.pem'),mode=fs.statSync(oldKey).mode&0o777;expect(fs.existsSync(path.join(restoredDir,'keyring/original-v8.pem'))).toBe(true);
  fs.chmodSync(oldKey,0);try{expect((await call('x',`/applications/${A}/documents/${D}/view`)).status()).toBe(404);}finally{fs.chmodSync(oldKey,mode);}
  await assertViews();
@@ -101,7 +103,7 @@ test('S4 old keys DB encrypted blobs and selected snapshots restore to a new iso
  const app=await(await call('a','/applications/'+A)).json();const r=await call('a',`/applications/${A}/revoke-sharing`,'POST',{version:app.version,reason:'S4架空の復旧後確認'});expect(r.status()).toBe(200);
  for(const suffix of ['', '/pages/1']){expect((await call('x',`/applications/${A}/documents/${D}/view`+suffix)).status()).toBe(404);expect((await call('a',`/applications/${A}/documents/${D}/view`+suffix)).status()).toBe(200);}
  const inspection=JSON.parse(cp.execFileSync('docker',['inspect',`recruitment-${source}-api-1`],{env:process.env}));expect(inspection[0].State.Running).toBe(false);
- const out={same_document_and_selection:true,old_keys_restored:true,source_retained_stopped:true,target,backup_authenticated:true,access_denials:true,raw_routes_closed:true};fs.writeFileSync(path.join(dir,'artifacts/s4-recovery.json'),JSON.stringify(out,null,2)+'\n');
+ const out={same_document_and_selection:true,old_keys_restored:true,gateway_image_preserved:true,source_retained_stopped:true,target,backup_authenticated:true,access_denials:true,raw_routes_closed:true};fs.writeFileSync(path.join(dir,'artifacts/s4-recovery.json'),JSON.stringify(out,null,2)+'\n');
  const secrets=Object.values(JSON.parse(fs.readFileSync(path.join(dir,'demo-accounts.json'))));secrets.push(...fs.readFileSync(path.join(dir,'local.env'),'utf8').split('\n').filter(l=>l.includes('=')).map(l=>l.slice(l.indexOf('=')+1)).filter(v=>v.length>=24));
  out.restored_log_secret_pattern_found=false;const services=['gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater'];
  for(const svc of services){const logs=cp.execFileSync('docker',['logs',`recruitment-${target}-${svc}-1`],{env:process.env,stdio:['ignore','pipe','pipe']}).toString();if(secrets.some(v=>logs.includes(v))||/-----BEGIN .*PRIVATE KEY-----|rp_session=|rp_attempt=|(?:[?&](?:code|access_token|id_token)=)/.test(logs))out.restored_log_secret_pattern_found=true;}expect(out.restored_log_secret_pattern_found).toBe(false);

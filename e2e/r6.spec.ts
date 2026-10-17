@@ -1,5 +1,6 @@
 import {test, expect, BrowserContext, Page, Locator} from '@playwright/test';
 import crypto from 'node:crypto';
+import cp from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 const {sql, signIn, identity, origin, assertPrivateStorage} = require('./helpers.cjs');
@@ -13,6 +14,26 @@ async function call(who:string,method:string,url:string,data?:unknown){
  return actors[who].context.request.fetch(origin+'/api/v1'+url,{method,timeout:15000,headers:{Origin:origin,'X-CSRF-Token':actors[who].me.csrf_token,'Idempotency-Key':crypto.randomUUID()},...(data===undefined?{}:{data})});
 }
 async function ok(who:string,method:string,url:string,data:unknown,status=200){const r=await call(who,method,url,data);expect(r.status()).toBe(status);return r.json();}
+async function scannerReady(){
+ let stable=0;
+ await expect.poll(()=>{
+  const r=cp.spawnSync('python3',['scripts/local.py','compose','exec','-T','api','sh','-c','curl --fail --silent --max-time 3 -H "X-Scan-Key: $SCAN_SHARED_KEY" http://scan:8080/internal/scan/state'],{encoding:'utf8',timeout:10000});
+  try{if(r.status===0&&JSON.parse(r.stdout).update_ok)return ++stable;}catch{}
+  stable=0;return 0;
+ },{timeout:90000,intervals:[500]}).toBe(3);
+}
+async function preparedDocument(r:import('@playwright/test').APIResponse){
+ let d;
+ if(r.status()===503){
+  const failure=await r.json();expect(failure.error.code).toBe('SCANNER_UNAVAILABLE');
+  const id=failure.error.document_id;expect(id).toMatch(/^[a-f0-9-]{36}$/);
+  expect(sql(`SELECT count(*) FROM document_checks WHERE document_id='${id}';`)).toBe('0');
+  expect((await(await call('a','GET',`/documents/${id}`)).json()).available).toBe(false);
+  await scannerReady();const resumed=await call('a','POST',`/documents/${id}/retry`);
+  expect(resumed.status()).toBe(200);d=await resumed.json();expect(d.id).toBe(id);
+ }else{expect(r.status()).toBe(201);d=await r.json();}
+ expect(d.available).toBe(true);return d;
+}
 function boundary(){sql("UPDATE form_drafts SET expires_at=now()-interval '1 second',revision=revision+1 WHERE state='active' AND expires_at>now();UPDATE draft_admissions SET at=now()-interval '2 hours';");}
 test.beforeAll(async({browser})=>{
  boundary();
@@ -25,13 +46,15 @@ test.beforeAll(async({browser})=>{
  job=await ok('x','POST','/jobs',{title:'R6架空求人',description:'R6架空の横断検証',location:'東京都',employment_type:'full_time'},201);
  job=await ok('x','POST',`/jobs/${job.id}/status`,{version:job.version,status:'published'});
  candidate=await ok('a','POST','/candidates',{name:'R6架空候補者',summary:'架空の検証用経歴',fictional_confirmed:true},201);
+ await scannerReady();
  const r=await actors.a.context.request.post(origin+`/api/v1/candidates/${candidate.id}/documents`,{headers:{Origin:origin,'X-CSRF-Token':actors.a.me.csrf_token,'Idempotency-Key':crypto.randomUUID()},multipart:{fictional_confirmed:'true',document_kind:'resume',file:{name:'R6架空履歴書.pdf',mimeType:'application/pdf',buffer:fs.readFileSync(path.resolve(__dirname,'../apps/web/public/sample-resume.pdf'))}}});
- expect(r.status()).toBe(201);const d=await r.json();expect(d.available).toBe(true);documentId=d.id;
+ const d=await preparedDocument(r);documentId=d.id;
  application=await ok('a','POST','/applications',{candidate_id:candidate.id,job_id:job.id,reason:'R6架空推薦の元本文'},201);
  const c2=await ok('a','POST','/candidates',{name:'R6架空共有候補者',summary:'架空の選考用経歴',fictional_confirmed:true},201);
  // A second application may use no foreign candidate's document; create its own.
+ await scannerReady();
  const r2=await actors.a.context.request.post(origin+`/api/v1/candidates/${c2.id}/documents`,{headers:{Origin:origin,'X-CSRF-Token':actors.a.me.csrf_token,'Idempotency-Key':crypto.randomUUID()},multipart:{fictional_confirmed:'true',document_kind:'resume',file:{name:'R6架空共有書類.pdf',mimeType:'application/pdf',buffer:fs.readFileSync(path.resolve(__dirname,'../apps/web/public/sample-resume.pdf'))}}});
- expect(r2.status()).toBe(201);const d2=await r2.json();expect(d2.available).toBe(true);
+ const d2=await preparedDocument(r2);
  shared=await ok('a','POST','/applications',{candidate_id:c2.id,job_id:job.id,reason:'R6架空の共有案件'},201);
  shared=await ok('a','POST',`/applications/${shared.id}/submit`,{version:1,candidate_version:c2.version,job_version:job.version,document_ids:[d2.id],fictional_confirmed:true,consent_confirmed:true});
  for(const a of Object.values(actors))await a.page.goto('about:blank');
