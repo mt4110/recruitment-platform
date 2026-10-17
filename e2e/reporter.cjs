@@ -10,7 +10,7 @@ module.exports = class SafeReporter {
   }
   scrub(message) {
     message = message.replace(/Call log:[\s\S]*/g,'Call log: [withheld]');
-    message = message.replace(/\b(?:cookie|set-cookie|authorization|x-csrf-token|x-upload-ticket|x-scan-key|x-viewer-key|x-document-key)\s*:[^\r\n]*/gi,'[sensitive header redacted]');
+    message = message.replace(/\b(?:cookie|set-cookie|authorization|x-csrf-token|x-upload-ticket|x-scan-key|x-viewer-key|x-document-key)[\"']?\s*:[^\r\n]*/gi,'[sensitive header redacted]');
     message = message.replace(/rp_(?:session|attempt)=[^;\s\"']+/g,'[session redacted]');
     for (const secret of this.secrets) message = message.split(secret).join('[redacted]');
     return message.replace(/https?:\/\/[^\s<>]+/g,'[url]').replace(/eyJ[\w-]+\.eyJ[\w-]+\.[\w-]+/g,'[jwt]').replace(/eyJ[\w-]+\.[\w-]{43}(?![\w-])/g,'[upload-ticket]');

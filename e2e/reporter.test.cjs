@@ -16,3 +16,12 @@ test('sensitive header fragments and standalone session values are redacted',()=
  assert.equal(scrub('SYNTHETIC_PASSWORD_ONLY').includes('SYNTHETIC_PASSWORD_ONLY'),false);
  assert.match(scrub('Expected: 200\nReceived: 503'),/Received: 503/);
 });
+
+test('quoted and structured sensitive header names are redacted',()=>{
+ for(const key of ['Cookie','X-CSRF-Token','X-Scan-Key','X-Viewer-Key','X-Document-Key']){
+  for(const quote of ['"',"'"]){
+   const result=scrub(quote+key+quote+': '+quote+'SYNTHETIC_QUOTED_ONLY'+quote);
+   assert.equal(result.includes('SYNTHETIC_QUOTED_ONLY'),false);
+  }
+ }
+});
