@@ -115,6 +115,12 @@ try:
         cpu=subprocess.check_output(['docker','exec',name,'cat','/sys/fs/cgroup/cpu.max'],env=env,text=True).strip()
         summary['resource_runtime'][service]={'image_id':meta['Image'],'running':meta['State']['Running'],'oom_killed':meta['State']['OOMKilled'],'memory_peak_bytes':observed['memory.peak'],'memory_limit_bytes':observed['memory.max'],'pids_limit':observed['pids.max'],'cpu_max':cpu}
         if not meta['State']['Running'] or meta['State']['OOMKilled'] or observed['memory.max']<=0 or observed['pids.max']<=0:code=1;summary['status']='failed'
+    summary['worker_images']={}
+    if not args.test_file or any(f in args.test_file for f in ['s2.spec.cjs','s3.spec.cjs','z-s4.spec.cjs','s5.spec.ts']):
+        for role in ('document-broker','document-relay','document-sandbox'):
+            tag=f'recruitment-{instance}-'+('document-broker' if role=='document-relay' else role)
+            image=json.loads(subprocess.check_output(['docker','image','inspect',tag],env=env,text=True))[0]
+            summary['worker_images'][role]={'image_id':image['Id'],'architecture':image['Architecture'],'tag':tag}
     summary['log_scan'] = {}
     for service in ('gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater'):
         raw = subprocess.check_output(['docker','logs',f'recruitment-{instance}-{service}-1'],env=env,stderr=subprocess.STDOUT)
@@ -122,7 +128,8 @@ try:
         summary['log_scan'][service] = {'secret_pattern_found':found}
         if found: code = 1; summary['status'] = 'failed'
 
-except subprocess.CalledProcessError:
+except Exception as exc:
+    summary['failure_type']=type(exc).__name__
     code = 1
     summary['status'] = 'failed'
     print('E2E setup or verification failed; inspect the retained evidence/private operations.log. No existing demo services were changed.')

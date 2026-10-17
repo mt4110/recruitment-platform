@@ -32,7 +32,8 @@ def main():
             role='document-broker' if service=='document-relay' else service
             tag=f"recruitment-{run['instance']}-{role}"
             meta=json.loads(subprocess.check_output(['docker','image','inspect',tag],text=True))[0]
-            image=meta['Id'];provenance={'role':'ephemeral job build tag','tag':tag,'architecture':meta['Architecture']}
+            image=meta['Id'];assert run['worker_images'][service]['image_id']==image,'WORKER_IMAGE_MISMATCH'
+            provenance={'role':'ephemeral job build tag','tag':tag,'architecture':meta['Architecture']}
         else:
             image=subprocess.check_output(['docker','inspect','--format','{{.Image}}',container],text=True).strip()
             meta=json.loads(subprocess.check_output(['docker','image','inspect',image],text=True))[0]
