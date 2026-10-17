@@ -19,7 +19,7 @@ async function readyView(url,who='a'){
  }
  return r;
 }
-async function upload(bytes=sample,format='pdf',existing=null,accepted=true){
+async function upload(bytes=sample,format='pdf',existing=null,accepted=true,fixture='inline'){
  const row=sql(`SELECT count(*)||'|'||coalesce(ceil(max(61-extract(epoch FROM now()-created_at))),0)::integer FROM document_admissions WHERE user_id='${actors.a.me.user.id}' AND created_at>now()-interval '1 minute';`).split('|').map(Number);if(row[0]>=8)await new Promise(resolve=>setTimeout(resolve,row[1]*1000));
  let r=existing?null:await call('/candidates','POST',{name:'S3架空候補者',summary:'安全な表示の架空試料',fictional_confirmed:true},'a',{'Idempotency-Key':c.randomUUID()});if(r)expect(r.status()).toBe(201);const candidate=existing||await r.json();
  r=await call(`/candidates/${candidate.id}/document-uploads`,'POST',{document_kind:'resume',file_format:format,plain_length:bytes.length,fictional_confirmed:true},'a',{'Idempotency-Key':c.randomUUID()});expect(r.status()).toBe(201);const job=await r.json();
@@ -28,8 +28,8 @@ async function upload(bytes=sample,format='pdf',existing=null,accepted=true){
  const envelope={schema:1,key_version:job.wrap_key_version,wrapped_dek:c.publicEncrypt({key:c.createPublicKey({key:Buffer.from(job.wrap_public_spki,'base64'),format:'der',type:'spki'}),oaepHash:'sha256'},dek).toString('base64url'),nonce:nonce.toString('base64url'),aad:job.aad};
  r=await call(`/document-uploads/${job.upload_id}/authorize`,'POST',{attempt_id:job.attempt_id,ciphertext_hash:c.createHash('sha256').update(raw).digest('hex'),ciphertext_size:raw.length,envelope});expect(r.status()).toBe(200);const ticket=(await r.json()).ticket;
  expect((await call(`/document-uploads/${job.upload_id}/bytes`,'PUT',raw,'a',{'Content-Type':'application/octet-stream','X-Upload-Ticket':ticket})).status()).toBe(202);expect((await call(`/document-uploads/${job.upload_id}/complete`,'POST')).status()).toBe(202);
- const run=host('scripts/document_job.py',['--no-build']);expect(run.status,run.stdout).toBe(accepted?0:1);
- expect(JSON.parse(run.stdout.trim().split('\n').at(-1)).events).toEqual([accepted?'checked':'rejected']);
+ const run=host('scripts/document_job.py',['--no-build']),context=fixture+' expected_document='+job.document_id+' '+run.stdout;expect(run.status,context).toBe(accepted?0:1);
+ const outcome=JSON.parse(run.stdout.trim().split('\n').at(-1));expect(outcome.claimed?.document_id,context).toBe(job.document_id);expect(outcome.events,context).toEqual([accepted?'checked':'rejected']);
  let available=false;
  for(let attempt=0;attempt<10;attempt++){
   const d=await call('/documents/'+job.document_id);expect(d.status()).toBe(200);const metadata=await d.json();available=metadata.available;
@@ -120,7 +120,7 @@ test('S3 fixed XLSX type date merge hidden and stale-cache expectations from S0 
 });
 test('S3 unrepresentable XLSX refs types merges and quotas never become ready or truncated views',async()=>{
  for(const name of ['crossed.xlsx','unknown.xlsx','bad-reference.xlsx','bad-bool.xlsx','too-long-cell.xlsx','too-many-cells.xlsx','too-much-text.xlsx']){
-  const j=await upload(vf(name),'xlsx',null,false);expect((await call('/documents/'+j.document_id+'/view')).status()).toBe(404);expect(sql(`SELECT status FROM documents WHERE id='${j.document_id}';`)).toBe('rejected');
+  const j=await upload(vf(name),'xlsx',null,false,name);expect((await call('/documents/'+j.document_id+'/view')).status()).toBe(404);expect(sql(`SELECT status FROM documents WHERE id='${j.document_id}';`)).toBe('rejected');
  }
 });
 test('S3 Japanese twenty-page order and image-only text alternative, geometry never silently downscaled',async()=>{

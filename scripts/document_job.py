@@ -50,7 +50,9 @@ with (folder/'operations.log').open('w') as log:
    time.sleep(.5)
   else:outcome['status']='timeout'
   raw=subprocess.check_output(['docker','logs',job+'-broker-1'],stderr=subprocess.STDOUT)
-  events=[];timings={};broker_rss=None
+  events=[];timings={};broker_rss=None;failures=[];claimed=None
+  codes={'KEY_UNAVAILABLE','AUTHORITY_UNAVAILABLE','SCANNER_UNAVAILABLE','SANDBOX_UNAVAILABLE','RESPONSE_LIMIT','JOB_TIMEOUT','METADATA_REJECTED','CRYPTO_REJECTED','AV_BLOCKED','FORMAT_REJECTED','NETWORK_TIMEOUT','NETWORK_ABORTED','UNCLASSIFIED'}
+  phases={'claim','decrypt','ciphertext_fetch','av','validation_and_conversion','artifact_fetch','authority_claim','authority_authorize','authority_ciphertext','authority_artifact','authority_commit','authority_reject','authority_retry'}
   for line in raw.splitlines():
    try:v=json.loads(line)
    except ValueError:continue
@@ -58,12 +60,20 @@ with (folder/'operations.log').open('w') as log:
     allowed={'ciphertext_fetch','decrypt','av','validation_and_conversion','artifact_encryption_and_storage'}
     if set(v['milliseconds'])<=allowed and all(type(n) in (int,float) and 0<=n<=120000 for n in v['milliseconds'].values()):timings=v['milliseconds']
     if type(v['rss_bytes']) is int and 0<v['rss_bytes']<1099511627776:broker_rss=v['rss_bytes']
+   if set(v)=={'event','document_id','generation'} and v['event']=='claimed' and all(isinstance(v[k],str) and re.fullmatch(r'[a-f0-9-]{36}',v[k]) for k in ('document_id','generation')):claimed={k:v[k] for k in ('document_id','generation')}
+   if set(v)=={'event','code','phase'} and v['event']=='failure' and v['code'] in codes and v['phase'] in phases:failures.append({'code':v['code'],'phase':v['phase']})
    if set(v)=={'event'} and v['event'] in ('checked','rejected','retryable','no_job'):events.append(v['event'])
+  outcome['claimed']=claimed;outcome['failures']=failures;outcome['sandbox_failures']=[]
   outcome['events']=events;outcome['phase_milliseconds']=timings;outcome['broker_rss_bytes']=broker_rss
   outcome['log_secret_pattern_found']=False
   secret_values=[(local/'scan-auth').read_bytes(),(local/'broker-auth').read_bytes(),base64.urlsafe_b64encode(hmac.new((local/'broker-auth').read_bytes(),b'document-worker-v1',hashlib.sha256).digest()).rstrip(b'=')]
   for role in ('broker','relay','sandbox'):
    logs=subprocess.check_output(['docker','logs',job+'-'+role+'-1'],stderr=subprocess.STDOUT)
+   if role=='sandbox':
+    for line in logs.splitlines():
+     try:v=json.loads(line)
+     except ValueError:continue
+     if set(v)=={'event','phase','code','exit_code'} and v['event']=='sandbox_failure' and v['phase'] in ('validation','conversion') and v['code'] in ('CHILD_EXIT','CHILD_TIMEOUT','CHILD_FAILURE') and type(v['exit_code']) is int and -128<=v['exit_code']<=255:outcome['sandbox_failures'].append({k:v[k] for k in ('phase','code','exit_code')})
    if any(v in logs for v in secret_values) or re.search(rb'-----BEGIN .*PRIVATE KEY-----|rp_session=|rp_attempt=|S2[\x80-\xff]',logs):outcome['log_secret_pattern_found']=True
   if outcome['log_secret_pattern_found']:outcome['status']='failed'
   outcome['containers']={}
@@ -76,5 +86,5 @@ with (folder/'operations.log').open('w') as log:
   r=subprocess.run([*compose,'stop','--timeout','3'],stdout=log,stderr=subprocess.STDOUT,timeout=25)
   outcome['stopped']=r.returncode==0;outcome['elapsed_seconds']=round(time.monotonic()-start,3)
   (folder/'result.json').write_text(json.dumps(outcome,indent=2)+'\n')
- print(json.dumps({'status':outcome['status'],'events':outcome.get('events',[]),'stopped':outcome['stopped'],'record':str(folder/'result.json')}))
+ print(json.dumps({'status':outcome['status'],'events':outcome.get('events',[]),'stopped':outcome['stopped'],'claimed':outcome.get('claimed'),'failures':outcome.get('failures',[]),'sandbox_failures':outcome.get('sandbox_failures',[]),'record':str(folder/'result.json')}))
  raise SystemExit(0 if outcome['status']=='passed' and outcome['stopped'] else 1)

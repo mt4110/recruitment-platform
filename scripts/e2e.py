@@ -148,6 +148,11 @@ finally:
     # volumes, configurations, previous test output, or the interactive demo.
     with (local/'operations.log').open('a') as log:
         stopped = subprocess.run(['python3','scripts/local.py','stop'], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
+    try:
+        diagnostic=subprocess.run(['python3','e2e/job_diagnostics.py'],cwd=ROOT,env=env,capture_output=True,timeout=30)
+        diagnostics_ok=diagnostic.returncode==0
+    except (OSError,subprocess.TimeoutExpired):diagnostics_ok=False
+    if not diagnostics_ok:code=1;summary['status']='failed';summary['job_diagnostics_failed']=True
     summary['services_stopped'] = stopped.returncode == 0
     if stopped.returncode != 0: code = 1; summary['status'] = 'failed'
     summary['elapsed_seconds'] = round(time.monotonic() - start, 3)

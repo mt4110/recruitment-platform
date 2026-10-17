@@ -4,6 +4,8 @@ import hashlib,json,subprocess,sys,re
 from pathlib import Path
 outputs={}
 used=False
+def failure(phase,code,exit_code=0):
+ print(json.dumps({'event':'sandbox_failure','phase':phase,'code':code,'exit_code':exit_code}),flush=True)
 class Handler(BaseHTTPRequestHandler):
  def reply(self,status,body):
   data=json.dumps(body).encode();self.send_response(status);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
@@ -17,6 +19,7 @@ class Handler(BaseHTTPRequestHandler):
  def do_POST(self):
   global used
   self.connection.settimeout(5)
+  phase='validation'
   try:
    n=int(self.headers.get('Content-Length','0'));media=self.headers.get('Content-Type')
    if used or self.path!='/check' or not 1<=n<=10485760 or media not in ('application/pdf','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):return self.reply(403,{})
@@ -24,17 +27,23 @@ class Handler(BaseHTTPRequestHandler):
    if len(raw)!=n:return self.reply(400,{})
    path='/app/validator.py' if media=='application/pdf' else '/app/xlsx_validator.py'
    worker=subprocess.run([sys.executable,path],input=raw,capture_output=True,timeout=6,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'},close_fds=True)
-   if worker.returncode:return self.reply(503,{})
+   if worker.returncode:
+    failure(phase,'CHILD_EXIT',worker.returncode);return self.reply(503,{})
    result=json.loads(worker.stdout)
    if result.get('reason')=='PARSER_VERSION':return self.reply(503,{})
    code=None if result['accepted'] else 'FORMAT_'+result['reason']
    view=None
    if result['accepted']:
+    phase='conversion'
     conversion=subprocess.run([sys.executable,'/app/convert.py','pdf' if media=='application/pdf' else 'xlsx'],input=raw,capture_output=True,timeout=60,env={'PATH':'/usr/local/bin:/usr/bin','PYTHONDONTWRITEBYTECODE':'1'},close_fds=True)
-    if conversion.returncode:return self.reply(200,{'ok':False,'policy':'static-resume-v1' if media=='application/pdf' else 'xlsx-resume-v1','sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':'FORMAT_CONVERSION_REJECTED','view':None})
+    if conversion.returncode:
+     failure(phase,'CHILD_EXIT',conversion.returncode);return self.reply(200,{'ok':False,'policy':'static-resume-v1' if media=='application/pdf' else 'xlsx-resume-v1','sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':'FORMAT_CONVERSION_REJECTED','view':None})
     view=json.loads(conversion.stdout)
     for item in view['artifacts']:outputs[item['name']]=item
    self.reply(200,{'view':view,'ok':result['accepted'],'policy':'static-resume-v1' if media=='application/pdf' else 'xlsx-resume-v1','sha256':hashlib.sha256(raw).hexdigest(),'rejection_code':code})
-  except (OSError,ValueError,subprocess.TimeoutExpired):self.reply(503,{})
+  except subprocess.TimeoutExpired:
+   failure(phase,'CHILD_TIMEOUT');self.reply(503,{})
+  except (OSError,ValueError):
+   failure(phase,'CHILD_FAILURE');self.reply(503,{})
  def log_message(self,*args):pass
 HTTPServer(('0.0.0.0',8080),Handler).serve_forever()

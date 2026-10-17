@@ -4,10 +4,10 @@ const {unwrap,seal,sha}=require('./crypto.cjs');
 const credential=fs.readFileSync('/run/broker-auth');if(credential.length!==32)throw Error('WORKER_KEY_UNAVAILABLE');
 const auth=c.createHmac('sha256',credential).update('document-worker-v1').digest('base64url');
 const scanKey=fs.readFileSync('/run/scan-auth','utf8');
-let job;
+let job,phase='claim';
 // Fixed phase names and numeric durations only; never log document or key material.
 const phaseDurations={};
-async function measured(phase,work){const start=performance.now();try{return await work();}finally{phaseDurations[phase]=Math.round((performance.now()-start)*1000)/1000;}}
+async function measured(name,work){phase=name;const start=performance.now();try{return await work();}finally{phaseDurations[name]=Math.round((performance.now()-start)*1000)/1000;}}
 function emitTimings(){console.log(JSON.stringify({event:'timings',milliseconds:phaseDurations,rss_bytes:process.memoryUsage().rss}));}
 async function bounded(url,options={},limit=524288,ms=30000){
  const r=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(ms)});
@@ -15,6 +15,7 @@ async function bounded(url,options={},limit=524288,ms=30000){
  const chunks=[];let size=0;for await(const b of r.body||[]){size+=b.length;if(size>limit)throw Error('RESPONSE_LIMIT');chunks.push(b);}return {status:r.status,bytes:Buffer.concat(chunks)};
 }
 async function api(op,result={}){
+ phase='authority_'+op;
  const url=op==='claim'?'http://api-control:8081/claim':`http://api-control:8081/jobs/${job.document_id}/${op}`;
  const r=await bounded(url,{method:'POST',headers:{'X-Worker-Auth':auth,'Content-Type':'application/json'},body:JSON.stringify(op==='claim'?{}:{lease_token:job.lease_token,result})},op==='ciphertext'?10489876:524288);
  if(r.status===204)return null;if(r.status!==200)throw Error('AUTHORITY_UNAVAILABLE');return op==='ciphertext'?r.bytes:JSON.parse(r.bytes);
@@ -25,12 +26,13 @@ function validateScan(s,nonce,hash){
 }
 async function main(){
  job=await api('claim');if(!job||job.paused)return console.log(JSON.stringify({event:'no_job'}));
+ console.log(JSON.stringify({event:'claimed',document_id:job.document_id,generation:job.generation}));
  const started=Date.now();
  await api('authorize');
  const raw=await measured('ciphertext_fetch',()=>api('ciphertext'));
  // Authorization is checked immediately before private-key use and before commit.
  await api('authorize');
- let original;const decryptStart=performance.now();try{const key=c.createPrivateKey(fs.readFileSync('/run/keys/'+job.envelope.key_version+'.pem'));if(key.asymmetricKeyDetails.modulusLength!==3072||c.createPublicKey(key).export({type:'spki',format:'der'}).toString('base64')!==job.original_public_spki)throw Error('KEY_UNAVAILABLE');original=unwrap(job,raw,key);}catch(e){if(['METADATA_REJECTED','CRYPTO_REJECTED'].includes(e.message))throw e;if(e.code?.startsWith('ERR_OSSL')||e.code==='ERR_CRYPTO_INVALID_AUTH_TAG'||/authenticate/.test(e.message))throw Error('CRYPTO_REJECTED');throw Error('KEY_UNAVAILABLE');}
+ phase='decrypt';let original;const decryptStart=performance.now();try{const key=c.createPrivateKey(fs.readFileSync('/run/keys/'+job.envelope.key_version+'.pem'));if(key.asymmetricKeyDetails.modulusLength!==3072||c.createPublicKey(key).export({type:'spki',format:'der'}).toString('base64')!==job.original_public_spki)throw Error('KEY_UNAVAILABLE');original=unwrap(job,raw,key);}catch(e){if(['METADATA_REJECTED','CRYPTO_REJECTED'].includes(e.message))throw e;if(e.code?.startsWith('ERR_OSSL')||e.code==='ERR_CRYPTO_INVALID_AUTH_TAG'||/authenticate/.test(e.message))throw Error('CRYPTO_REJECTED');throw Error('KEY_UNAVAILABLE');}
  phaseDurations.decrypt=performance.now()-decryptStart;
  const hash=sha(original.bytes),nonce=c.randomUUID();
  const av=await measured('av',()=>bounded('http://scan:8080/internal/scan',{method:'POST',headers:{'X-Scan-Key':scanKey,'X-Scan-Nonce':nonce,'Content-Type':'application/octet-stream'},body:original.bytes},32768,23000));
@@ -44,7 +46,7 @@ async function main(){
  if(check.view?.format!==job.file_format||!Array.isArray(check.view.artifacts))throw Error('SANDBOX_UNAVAILABLE');
  const artifactStart=performance.now();let total=0;
  for(const item of check.view.artifacts){
-  const output=await bounded('http://relay:8080/artifact/'+item.name,{},item.kind==='page'?8388608:1048576,5000);
+  phase='artifact_fetch';const output=await bounded('http://relay:8080/artifact/'+item.name,{},item.kind==='page'?8388608:1048576,5000);
   if(output.status!==200||output.bytes.length!==item.size||sha(output.bytes)!==item.sha256)throw Error('SANDBOX_UNAVAILABLE');
   total+=output.bytes.length;if(total>68157440)throw Error('FORMAT_REJECTED');
   const id=c.randomUUID(),sealed=seal({...job,artifact_id:id},output.bytes,hash,item.kind,item.page);
@@ -60,6 +62,9 @@ async function main(){
  emitTimings();console.log(JSON.stringify({event:'checked'}));
 }
 main().catch(async e=>{
+ const known=new Set(['KEY_UNAVAILABLE','AUTHORITY_UNAVAILABLE','SCANNER_UNAVAILABLE','SANDBOX_UNAVAILABLE','RESPONSE_LIMIT','JOB_TIMEOUT','METADATA_REJECTED','CRYPTO_REJECTED','AV_BLOCKED','FORMAT_REJECTED']);
+ const code=known.has(e.message)?e.message:e.name==='TimeoutError'?'NETWORK_TIMEOUT':e.name==='AbortError'?'NETWORK_ABORTED':'UNCLASSIFIED';
+ console.log(JSON.stringify({event:'failure',code,phase}));
  const terminal=['CRYPTO_REJECTED','METADATA_REJECTED','AV_BLOCKED','FORMAT_REJECTED'].includes(e.message);
  if(job&&!job.paused)try{await api(terminal?'reject':'retry',{code:terminal?e.message:'WORKER_UNAVAILABLE'});}catch{}
  emitTimings();console.log(JSON.stringify({event:terminal?'rejected':'retryable'}));process.exitCode=1;
