@@ -56,3 +56,13 @@ broker／relayは既存のdigest固定Node24.22.0 imageとNode/OpenSSL標準cryp
 ## M6再監査（2026-10-18）
 
 [期限内DBの再監査記録](docs/validation/2026-10-18-m6-reaudit-report.md)を追加。保持したarm64の14役割／8実imageを照合し、Trivy／Java DBとも期限内でfindings/exit1。M6受入は保留。未知／未取得licenseは538のpackage記録で、idp 413・renderer 95が大半を占める。package重複の整理とPOM／LICENSE／OS copyrightへの一次照合、一般配布条件の確認は残る。scannerの未知記録を違反確定や許諾済みと扱わない。RustSecの未修正1件も維持。inspectorのExpat 2.8.5は手動の実version確認で補足し、OS package scan合計へ加算していない。今回、製品コード／lock／digestを変更せず、amd64の再監査・新しいE2E／CI・M7・公開は実施していない。
+
+## M6の限定更新バッチ（2026-10-18、検証中）
+
+同じ基底OS系列・製品版を維持し、取得可能なOS更新を適用する。公式基底imageのdigestは照合したが変更されていない。Webと書類用Node workerは公式Node 24.22.0の実行バイナリとLICENSEだけを同じDebian bookworm runtimeへコピーし、不要なnpm CLIを含めない。NodeのLICENSEは `/usr/local/share/doc/node/LICENSE` に保持する。
+
+PDF inspectorは公式CPython 3.13.16とExpat 2.9.0の無改変ソースをSHA-256固定でbuildし、共有Expatへリンクする。CPythonのLICENSEとExpatのCOPYINGを `/usr/local/share/doc/python/`・`/usr/local/share/doc/expat/` に保持する。CPythonはPSF License、ExpatはMIT。pipは検証済みCPythonソース内wheelからbuild時だけ実行し、runtimeにpip／ensurepipを導入しない。既存4件のhash固定wheelとそのライセンスは維持する。Playwright基底imageのnpm CLI同梱依存は別途監査対象に残す。
+
+PostgreSQL補助ツールgosu 1.19（Apache-2.0）はhash固定の公式ソースを公式Go 1.27.2で再buildする。gosuのLICENSEは `/usr/local/share/doc/gosu/LICENSE` に保持する。製品PostgreSQL 17.11とentrypointは維持し、Go compilerはruntimeに含めない。ソースURL・hash・build条件は各Dockerfileに記録する。一般再配布時の対応ソース提供等の確認は引き続きM7に残る。
+
+一次資料: [CPython 3.13.16](https://www.python.org/downloads/release/python-31316/)、[Expat 2.9.0](https://github.com/libexpat/libexpat/releases/tag/R_2_9_0)、[gosu 1.19 source](https://github.com/tianon/gosu/tree/1.19)。実runtimeの版・リンク先・不要なCLI不在をE2Eのruntime inventoryで検査し、脆弱性監査の合格とは区別する。

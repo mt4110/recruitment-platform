@@ -1,5 +1,6 @@
 """Runs in the real isolated inspector container. Synthetic mutations only."""
 import io,json,subprocess,sys,zipfile,stat
+from unittest.mock import patch
 from pathlib import Path
 base=bytes.fromhex(sys.argv[1]);career=bytes.fromhex(sys.argv[2]);old=bytes.fromhex(sys.argv[3])
 def rewrite(raw,part,change):
@@ -81,4 +82,11 @@ for name,(raw,accepted) in cases.items():
  assert p.returncode==0,(name,'worker error',p.stderr[:200])
  r=json.loads(p.stdout);assert r['accepted']==accepted,(name,r)
  results[name]={'accepted':r['accepted'],'reason':r.get('reason')}
+sys.path.insert(0,'/app')
+import xlsx_validator
+for version in ('expat_2.7.2','expat_2.8.5'):
+ with patch.object(xlsx_validator.expat,'EXPAT_VERSION',version):
+  rejected=xlsx_validator.inspect(base)
+  assert not rejected['accepted'] and rejected['reason']=='PARSER_VERSION',version
+  results['parser_reject_'+version]={'accepted':False,'reason':'PARSER_VERSION'}
 print(json.dumps({'scope':'real bounded XLSX worker; native fixtures and synthetic adversarial cases','count':len(results),'results':results}))

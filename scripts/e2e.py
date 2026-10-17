@@ -26,7 +26,7 @@ def source_hashes():
     tracked = ['scripts/local.py','scripts/document_job.py','scripts/document_key.py','scripts/document_migrate.py','scripts/document_snapshot.py','scripts/document_operator.py','scripts/document_crypto.cjs','scripts/e2e.py','scripts/check.py','scripts/audit.py','scripts/distribution_audit.py','scripts/export_evidence.py','scripts/export_evidence_test.py','infra/local/pdf-seccomp.json','infra/local/compose.yaml','infra/local/nginx.conf','infra/local/db-init.sh',
                'services/api/Dockerfile','services/api/Cargo.toml','services/api/Cargo.lock','apps/web/Dockerfile','apps/web/package.json','apps/web/package-lock.json','apps/web/tsconfig.json','apps/web/next-env.d.ts','apps/web/.dockerignore','services/api/.dockerignore']
     tracked += [str(p.relative_to(ROOT)) for p in (ROOT/'e2e').iterdir() if p.is_file() and '__pycache__' not in p.parts]
-    for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','services/document-worker','services/postgres','e2e/fixtures','validation/r0/fixtures']:
+    for folder in ['migrations','fixtures','services/api/src','apps/web/app','apps/web/public','services/pdf-renderer','services/av','services/document-worker','services/postgres','services/gateway','e2e/fixtures','validation/r0/fixtures']:
         tracked += [str(p.relative_to(ROOT)) for p in (ROOT/folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts]
     return {name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sorted(set(tracked))}
 # Allocate only new test networks; retained previous environments are never pruned.
@@ -121,6 +121,7 @@ try:
             tag=f'recruitment-{instance}-'+('document-broker' if role=='document-relay' else role)
             image=json.loads(subprocess.check_output(['docker','image','inspect',tag],env=env,text=True))[0]
             summary['worker_images'][role]={'image_id':image['Id'],'architecture':image['Architecture'],'tag':tag}
+        subprocess.run(['python3','e2e/runtime_inventory.py'],cwd=ROOT,env=env,check=True)
     summary['log_scan'] = {}
     for service in ('gateway','web','api','db','idp','idp-db','pdf-renderer','invoice-renderer','artifact-viewer','scan','updater'):
         raw = subprocess.check_output(['docker','logs',f'recruitment-{instance}-{service}-1'],env=env,stderr=subprocess.STDOUT)

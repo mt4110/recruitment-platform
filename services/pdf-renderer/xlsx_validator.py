@@ -186,7 +186,7 @@ class Formula:
 def inspect(raw):
     try:
         if not 0<len(raw)<=10*1024*1024:refuse('SIZE')
-        if tuple(map(int,expat.EXPAT_VERSION.split('_')[-1].split('.'))) < (2,7,2):refuse('PARSER_VERSION')
+        if tuple(map(int,expat.EXPAT_VERSION.split('_')[-1].split('.'))) < (2,9,0):refuse('PARSER_VERSION')
         with zipfile.ZipFile(io.BytesIO(raw)) as z:
             entries=z.infolist();names=[e.filename for e in entries]
             if len(entries)>1000 or len(names)!=len(set(names)):refuse('STRUCTURE_LIMIT')
