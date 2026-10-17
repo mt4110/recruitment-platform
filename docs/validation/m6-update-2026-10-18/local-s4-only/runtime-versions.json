@@ -1,0 +1,113 @@
+{
+  "scope": "M6 updated runtime versions and package boundaries; not vulnerability clearance",
+  "roles": {
+    "gateway": {
+      "image_id": "sha256:fd1b9a9ee907d6230f0e84f0a8b73674b819ba5d71ae719aeba080cbebe2057a",
+      "architecture": "arm64",
+      "libexpat": "V:2.9.0-r0"
+    },
+    "web": {
+      "image_id": "sha256:3043a48619c1b890b7f8c82d90f863cd424a636e857d837abe32509e3f0e3418",
+      "architecture": "arm64",
+      "node": {
+        "node": "24.22.0",
+        "openssl": "3.5.8",
+        "npm_present": false,
+        "npm_tree_present": false,
+        "node_license": true
+      }
+    },
+    "api": {
+      "image_id": "sha256:fbd73affed31ee6dfc2e8ba966d62fd60a5885b8063ec57a4efd6462153abd07",
+      "architecture": "arm64",
+      "libc": "2.36-9+deb12u14"
+    },
+    "db": {
+      "image_id": "sha256:7d6ff3f83ab331673d022b718a7e1849871edf79fb51f3b00d5eeb821502c448",
+      "architecture": "arm64",
+      "postgres": "postgres (PostgreSQL) 17.11 (Debian 17.11-1.pgdg12+2)",
+      "gosu": "1.19 (go1.27.2 on linux/arm64; gc)"
+    },
+    "idp": {
+      "image_id": "sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244",
+      "architecture": "arm64",
+      "java": "openjdk version \"21.0.12.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment (Red_Hat-21.0.12.1.1-1) (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM (Red_Hat-21.0.12.1.1-1) (build 21.0.12.1+1-LTS, mixed mode, sharing)"
+    },
+    "idp-db": {
+      "image_id": "sha256:7d6ff3f83ab331673d022b718a7e1849871edf79fb51f3b00d5eeb821502c448",
+      "architecture": "arm64",
+      "same_as": "db"
+    },
+    "pdf-renderer": {
+      "image_id": "sha256:d206de786bb8a3f53cd92ae574a22d0df5b2d47708441a9074ef9a0a1b18ce38",
+      "architecture": "arm64",
+      "python": {
+        "python": "3.13.16",
+        "executable": "/usr/local/bin/python",
+        "expat": "expat_2.9.0",
+        "pyexpat_module": "/usr/local/lib/python3.13/lib-dynload/pyexpat.cpython-313-aarch64-linux-gnu.so",
+        "libxml": [
+          2,
+          14,
+          6
+        ],
+        "qpdf": "12.4.2",
+        "pillow": "12.3.0",
+        "openssl": "OpenSSL 3.0.13 30 Jan 2024",
+        "pip_present": false,
+        "ensurepip_present": false
+      },
+      "browser": {
+        "playwright": "1.64.1",
+        "executable": "/ms-playwright/chromium-1248/chrome-linux-arm64/chrome",
+        "chromium": "Google Chrome for Testing 156.0.8078.4",
+        "npm_present": true
+      },
+      "pyexpat_linkage": "linux-vdso.so.1 (0x0000e6c77957e000)\n\tlibexpat.so.1 => /usr/local/lib/libexpat.so.1 (0x0000e6c7794b0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000e6c7792f0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000e6c779530000)"
+    },
+    "invoice-renderer": {
+      "image_id": "sha256:d206de786bb8a3f53cd92ae574a22d0df5b2d47708441a9074ef9a0a1b18ce38",
+      "architecture": "arm64",
+      "same_as": "pdf-renderer"
+    },
+    "artifact-viewer": {
+      "image_id": "sha256:d4b567e2aa18b3bc5dc1580781a95f368e4ec61aafb7c22c28a78e09d1b899e5",
+      "architecture": "arm64",
+      "node": {
+        "node": "24.22.0",
+        "openssl": "3.5.8",
+        "npm_present": false,
+        "npm_tree_present": false,
+        "node_license": true
+      }
+    },
+    "scan": {
+      "image_id": "sha256:d17c953a95e733dcb36965cf69993d592134f482e44b9584aae50c3b1ce1acb7",
+      "architecture": "arm64",
+      "clamav": "ClamAV 1.5.4/28151/Mon Oct 12 06:24:02 2026",
+      "libexpat": "2.9.0-1~deb13u1",
+      "python_expat": "expat_2.9.0"
+    },
+    "updater": {
+      "image_id": "sha256:d17c953a95e733dcb36965cf69993d592134f482e44b9584aae50c3b1ce1acb7",
+      "architecture": "arm64",
+      "same_as": "scan"
+    },
+    "document-broker": {
+      "image_id": "sha256:d4b567e2aa18b3bc5dc1580781a95f368e4ec61aafb7c22c28a78e09d1b899e5",
+      "architecture": "arm64",
+      "same_as": "artifact-viewer"
+    },
+    "document-relay": {
+      "image_id": "sha256:d4b567e2aa18b3bc5dc1580781a95f368e4ec61aafb7c22c28a78e09d1b899e5",
+      "architecture": "arm64",
+      "same_as": "artifact-viewer"
+    },
+    "document-sandbox": {
+      "image_id": "sha256:d206de786bb8a3f53cd92ae574a22d0df5b2d47708441a9074ef9a0a1b18ce38",
+      "architecture": "arm64",
+      "same_as": "pdf-renderer"
+    }
+  },
+  "status": "passed"
+}

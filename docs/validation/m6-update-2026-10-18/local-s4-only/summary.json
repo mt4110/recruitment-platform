@@ -1,0 +1,85 @@
+{
+  "scope": "R6 cross-cutting bounded load and existing browser regression",
+  "status": "passed",
+  "tests": [
+    {
+      "name": "S4 inventory preserves old PDF/shared selection and rejects unprepared views",
+      "status": "passed",
+      "duration_ms": 852,
+      "errors": []
+    },
+    {
+      "name": "S4 backup crypto preserves large pipe output and rejects tag or context tampering",
+      "status": "passed",
+      "duration_ms": 399,
+      "errors": []
+    },
+    {
+      "name": "S4 cold backup authenticates DB original files old keys and AV definitions",
+      "status": "passed",
+      "duration_ms": 65454,
+      "errors": []
+    },
+    {
+      "name": "S4 mapping adds ciphertext without changing original selection",
+      "status": "passed",
+      "duration_ms": 10114,
+      "errors": []
+    },
+    {
+      "name": "S4 missing old original key refuses worker and preserves shared denial",
+      "status": "passed",
+      "duration_ms": 12152,
+      "errors": []
+    },
+    {
+      "name": "S4 queued migrations resume separately and preserve selected version",
+      "status": "passed",
+      "duration_ms": 26766,
+      "errors": []
+    },
+    {
+      "name": "S4 repeated apply remains idempotent after completed migration",
+      "status": "passed",
+      "duration_ms": 5649,
+      "errors": []
+    },
+    {
+      "name": "S4 migrated selected version renders with no raw fallback or framework errors",
+      "status": "passed",
+      "duration_ms": 342,
+      "errors": []
+    },
+    {
+      "name": "S4 current key policy denies migrated views and shares without rewriting snapshots",
+      "status": "passed",
+      "duration_ms": 1119,
+      "errors": []
+    },
+    {
+      "name": "S4 cutover drains old admission and explicitly quarantines unmigrated records",
+      "status": "passed",
+      "duration_ms": 24441,
+      "errors": []
+    },
+    {
+      "name": "S4 tampered backup refuses authentication before creating a restore target",
+      "status": "passed",
+      "duration_ms": 637,
+      "errors": []
+    },
+    {
+      "name": "S4 post-cutover snapshot authenticates current policy and old keys",
+      "status": "passed",
+      "duration_ms": 63402,
+      "errors": []
+    },
+    {
+      "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+      "status": "passed",
+      "duration_ms": 141772,
+      "errors": []
+    }
+  ],
+  "secrets_policy": "No trace, video, storageState, network dump or failure screenshot. Diagnostics redact credentials and URLs."
+}

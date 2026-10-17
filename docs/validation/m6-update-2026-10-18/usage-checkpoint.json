@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-17T22:26:44.158557+00:00",
+  "model_context": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium"
+  },
+  "scope": "Primary M6 update root turn through this checkpoint only; deduplicated per-response records. Child review, prior milestone turns, subsequent tool calls and final reply excluded.",
+  "responses": 237,
+  "usage": {
+    "input_tokens": 36509380,
+    "cached_input_tokens": 36062592,
+    "output_tokens": 103273
+  },
+  "cached_input_is_subset_of_input": true,
+  "reviewers": 1,
+  "reviewer_usage": "not acquired"
+}

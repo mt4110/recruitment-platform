@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const {sql, signIn, identity, origin, assertPrivateStorage} = require('./helpers.cjs');
 const dir=process.env.RP_E2E_DIR!;
+const root=path.resolve(__dirname,'..');
 type Actor={context:BrowserContext;page:Page;me:{user:{id:string};csrf_token:string}};
 const actors:Record<string,Actor>={};
 const evidence:{forms:string[];load:unknown[];ime?:unknown}={forms:[],load:[]};
@@ -15,9 +16,10 @@ async function call(who:string,method:string,url:string,data?:unknown){
 }
 async function ok(who:string,method:string,url:string,data:unknown,status=200){const r=await call(who,method,url,data);expect(r.status()).toBe(status);return r.json();}
 async function scannerReady(){
+ expect(fs.existsSync(path.join(root,'scripts/local.py'))).toBe(true);
  let stable=0;
  await expect.poll(()=>{
-  const r=cp.spawnSync('python3',['scripts/local.py','compose','exec','-T','api','sh','-c','curl --fail --silent --max-time 3 -H "X-Scan-Key: $SCAN_SHARED_KEY" http://scan:8080/internal/scan/state'],{encoding:'utf8',timeout:10000});
+  const r=cp.spawnSync('python3',['scripts/local.py','compose','exec','-T','api','sh','-c','curl --fail --silent --max-time 3 -H "X-Scan-Key: $SCAN_SHARED_KEY" http://scan:8080/internal/scan/state'],{cwd:root,encoding:'utf8',timeout:10000});
   try{if(r.status===0&&JSON.parse(r.stdout).update_ok)return ++stable;}catch{}
   stable=0;return 0;
  },{timeout:90000,intervals:[500]}).toBe(3);

@@ -1,0 +1,807 @@
+{
+  "scope": "Baseline 51 fixable High/Critical records; matching ignores package version, not role/path. Disappearance can mean package exclusion or version remediation, not proof of exploitability.",
+  "counts": {
+    "no_longer_reported": 48,
+    "still_reported": 3
+  },
+  "rows": [
+    {
+      "role": "gateway",
+      "before": {
+        "VulnerabilityID": "CVE-2026-77214",
+        "PkgName": "libexpat",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.5-r0",
+        "FixedVersion": "2.9.0-r0",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-77214"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "web",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102276",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102276"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "web",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102278",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102278"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "web",
+      "before": {
+        "VulnerabilityID": "CVE-2026-19534",
+        "PkgName": "undici",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/undici/package.json",
+        "InstalledVersion": "6.28.0",
+        "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19534"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2025-68121",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.24.13, 1.25.7, 1.26.0-rc.3",
+        "Severity": "CRITICAL",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-68121"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2025-61726",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.24.12, 1.25.6",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-61726"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2025-61729",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.24.11, 1.25.5",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-61729"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-25679",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.8, 1.26.1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-25679"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-27145",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.11, 1.26.4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-27145"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-32280",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.9, 1.26.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-32280"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-32281",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.9, 1.26.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-32281"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-32283",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.9, 1.26.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-32283"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-33811",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.10, 1.26.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-33811"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-33814",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.10, 1.26.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-33814"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-33818",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-33818"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-39820",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.10, 1.26.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-39820"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-39821",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-39821"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-39822",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.12, 1.26.5, 1.27.0-rc.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-39822"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-39836",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.10, 1.26.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-39836"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-42499",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.10, 1.26.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-42499"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-42504",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.11, 1.26.4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-42504"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-56853",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56853"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-56858",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56858"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-56859",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56859"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-56860",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56860"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-56862",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.25.13, 1.26.6, 1.27.0-rc.3",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56862"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-78667",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.26.9, 1.27.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-78667"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-78669",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.26.9, 1.27.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-78669"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "db",
+      "before": {
+        "VulnerabilityID": "CVE-2026-97031",
+        "PkgName": "stdlib",
+        "PkgPath": null,
+        "InstalledVersion": "v1.24.6",
+        "FixedVersion": "1.26.9, 1.27.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97031"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102276",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102276"
+      },
+      "after_same_advisory_package_path": [
+        {
+          "VulnerabilityID": "CVE-2026-102276",
+          "PkgName": "brace-expansion",
+          "PkgPath": "usr/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+          "InstalledVersion": "5.0.9",
+          "FixedVersion": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+          "Severity": "HIGH",
+          "Status": "fixed",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102276"
+        }
+      ],
+      "status": "still_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102278",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102278"
+      },
+      "after_same_advisory_package_path": [
+        {
+          "VulnerabilityID": "CVE-2026-102278",
+          "PkgName": "brace-expansion",
+          "PkgPath": "usr/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+          "InstalledVersion": "5.0.9",
+          "FixedVersion": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+          "Severity": "HIGH",
+          "Status": "fixed",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102278"
+        }
+      ],
+      "status": "still_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-19534",
+        "PkgName": "undici",
+        "PkgPath": "usr/lib/node_modules/npm/node_modules/undici/package.json",
+        "InstalledVersion": "6.28.0",
+        "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19534"
+      },
+      "after_same_advisory_package_path": [
+        {
+          "VulnerabilityID": "CVE-2026-19534",
+          "PkgName": "undici",
+          "PkgPath": "usr/lib/node_modules/npm/node_modules/undici/package.json",
+          "InstalledVersion": "6.28.0",
+          "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+          "Severity": "HIGH",
+          "Status": "fixed",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19534"
+        }
+      ],
+      "status": "still_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "GHSA-6v7p-g79w-8964",
+        "PkgName": "msgpack",
+        "PkgPath": null,
+        "InstalledVersion": "1.1.2",
+        "FixedVersion": "1.2.1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://github.com/advisories/GHSA-6v7p-g79w-8964"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2025-47273",
+        "PkgName": "setuptools",
+        "PkgPath": null,
+        "InstalledVersion": "70.3.0",
+        "FixedVersion": "78.1.1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2025-47273"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-97687",
+        "PkgName": "urllib3",
+        "PkgPath": null,
+        "InstalledVersion": "2.7.0",
+        "FixedVersion": "2.8.0",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97687"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "pdf-renderer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-97689",
+        "PkgName": "urllib3",
+        "PkgPath": null,
+        "InstalledVersion": "2.7.0",
+        "FixedVersion": "2.8.0",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97689"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-13221",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "CRITICAL",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-13221"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-42496",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "CRITICAL",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-42496"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-8376",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "CRITICAL",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-8376"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-42497",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-42497"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-48962",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-48962"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-57432",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-57432"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-57433",
+        "PkgName": "perl-base",
+        "PkgPath": null,
+        "InstalledVersion": "5.36.0-7+deb12u3",
+        "FixedVersion": "5.36.0-7+deb12u4",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-57433"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102276",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102276"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-102278",
+        "PkgName": "brace-expansion",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json",
+        "InstalledVersion": "5.0.9",
+        "FixedVersion": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102278"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "artifact-viewer",
+      "before": {
+        "VulnerabilityID": "CVE-2026-19534",
+        "PkgName": "undici",
+        "PkgPath": "usr/local/lib/node_modules/npm/node_modules/undici/package.json",
+        "InstalledVersion": "6.28.0",
+        "FixedVersion": "6.28.1, 7.29.1, 8.10.2",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-19534"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "scan",
+      "before": {
+        "VulnerabilityID": "CVE-2026-66046",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-66046"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "scan",
+      "before": {
+        "VulnerabilityID": "CVE-2026-76956",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-76956"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "scan",
+      "before": {
+        "VulnerabilityID": "CVE-2026-76957",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-76957"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "scan",
+      "before": {
+        "VulnerabilityID": "CVE-2026-77214",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-77214"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    },
+    {
+      "role": "scan",
+      "before": {
+        "VulnerabilityID": "CVE-2026-93990",
+        "PkgName": "libexpat1",
+        "PkgPath": null,
+        "InstalledVersion": "2.8.3-1~deb13u1",
+        "FixedVersion": "2.9.0-1~deb13u1",
+        "Severity": "HIGH",
+        "Status": "fixed",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-93990"
+      },
+      "after_same_advisory_package_path": [],
+      "status": "no_longer_reported"
+    }
+  ]
+}

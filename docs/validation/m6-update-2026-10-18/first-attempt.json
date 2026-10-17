@@ -1,0 +1,51 @@
+{
+  "scope": "Initial failed native regression; corrected run is reported separately",
+  "attempts": [
+    {
+      "arch": "amd64",
+      "run_id": 39069687391,
+      "source_commit": "6fdefa5e9503c337495b7a787c8878806789e3e0",
+      "status": "failed",
+      "counts": {
+        "passed": 185,
+        "failed": 1,
+        "skipped": 0
+      },
+      "failed_tests": [
+        {
+          "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+          "errors": [
+            "Error: {\"status\": \"refused\", \"reason\": \"CalledProcessError\", \"retained\": true}\n\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m"
+          ]
+        }
+      ],
+      "services_stopped": true
+    },
+    {
+      "arch": "arm64",
+      "run_id": 39069687391,
+      "source_commit": "6fdefa5e9503c337495b7a787c8878806789e3e0",
+      "status": "failed",
+      "counts": {
+        "passed": 172,
+        "failed": 2,
+        "skipped": 12
+      },
+      "failed_tests": [
+        {
+          "name": "R6 job_new: input navigation reload visibility and reauthentication restore without business commit",
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m503\u001b[39m"
+          ]
+        },
+        {
+          "name": "S4 old keys DB encrypted blobs and selected snapshots restore to a new isolated instance",
+          "errors": [
+            "Error: {\"status\": \"refused\", \"reason\": \"CalledProcessError\", \"retained\": true}\n\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m"
+          ]
+        }
+      ],
+      "services_stopped": true
+    }
+  ]
+}

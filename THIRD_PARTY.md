@@ -8,7 +8,7 @@
 | Axum / Tokio / openidconnect | 0.8.9 / 1.53.3 / 4.0.1 | MIT |
 | SQLx | 0.9.0 | MIT OR Apache-2.0 |
 | AES-GCM / SHA-2 / HMAC / rand | 0.11.1 / 0.11.1 / 0.13.0 / 0.10.3 | Apache-2.0 OR MIT |
-| PostgreSQL / Keycloak / nginx | 17.11 / 26.8.1 / 1.30.1 | PostgreSQL License / Apache-2.0 / BSD-2-Clause |
+| PostgreSQL / Keycloak / nginx | 17.11 / 26.8.1 / 1.30.6 | PostgreSQL License / Apache-2.0 / BSD-2-Clause |
 | Python（内部PDF service） | 3.13系 | PSF License |
 
 RustはCargo.toml/Cargo.lock、Webはpackage.json/package-lock.json、基底イメージはDockerfile/Composeのdigestで固定する。上記は公式crate/npm metadataおよび各プロジェクトのLICENSEによる主要依存の一覧。全推移依存・OS packageのライセンス適合と製品イメージの脆弱性監査を完了した表ではない。
@@ -57,7 +57,7 @@ broker／relayは既存のdigest固定Node24.22.0 imageとNode/OpenSSL標準cryp
 
 [期限内DBの再監査記録](docs/validation/2026-10-18-m6-reaudit-report.md)を追加。保持したarm64の14役割／8実imageを照合し、Trivy／Java DBとも期限内でfindings/exit1。M6受入は保留。未知／未取得licenseは538のpackage記録で、idp 413・renderer 95が大半を占める。package重複の整理とPOM／LICENSE／OS copyrightへの一次照合、一般配布条件の確認は残る。scannerの未知記録を違反確定や許諾済みと扱わない。RustSecの未修正1件も維持。inspectorのExpat 2.8.5は手動の実version確認で補足し、OS package scan合計へ加算していない。今回、製品コード／lock／digestを変更せず、amd64の再監査・新しいE2E／CI・M7・公開は実施していない。
 
-## M6の限定更新バッチ（2026-10-18、検証中）
+## M6の限定更新バッチ（2026-10-18）
 
 同じ基底OS系列・製品版を維持し、取得可能なOS更新を適用する。公式基底imageのdigestは照合したが変更されていない。Webと書類用Node workerは公式Node 24.22.0の実行バイナリとLICENSEだけを同じDebian bookworm runtimeへコピーし、不要なnpm CLIを含めない。NodeのLICENSEは `/usr/local/share/doc/node/LICENSE` に保持する。
 
@@ -66,3 +66,5 @@ PDF inspectorは公式CPython 3.13.16とExpat 2.9.0の無改変ソースをSHA-2
 PostgreSQL補助ツールgosu 1.19（Apache-2.0）はhash固定の公式ソースを公式Go 1.27.2で再buildする。gosuのLICENSEは `/usr/local/share/doc/gosu/LICENSE` に保持する。製品PostgreSQL 17.11とentrypointは維持し、Go compilerはruntimeに含めない。ソースURL・hash・build条件は各Dockerfileに記録する。一般再配布時の対応ソース提供等の確認は引き続きM7に残る。
 
 一次資料: [CPython 3.13.16](https://www.python.org/downloads/release/python-31316/)、[Expat 2.9.0](https://github.com/libexpat/libexpat/releases/tag/R_2_9_0)、[gosu 1.19 source](https://github.com/tianon/gosu/tree/1.19)。実runtimeの版・リンク先・不要なCLI不在をE2Eのruntime inventoryで検査し、脆弱性監査の合格とは区別する。
+
+[更新・検証・未解消一覧](docs/validation/2026-10-18-m6-update-report.md)では、ローカルの修正版ありHigh／Criticalが51→3記録、license未知／未取得が538→518記録。これは全依存の適合完了を意味しない。gosuが静的に含むGo標準libraryはBSD-3-Clauseであり、[Go LICENSE](https://github.com/golang/go/blob/go1.27.2/LICENSE)も一般配布時の表示確認対象。idpのjar、rendererのnative依存、Chrome for Testing・GPL等の一般配布条件と対応ソース提供確認はM7へ残す。M6受入は保留し、imageは公開しない。

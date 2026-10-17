@@ -45,6 +45,7 @@ python3 scripts/document_snapshot.py restore --backup /absolute/path/to/backups/
 ```
 
 - 対象はこのローカルCompose構成だけ。アプリDB・IdP DBの論理dump、書類volume、AV定義volume、private設定・旧鍵を保存する。Dockerイメージそのものやホスト全体はバックアップしない。保存した実イメージIDがローカルに存在する場合だけ復旧し、別版へ差し替えない。
+- M6更新後はgatewayも実イメージIDの保存・復旧先tag作成・復旧後照合に含める。gatewayのIDを持たない更新前snapshotは、稼働元停止・復旧先作成の前に拒否する。更新時は元環境を保持し、移行・切替前に新しい検証済みsnapshotを取得する。欠けたIDを最新版のpullや推測で補わない。
 - エントリごとにAES-256-GCMで暗号化し、バックアップIDとエントリIDをAADへ束縛する。manifestも暗号化する。鍵は暗号文ディレクトリの外の`backup-keys/UUID.key`へ0600で保存する。移送する場合は鍵と暗号文を別管理する。この同一ホスト保存だけを災害対策完了とは呼ばない。
 - 1ファイル512MiB未満、合計1.5GiB、2万ファイルまで。途中失敗の残骸は削除しない。`COMPLETE`と全エントリのAEAD認証・hashがそろわないものは復旧に使わない。
 - 復号認証が終わる前にSQL・原本を利用しない。汎用tar展開はせず、許可した種別・相対パスだけを空の復旧先へcreate-newで書く。
