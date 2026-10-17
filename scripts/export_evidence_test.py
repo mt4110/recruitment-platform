@@ -14,6 +14,10 @@ class EvidenceExportTests(unittest.TestCase):
     def check(self):return export(self.base/'root',self.base/'export')
     def test_safe_metadata_is_copied(self):
         r=self.check();self.assertEqual(r['status'],'passed');self.assertEqual(r['copied_files'],1)
+    def test_metric_suffix_is_not_an_authentication_header(self):
+        (self.artifacts/'metrics.json').write_text(json.dumps({'ticket_authorization':0.01}))
+        (self.artifacts/'unsafe.json').write_text(json.dumps({'message':'"Authorization": "SYNTHETIC_UNKNOWN_ONLY"'}))
+        r=self.check();self.assertEqual(r['copied_files'],2);self.assertEqual(r['withheld_files'],1)
     def test_nested_headers_and_quoted_strings_are_withheld(self):
         examples=[{'nested':{'headers':{'Cookie':'SYNTHETIC_SESSION_ONLY'}}}, {'error':'"X-CSRF-Token": "SYNTHETIC_UNKNOWN_ONLY"'}, {'error':"'X-Viewer-Key': 'SYNTHETIC_UNKNOWN_ONLY'"}]
         for i,value in enumerate(examples):(self.artifacts/(str(i)+'.json')).write_text(json.dumps(value))

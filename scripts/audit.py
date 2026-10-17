@@ -68,10 +68,15 @@ def main():
     summary['secret_findings']=sum(len(x.get('Secrets',[])) for x in secrets.get('Results',[]))
     # Never copy secret matches into public artifacts.
     summary['scanner_databases']=json.loads(subprocess.check_output([a.trivy,'version','--format','json'],text=True))
+    summary['status']='tool_error'
+    summary['database_errors']=[]
     for key in ('VulnerabilityDB','JavaDB'):
         db=summary['scanner_databases'].get(key)
         if not db or datetime.datetime.fromisoformat(db['NextUpdate'].replace('Z','+00:00'))<=datetime.datetime.now(datetime.timezone.utc):
-            raise RuntimeError('Missing or expired vulnerability database')
+            summary['database_errors'].append(key)
+    if summary['database_errors']:
+        (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+        raise RuntimeError('Missing or expired vulnerability database')
     # Counts include unfixed and vendor-will-not-fix findings. No automatic exceptions.
     summary['status']='findings' if summary['secret_findings'] or any(x.get('findings') for x in summary['images'].values()) or r['vulnerabilities']['found'] or any(x.get('total',0) for k,x in summary['locks'].items() if k!='rustsec') else 'passed'
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')

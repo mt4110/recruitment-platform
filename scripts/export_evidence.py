@@ -43,7 +43,7 @@ def export(root,out,selected=None):
                     if sensitive_keys(parsed):withheld+=1;continue
                     inspected=json.dumps(parsed,ensure_ascii=False).encode()+b'\n'+b'\n'.join(s.encode() for s in strings(parsed))
                 except (ValueError,UnicodeError):withheld+=1;continue
-            forbidden=rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|rp_session=|rp_attempt=|eyJ[A-Za-z0-9_-]+\.eyJ|[?&](?:access_token|id_token|code)=|(?:cookie|set-cookie|authorization|x-csrf-token|x-upload-ticket|x-scan-key|x-viewer-key|x-document-key)[\"\']?\s*:\s*(?!\[redacted\])'
+            forbidden=rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|rp_session=|rp_attempt=|eyJ[A-Za-z0-9_-]+\.eyJ|[?&](?:access_token|id_token|code)=|(?<![A-Za-z0-9_-])(?:cookie|set-cookie|authorization|x-csrf-token|x-upload-ticket|x-scan-key|x-viewer-key|x-document-key)[\"\']?\s*:\s*(?!\[redacted\])'
             if any(v and (v in raw or v in inspected) for v in values) or p.suffix=='.json' and re.search(forbidden,inspected,re.I):
                 withheld+=1;continue
             rel=Path(fixture.name)/p.relative_to(run.parent);dest=out/rel;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(raw);copied[str(rel)]=hashlib.sha256(raw).hexdigest()
